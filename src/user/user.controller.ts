@@ -5,13 +5,25 @@ import { UserCreateDto } from './dto/user.create.dto';
 import { User } from 'common/entities/user.entity';
 import { SignInDto } from './dto/sign.in.dto';
 import { JwtServiceImpl } from 'common/guard/jwt.guard';
-import { log } from 'console';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 
-@Controller('v1/user')
+@Controller('user')
+@ApiTags('User API')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('login')
+  @ApiBody({
+    type: SignInDto,
+    description: 'User login details',
+  })
   async login(
     @Body()
     userLoginDto: SignInDto,
@@ -29,6 +41,17 @@ export class UserController {
 
   @Post('create')
   @UseGuards(JwtServiceImpl)
+  @ApiCreatedResponse({
+    description: 'User created successfully',
+    type: UserCreateDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'User creation failed',
+  })
+  @ApiBody({
+    type: UserCreateDto,
+    description: 'User creation details',
+  })
   async createUser(
     @Body() UserCreateDto: UserCreateDto,
   ): Promise<ApiResponse<Object>> {
