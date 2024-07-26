@@ -1,10 +1,10 @@
-import { configs } from 'typescript-eslint';
-import { configs as _configs } from '@eslint/js';
-import eslintConfigPrettier from 'eslint-config-prettier';
-import tsParser from '@typescript-eslint/parser';
-import { node } from 'globals';
+const { configs } = require('typescript-eslint');
+const { configs: _configs } = require('@eslint/js');
+const eslintConfigPrettier = require('eslint-config-prettier');
+const tsParser = require('@typescript-eslint/parser');
+const { node } = require('globals');
 
-export default [
+module.exports = [
   _configs.recommended,
   ...configs.recommended,
   {

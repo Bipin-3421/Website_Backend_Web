@@ -1,5 +1,5 @@
 import { JobType } from 'common/enum/Job.type.enum';
-import { Column, Entity, OneToMany, Timestamp } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { BaseEntity } from './base.entity';
 import { Applicant } from './applicant.entity';
@@ -17,10 +17,10 @@ export class Vacancy extends BaseEntity {
   position: string;
 
   @Column({ type: 'timestamp with time zone' })
-  datePosted: Timestamp;
+  datePosted: Date;
 
   @Column({ type: 'timestamp with time zone' })
-  deadline: Timestamp;
+  deadline: Date;
 
   @Column()
   salary: string;
