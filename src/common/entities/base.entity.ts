@@ -8,7 +8,7 @@ import { Timestamp } from 'typeorm/driver/mongodb/bson.typings';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 
 @Entity()
-export class BaseEntity {
+export abstract class BaseEntity {
   //deep partial is a type that allows you to create a new type based on an existing type where all the properties are optional
   protected constructor(input?: DeepPartial<BaseEntity>) {
     if (input) {

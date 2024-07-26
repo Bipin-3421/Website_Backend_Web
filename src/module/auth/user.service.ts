@@ -4,11 +4,8 @@ import { User } from 'common/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserCreateDto } from './dto/user.create.dto';
 import { SignInDto } from './dto/sign.in.dto';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { verify } from 'crypto';
 import { signToken } from 'common/utils/jwt.utils';
-import { JwtPayload } from 'common/dto/jwt.payload';
 
 @Injectable()
 export class UserService {

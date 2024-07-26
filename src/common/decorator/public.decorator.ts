@@ -1,8 +1,6 @@
-import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
+import { applyDecorators, SetMetadata } from '@nestjs/common';
 import { ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { JwtServiceImpl } from 'common/guard/jwt.guard';
-
-export const IS_PUBLIC = 'isPublic';
+import { IS_PUBLIC } from 'common/constant';
 
 export const PublicRoute = () => {
   return applyDecorators(
