@@ -5,13 +5,17 @@ import { Repository } from 'typeorm';
 import { UserCreateDto } from './dto/user.create.dto';
 import { SignInDto } from './dto/sign.in.dto';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { verify } from 'crypto';
+import { signToken } from 'common/utils/jwt.utils';
+import { JwtPayload } from 'common/dto/jwt.payload';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async createUser(createUserDto: UserCreateDto): Promise<User> {
@@ -41,14 +45,15 @@ export class UserService {
     }
 
     const payload = {
-      sub: user.id,
-      username: user.firstName,
+      userId: user.id,
     };
 
     return {
-      access_token: await this.jwtService.signAsync(payload, {
-        secret: process.env.JWT_SECRET,
-      }),
+      access_token: signToken(
+        payload,
+        this.configService.get('JWT_SECRET', { infer: true }) ?? '',
+        this.configService.get('JWT_TIMEOUT', { infer: true }) ?? '1h',
+      ),
     };
   }
 }

@@ -7,12 +7,12 @@ import { SignInDto } from './dto/sign.in.dto';
 import { JwtServiceImpl } from 'common/guard/jwt.guard';
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
-  ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
+import { Protected } from 'common/decorator/protected.decorator';
+import { PublicRoute } from 'common/decorator/public.decorator';
 
 @Controller('user')
 @ApiTags('User API')
@@ -68,6 +68,7 @@ export class UserController {
   }
 
   @Get('/all')
+  @PublicRoute()
   async getAllUsers(): Promise<ApiResponse<User[]>> {
     const res = await this.userService.findAll();
 
