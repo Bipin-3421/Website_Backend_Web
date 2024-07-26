@@ -1,12 +1,12 @@
 import { JobType } from 'common/enum/Job.type.enum';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, Timestamp } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { BaseEntity } from './base.entity';
 import { Applicant } from './applicant.entity';
 
 @Entity()
-export class Vacany extends BaseEntity {
-  constructor(input: DeepPartial<Vacany>) {
+export class Vacancy extends BaseEntity {
+  constructor(input: DeepPartial<Vacancy>) {
     super(input);
   }
 
@@ -16,11 +16,11 @@ export class Vacany extends BaseEntity {
   @Column()
   position: string;
 
-  @Column()
-  datePosted: Date;
+  @Column({ type: 'timestamp with time zone' })
+  datePosted: Timestamp;
 
-  @Column()
-  deadline: Date;
+  @Column({ type: 'timestamp with time zone' })
+  deadline: Timestamp;
 
   @Column()
   salary: string;
@@ -34,6 +34,6 @@ export class Vacany extends BaseEntity {
   @Column()
   openingPosition: number;
 
-  @OneToMany(() => Applicant, (Applicant) => Applicant.vacany)
+  @OneToMany(() => Applicant, (Applicant) => Applicant.vacancy)
   applicants: Applicant[];
 }

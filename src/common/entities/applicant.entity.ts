@@ -1,6 +1,6 @@
-import { Column, DeepPartial, Entity, ManyToOne } from 'typeorm';
+import { Column, DeepPartial, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { Vacany } from './vacany.entity';
+import { Vacancy } from './vacancy.entity';
 
 @Entity()
 export class Applicant extends BaseEntity {
@@ -18,23 +18,27 @@ export class Applicant extends BaseEntity {
   phoneNumber: number;
 
   @Column()
-  Address: string;
+  address: string;
+
+  @Column({ type: String, nullable: true })
+  githubURL: string | null;
+
+  @Column({ type: String, nullable: true })
+  portfolioURL: string | null;
 
   @Column()
-  githubURL: string;
+  cv: string;
 
-  @Column()
-  portfolioURL: string;
-
-  @Column()
-  CV: string;
-
-  @Column({ nullable: true })
-  referalSource: string;
+  @Column({ type: String, nullable: true })
+  referalSource: string | null;
 
   @Column()
   workExperience: string;
 
-  @ManyToOne(() => Vacany, (Vacany) => Vacany.applicants)
-  vacany: Vacany;
+  @ManyToOne(() => Vacancy, (vacancy) => vacancy.applicants)
+  @JoinColumn({ name: 'vacancyId' })
+  vacancy: Vacancy;
+
+  @Column()
+  vacancyId: number;
 }
