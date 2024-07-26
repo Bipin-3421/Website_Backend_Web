@@ -123,6 +123,9 @@ importers:
       typescript-eslint:
         specifier: ^7.17.0
         version: 7.17.0(eslint@9.7.0)(typescript@5.5.4)
+      webpack:
+        specifier: ^5.0.0
+        version: 5.92.1
 
 packages:
 
