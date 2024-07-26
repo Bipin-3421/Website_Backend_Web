@@ -1,10 +1,10 @@
 import { applyDecorators, SetMetadata } from '@nestjs/common';
 import { ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { IS_PUBLIC } from 'common/constant';
 
-export const IS_PROTECT = 'isPublic';
 export const Protected = () => {
   return applyDecorators(
-    SetMetadata(IS_PROTECT, true),
+    SetMetadata(IS_PUBLIC, false),
     ApiUnauthorizedResponse({ description: 'Unauthorized' }),
   );
 };

@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'module/auth/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtServiceImpl } from 'common/guard/jwt.guard';
+import { allEntities } from 'common/entities';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { JwtServiceImpl } from 'common/guard/jwt.guard';
           username: dbConfig.username,
           password: dbConfig.password,
           database: dbConfig.database,
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          entities: allEntities,
           synchronize: true, // Set to false in production
         };
       },

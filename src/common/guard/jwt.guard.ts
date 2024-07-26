@@ -6,10 +6,10 @@ import {
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC } from 'common/decorator/public.decorator';
 import { verifyToken } from 'common/utils/jwt.utils';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from 'common/dto/jwt.payload';
+import { IS_PUBLIC } from 'common/constant';
 
 @Injectable()
 export class JwtServiceImpl implements CanActivate {
@@ -21,6 +21,15 @@ export class JwtServiceImpl implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
+
+    const isPublic = this.reflector.get<boolean | undefined>(
+      IS_PUBLIC,
+      context.getHandler(),
+    );
+
+    if (isPublic) {
+      return true;
+    }
 
     if (!token) {
       throw new UnauthorizedException();
