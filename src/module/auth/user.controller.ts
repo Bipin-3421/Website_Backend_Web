@@ -20,6 +20,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('login')
+  @PublicRoute()
   @ApiBody({
     type: SignInDto,
     description: 'User login details',
@@ -40,7 +41,7 @@ export class UserController {
   }
 
   @Post('create')
-  @UseGuards(JwtServiceImpl)
+  @PublicRoute()
   @ApiCreatedResponse({
     description: 'User created successfully',
     type: UserCreateDto,

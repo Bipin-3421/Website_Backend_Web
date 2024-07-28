@@ -8,6 +8,7 @@ import { UserModule } from 'module/auth/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtServiceImpl } from 'common/guard/jwt.guard';
 import { allEntities } from 'common/entities';
+import { VacancyModule } from 'module/vacancies/vacancy.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { allEntities } from 'common/entities';
     }),
 
     UserModule,
+    VacancyModule,
   ],
   controllers: [AppController],
   providers: [
