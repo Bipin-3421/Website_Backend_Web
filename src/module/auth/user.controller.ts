@@ -1,17 +1,15 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiResponse } from 'common/response/api.response';
 import { UserCreateDto } from './dto/user.create.dto';
 import { User } from 'common/entities/user.entity';
 import { SignInDto } from './dto/sign.in.dto';
-import { JwtServiceImpl } from 'common/guard/jwt.guard';
 import {
   ApiBadRequestResponse,
   ApiBody,
   ApiCreatedResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Protected } from 'common/decorator/protected.decorator';
 import { PublicRoute } from 'common/decorator/public.decorator';
 
 @Controller('user')

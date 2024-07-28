@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, OneToMany } from 'typeorm';
+import { DataSource, ILike } from 'typeorm';
 import { Vacancy } from 'common/entities/vacancy.entity';
-import { CreateVacancyReqDto } from './dto/create.vacancy.req.dto';
-import { PatchVacancyReqDto } from './dto/patch.vacancy.req.dto';
+import { CreateVacancyRequestDto } from './dto/create.vacancy.dto';
+import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
+import { VacancyFilterDto } from 'common/dto/vacancy.search.dto';
+import { JobType } from 'common/enum/Job.type.enum';
 
 @Injectable()
 export class VacancyService {
   constructor(private readonly dataSource: DataSource) {}
 
-  async createJob(jobDetails: CreateVacancyReqDto) {
-    const vacancy = this.dataSource.getRepository(Vacancy).create({
+  async create(jobDetails: CreateVacancyRequestDto) {
+    const vacancy = new Vacancy({
       designation: jobDetails.designation,
       position: jobDetails.position,
       datePosted: jobDetails.datePosted,
@@ -23,21 +25,34 @@ export class VacancyService {
     return await this.dataSource.getRepository(Vacancy).save(vacancy);
   }
 
-  async getAllJob() {
-    return await this.dataSource.getRepository(Vacancy).find();
+  async findMany(queryParams: VacancyFilterDto) {
+    const vacancyRepo = this.dataSource.getRepository(Vacancy);
+
+    const filteredData = vacancyRepo.findAndCount({
+      where: {
+        designation: queryParams.designation
+          ? ILike(`%${queryParams.designation}%`)
+          : undefined,
+        jobType: queryParams.jobType ? queryParams.jobType : undefined,
+      },
+      take: queryParams.take ?? 10,
+      skip: (queryParams.page ?? 0) * (queryParams.take ?? 10),
+    });
+
+    return filteredData;
   }
 
-  async deleteJob(id: string) {
+  async delete(id: string) {
     return await this.dataSource.getRepository(Vacancy).delete(id);
   }
 
-  async specificVacancy(id: string) {
+  async getVacancy(id: string) {
     return await this.dataSource.getRepository(Vacancy).findOne({
       where: { id: id },
     });
   }
 
-  async updateVacancyDetails(details: PatchVacancyReqDto, id: string) {
+  async update(details: UpdateVacancyRequestDto, id: string) {
     const vacancyRepository = this.dataSource.getRepository(Vacancy);
 
     const originalVacancyDetails = await vacancyRepository.findOne({

@@ -1,4 +1,6 @@
-import { Vacancy } from '../../../common/entities/vacancy.entity';
-export class ParamDto {
+import { IsUUID } from 'class-validator';
+
+export class VacancyIdDto {
+  @IsUUID()
   vacancyId: string;
 }
