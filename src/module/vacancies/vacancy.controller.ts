@@ -23,8 +23,9 @@ import {
   MessageResponseDto,
   MessageResponseWithIdDto,
 } from 'common/dto/response.dto';
-import { PaginationDto, VacancyFilterDto } from 'common/dto/vacancy.search.dto';
+import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
 import { takePagination } from 'common/utils/pagination.utils';
+import { PaginationDto } from 'common/dto/pagination.dto';
 
 @Controller('vacancy')
 @ApiTags('Job Vacancy API')

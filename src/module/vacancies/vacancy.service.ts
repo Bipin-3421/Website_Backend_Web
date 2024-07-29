@@ -3,7 +3,7 @@ import { DataSource, ILike } from 'typeorm';
 import { Vacancy } from 'common/entities/vacancy.entity';
 import { CreateVacancyRequestDto } from './dto/create.vacancy.dto';
 import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
-import { VacancyFilterDto } from 'common/dto/vacancy.search.dto';
+import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
 
 @Injectable()
 export class VacancyService {
