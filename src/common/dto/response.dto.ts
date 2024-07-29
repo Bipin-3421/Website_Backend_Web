@@ -1,4 +1,3 @@
-import { IntersectionType } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 
@@ -8,7 +7,9 @@ export class MessageResponseDto {
 
 export class MessageResponseWithIdDto {
   message: string;
-  id?: string;
+  data: {
+    id: string;
+  };
 }
 
 export class PaginationResponseDTO {

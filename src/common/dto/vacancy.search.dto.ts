@@ -1,15 +1,16 @@
 import { JobType } from '../enum/Job.type.enum';
 import { Optional } from 'common/decorator/optional.decorator';
-import { IsEnum, IsString, IsNumber, IsEmpty } from 'class-validator';
+import { IsEnum, IsString, IsNumber } from 'class-validator';
 import { IntersectionType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
 export class VacancySearchParamDto {
   @IsString()
   @Optional()
-  designation?: string;
+  query?: string;
 
   @Optional()
+  @IsEnum(JobType)
   jobType?: JobType;
 }
 

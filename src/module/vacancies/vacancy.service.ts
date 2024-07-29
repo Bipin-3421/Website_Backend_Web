@@ -4,7 +4,6 @@ import { Vacancy } from 'common/entities/vacancy.entity';
 import { CreateVacancyRequestDto } from './dto/create.vacancy.dto';
 import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
 import { VacancyFilterDto } from 'common/dto/vacancy.search.dto';
-import { JobType } from 'common/enum/Job.type.enum';
 
 @Injectable()
 export class VacancyService {
@@ -30,8 +29,8 @@ export class VacancyService {
 
     const filteredData = vacancyRepo.findAndCount({
       where: {
-        designation: queryParams.designation
-          ? ILike(`%${queryParams.designation}%`)
+        designation: queryParams.query
+          ? ILike(`%${queryParams.query}%`)
           : undefined,
         jobType: queryParams.jobType ? queryParams.jobType : undefined,
       },
