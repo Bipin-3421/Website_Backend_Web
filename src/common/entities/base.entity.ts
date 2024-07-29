@@ -4,7 +4,6 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Timestamp } from 'typeorm/driver/mongodb/bson.typings';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 
 @Entity()
@@ -26,8 +25,8 @@ export abstract class BaseEntity {
   id: string;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Timestamp;
+  createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp with time zone' })
-  updatedAt: Timestamp;
+  updatedAt: Date;
 }

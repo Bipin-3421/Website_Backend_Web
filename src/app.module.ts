@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import configuration, { DBConfiguration } from 'config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,6 +6,7 @@ import { UserModule } from 'module/auth/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtServiceImpl } from 'common/guard/jwt.guard';
 import { allEntities } from 'common/entities';
+import { VacancyModule } from 'module/vacancies/vacancy.module';
 
 @Module({
   imports: [
@@ -21,6 +20,7 @@ import { allEntities } from 'common/entities';
       inject: [ConfigService],
       useFactory: (configService: ConfigService<DBConfiguration, true>) => {
         const dbConfig = configService.get('database', { infer: true });
+
         return {
           type: 'postgres',
           host: dbConfig.host,
@@ -35,10 +35,10 @@ import { allEntities } from 'common/entities';
     }),
 
     UserModule,
+    VacancyModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_GUARD,
       useClass: JwtServiceImpl,
