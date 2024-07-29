@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import configuration, { DBConfiguration } from 'config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,6 +20,7 @@ import { VacancyModule } from 'module/vacancies/vacancy.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService<DBConfiguration, true>) => {
         const dbConfig = configService.get('database', { infer: true });
+
         return {
           type: 'postgres',
           host: dbConfig.host,
@@ -38,9 +37,8 @@ import { VacancyModule } from 'module/vacancies/vacancy.module';
     UserModule,
     VacancyModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_GUARD,
       useClass: JwtServiceImpl,

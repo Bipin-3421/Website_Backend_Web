@@ -25,7 +25,6 @@ import {
 } from 'common/dto/response.dto';
 import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
 import { takePagination } from 'common/utils/pagination.utils';
-import { PaginationDto } from 'common/dto/pagination.dto';
 
 @Controller('vacancy')
 @ApiTags('Job Vacancy API')
@@ -59,13 +58,11 @@ export class VacancyController {
     @Query() queryFilter: VacancyFilterDto,
   ): Promise<ListVacanciesReponseDto> {
     const [response, total] = await this.vacancyService.findMany(queryFilter);
-    const filterResponse = new PaginationDto();
-    filterResponse.page = queryFilter.page;
-    filterResponse.take = queryFilter.take;
+
     return {
       message: 'All job fetched successfully',
       data: response,
-      Pagination: takePagination(response, filterResponse, total),
+      Pagination: takePagination(response, queryFilter, total),
     };
   }
 
@@ -78,6 +75,7 @@ export class VacancyController {
     param: VacancyIdDto,
   ): Promise<MessageResponseDto> {
     await this.vacancyService.delete(param.vacancyId);
+
     return {
       message: 'Job deleted successfully',
     };
@@ -124,6 +122,7 @@ export class VacancyController {
         `Vacancy with ID ${param.vacancyId} not found`,
       );
     }
+
     return {
       message: 'Job updated successfully',
       data: {
