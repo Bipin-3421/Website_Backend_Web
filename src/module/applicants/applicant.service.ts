@@ -19,8 +19,6 @@ export class ApplicantService {
       applicantDetail.cv.filename,
     );
 
-    console.log('Asset before saving:', asset);
-
     const applicant = new Applicant({
       name: applicantDetail.name,
       email: applicantDetail.email,
@@ -34,9 +32,6 @@ export class ApplicantService {
       vacancyId: applicantDetail.vacancyId,
       status: ApplicationStatus.INITIAL,
     });
-
-    console.log('Applicant:', applicant);
-
     const applicantRepo = this.dataSource.getRepository(Applicant);
 
     return await applicantRepo.save(applicant);
@@ -51,8 +46,6 @@ export class ApplicantService {
         cv: true,
       },
     });
-
-    console.log('Applicant:', applicant);
 
     if (!applicant) {
       return false;

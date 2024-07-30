@@ -37,10 +37,6 @@ export class ApplicantController {
     @Body() applicantDetail: CreateApplicantDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<MessageResponseWithIdDto> {
-    console.log({
-      applicantDetail,
-      file,
-    });
     applicantDetail.cv = file;
     const applicant = await this.applicantService.create(applicantDetail);
 
@@ -57,8 +53,6 @@ export class ApplicantController {
     description: 'Job vacancy creation failed',
   })
   async deleteApplicant(@Param('id') id: string): Promise<MessageResponseDto> {
-    console.log('Delete applicant:', id);
-
     await this.applicantService.delete(id);
 
     return {
