@@ -19,14 +19,11 @@ export class AssetLocal implements AssetProviderInterface {
       infer: true,
     });
 
-    console.log('Path to save:', pathToSave);
-
     if (!fs.existsSync(pathToSave)) {
-      fs.mkdirSync(pathToSave, { recursive: true }); //recursive true to create parent directories if not exist
+      fs.mkdirSync(pathToSave, { recursive: true });
     }
 
     fs.writeFileSync(`${pathToSave}/${uniqueFileName}`, buffer);
-
     const absolutefilePath = `${pathToSave}/${uniqueFileName}`;
 
     return { identifier: uniqueFileName, url: absolutefilePath };

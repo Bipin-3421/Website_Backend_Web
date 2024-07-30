@@ -20,9 +20,6 @@ export class AssetService {
     const assetProvider = this.configService.get('asset', {
       infer: true,
     });
-
-    console.log('Asset provider:', assetProvider.Provider.assetProvider);
-
     if (
       assetProvider.Provider.assetProvider ===
       (AssetProvider.LOCAL as AssetProvider)
@@ -35,7 +32,6 @@ export class AssetService {
 
   async upload(buffer: Buffer, fileName: string): Promise<Asset | undefined> {
     const provider = this.getProvider();
-
     const assetFor = AssetFor.CV;
 
     const uniqueFileName = `${assetFor.toString().toLowerCase()}_${Date.now()}_${fileName}`;
@@ -51,9 +47,6 @@ export class AssetService {
       url: url,
       for: assetFor,
     });
-
-    console.log('Asset before saving:', asset);
-
     await assetRepo.save(asset);
 
     return asset;
