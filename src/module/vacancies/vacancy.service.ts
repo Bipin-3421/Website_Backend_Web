@@ -27,7 +27,7 @@ export class VacancyService {
   async findMany(queryParams: VacancyFilterDto) {
     const vacancyRepo = this.dataSource.getRepository(Vacancy);
 
-    const filteredData = vacancyRepo.findAndCount({
+    const filteredData = await vacancyRepo.findAndCount({
       where: {
         designation: queryParams.query
           ? ILike(`%${queryParams.query}%`)

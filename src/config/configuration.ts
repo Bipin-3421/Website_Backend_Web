@@ -1,4 +1,6 @@
-export interface DBConfiguration {
+import { AssetProvider } from 'common/enum/provider.enum';
+
+export interface AppConfig {
   port: number;
   database: {
     port: number;
@@ -7,10 +9,18 @@ export interface DBConfiguration {
     password: string;
     database: string;
   };
+  asset: {
+    Provider: {
+      assetProvider: AssetProvider;
+    };
+    local: {
+      rootPath: string;
+    };
+  };
 }
 
 export default () => {
-  const config: DBConfiguration = {
+  const config: AppConfig = {
     port: parseInt(process.env.PORT ?? '3000'),
     database: {
       host: process.env.DATABASE_HOST ?? 'localhost',
@@ -19,6 +29,16 @@ export default () => {
       password: process.env.DATABASE_PASSWORD ?? 'a2004',
       database: process.env.DATABASE_NAME ?? 'testDB',
     },
+    asset: {
+      Provider: {
+        assetProvider: (process.env.ASSET_PROVIDER ??
+          AssetProvider.LOCAL) as AssetProvider,
+      },
+      local: {
+        rootPath: process.env.FILE_UPLOAD_PATH ?? 'uploads',
+      },
+    },
   };
+
   return config;
 };

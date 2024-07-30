@@ -21,6 +21,7 @@ export abstract class BaseEntity {
       }
     }
   }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

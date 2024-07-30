@@ -7,6 +7,7 @@ export class MessageResponseDto {
 
 export class MessageResponseWithIdDto {
   message: string;
+
   data: {
     id: string;
   };

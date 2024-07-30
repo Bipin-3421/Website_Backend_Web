@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import configuration, { DBConfiguration } from 'config/configuration';
+import configuration, { AppConfig } from 'config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'module/auth/user.module';
@@ -7,6 +7,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtServiceImpl } from 'common/guard/jwt.guard';
 import { allEntities } from 'common/entities';
 import { VacancyModule } from 'module/vacancies/vacancy.module';
+import { AssetModule } from 'asset/asset.module';
+import { ApplicantModule } from './module/applicants/applicant.module';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { VacancyModule } from 'module/vacancies/vacancy.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService<DBConfiguration, true>) => {
+      useFactory: (configService: ConfigService<AppConfig, true>) => {
         const dbConfig = configService.get('database', { infer: true });
 
         return {
@@ -36,6 +38,8 @@ import { VacancyModule } from 'module/vacancies/vacancy.module';
 
     UserModule,
     VacancyModule,
+    AssetModule,
+    ApplicantModule,
   ],
   controllers: [],
   providers: [
