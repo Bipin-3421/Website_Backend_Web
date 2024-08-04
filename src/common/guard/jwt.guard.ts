@@ -18,7 +18,7 @@ export class JwtServiceImpl implements CanActivate {
     private readonly configService: ConfigService,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
 
@@ -46,11 +46,13 @@ export class JwtServiceImpl implements CanActivate {
     } catch {
       throw new UnauthorizedException();
     }
+
     return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers['authorization']?.split(' ') ?? [];
+
     return type === 'Bearer' ? token : undefined;
   }
 }

@@ -50,7 +50,7 @@ export class ApplicantService {
     }
 
     await applicantRepo.remove(applicant);
-    await this.assetService.delete(applicant.cv.id, applicant.cv.identifier);
+    await this.assetService.delete(applicant.cv.id);
 
     return true;
   }

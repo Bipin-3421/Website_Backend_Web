@@ -15,11 +15,13 @@ export class AssetService {
     private readonly dataSource: DataSource,
   ) {}
 
-  getProvider(): AssetProviderInterface {
-    const assetProvider = this.configService.get('asset', {
-      infer: true,
-    });
-    if (assetProvider.Provider.assetProvider === AssetProvider.LOCAL) {
+  getProvider(provider?: string): AssetProviderInterface {
+    const assetProvider =
+      provider ||
+      this.configService.get('asset', {
+        infer: true,
+      }).Provider.assetProvider;
+    if (assetProvider === AssetProvider.LOCAL) {
       return new AssetLocal(this.configService);
     }
 
@@ -48,11 +50,22 @@ export class AssetService {
     return asset;
   }
 
-  async delete(id: string, identifier: string): Promise<void> {
-    const provider = this.getProvider();
-    await provider.delete(identifier);
-
+  async delete(id: string): Promise<boolean> {
     const assetRepo = this.dataSource.getRepository(Asset);
+
+    const asset = await assetRepo.findOne({
+      where: { id: id },
+    });
+
+    if (!asset) {
+      return false;
+    }
+
+    const provider = this.getProvider(asset.provider);
+    await provider.delete(asset?.identifier);
+
     await assetRepo.delete({ id: id });
+
+    return true;
   }
 }
