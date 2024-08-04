@@ -1,6 +1,15 @@
-import { Column, DeepPartial, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  DeepPartial,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { Vacancy } from './vacancy.entity';
+import { Asset } from './asset.entity';
+import { ApplicationStatus } from 'common/enum/applicant.status.enum';
 
 @Entity()
 export class Applicant extends BaseEntity {
@@ -15,7 +24,7 @@ export class Applicant extends BaseEntity {
   email: string;
 
   @Column()
-  phoneNumber: number;
+  phoneNumber: string;
 
   @Column()
   address: string;
@@ -26,8 +35,11 @@ export class Applicant extends BaseEntity {
   @Column({ type: String, nullable: true })
   portfolioURL: string | null;
 
-  @Column()
-  cv: string;
+  @OneToOne(() => Asset, (asset) => asset.applicant, {
+    cascade: true,
+  })
+  @JoinColumn({ name: 'cv' })
+  cv: Asset;
 
   @Column({ type: String, nullable: true })
   referalSource: string | null;
@@ -40,5 +52,11 @@ export class Applicant extends BaseEntity {
   vacancy: Vacancy;
 
   @Column()
-  vacancyId: number;
+  vacancyId: string;
+
+  @Column({
+    type: 'enum',
+    enum: ApplicationStatus,
+  })
+  status: ApplicationStatus;
 }
