@@ -24,7 +24,7 @@ export class Applicant extends BaseEntity {
   email: string;
 
   @Column()
-  phoneNumber: number;
+  phoneNumber: string;
 
   @Column()
   address: string;
@@ -35,7 +35,9 @@ export class Applicant extends BaseEntity {
   @Column({ type: String, nullable: true })
   portfolioURL: string | null;
 
-  @OneToOne(() => Asset, (asset) => asset.applicant)
+  @OneToOne(() => Asset, (asset) => asset.applicant, {
+    cascade: true,
+  })
   @JoinColumn({ name: 'cv' })
   cv: Asset;
 

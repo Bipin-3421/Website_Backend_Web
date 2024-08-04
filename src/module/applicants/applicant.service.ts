@@ -14,10 +14,7 @@ export class ApplicantService {
   ) {}
 
   async create(applicantDetail: CreateApplicantDto) {
-    const asset = await this.assetService.upload(
-      applicantDetail.cv.buffer,
-      applicantDetail.cv.filename,
-    );
+    const asset = await this.assetService.upload(applicantDetail.cv.buffer);
 
     const applicant = new Applicant({
       name: applicantDetail.name,
@@ -52,7 +49,7 @@ export class ApplicantService {
     }
 
     await applicantRepo.remove(applicant);
-    await this.assetService.delete(applicant.cv.identifier);
+    await this.assetService.delete(applicant.cv.id, applicant.cv.identifier);
 
     return true;
   }
@@ -73,7 +70,7 @@ export class ApplicantService {
     return filteredData;
   }
 
-  async patchStatus(id: string, status: string) {
+  async update(id: string, status: ApplicationStatus) {
     const applicantRepo = this.dataSource.getRepository(Applicant);
     const applicant = await applicantRepo.findOne({
       where: { id: id },
@@ -81,7 +78,7 @@ export class ApplicantService {
     if (!applicant) {
       return false;
     }
-    applicant.status = status as ApplicationStatus;
+    applicant.status = status;
 
     return await applicantRepo.save(applicant);
   }

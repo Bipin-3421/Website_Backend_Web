@@ -10,5 +10,5 @@ export interface AssetProviderInterface {
     | Promise<{ identifier: string; url: string }>
     | { identifier: string; url: string };
 
-  delete(identifier: string): Promise<boolean> | boolean;
+  delete(id: string): Promise<boolean> | boolean;
 }

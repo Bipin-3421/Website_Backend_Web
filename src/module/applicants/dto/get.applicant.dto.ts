@@ -12,5 +12,5 @@ export class ListApplicantsResponseDto {
 
   data: Applicant[];
 
-  Pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDTO;
 }

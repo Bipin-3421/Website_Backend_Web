@@ -6,10 +6,10 @@ export class PaginationDto {
   @Optional()
   @Transform(({ value }) => (value ? parseInt(value) : value))
   @IsNumber()
-  take?: number;
+  take: number = 10;
 
   @Optional()
   @IsNumber()
   @Transform(({ value }) => (value ? parseInt(value) : value))
-  page?: number;
+  page: number = 10;
 }

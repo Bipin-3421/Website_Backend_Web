@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  NotAcceptableException,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -21,6 +23,9 @@ import {
 import { ApplicantFilterDto } from './dto/applicant.search.dto';
 import { ListApplicantsResponseDto } from './dto/get.applicant.dto';
 import { takePagination } from 'common/utils/pagination.utils';
+import { PublicRoute } from 'common/decorator/public.decorator';
+import { ApplicantParamDto } from './dto/param.dto';
+import { ApplicationStatus } from 'common/enum/applicant.status.enum';
 
 @Controller('applicant')
 @ApiTags('Applicant API')
@@ -37,6 +42,9 @@ export class ApplicantController {
     @Body() applicantDetail: CreateApplicantDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<MessageResponseWithIdDto> {
+    if (file === undefined || file.size == 0) {
+      throw new NotAcceptableException('CV is required');
+    }
     applicantDetail.cv = file;
     const applicant = await this.applicantService.create(applicantDetail);
 
@@ -48,12 +56,20 @@ export class ApplicantController {
     };
   }
 
-  @Delete(':id')
+  @Delete(':applicantId')
   @ApiBadRequestResponse({
     description: 'Job vacancy creation failed',
   })
-  async deleteApplicant(@Param('id') id: string): Promise<MessageResponseDto> {
-    await this.applicantService.delete(id);
+  async deleteApplicant(
+    @Param() applicantParamDto: ApplicantParamDto,
+  ): Promise<MessageResponseDto> {
+    const status = await this.applicantService.delete(
+      applicantParamDto.applicantId,
+    );
+
+    if (!status) {
+      throw new NotAcceptableException('Applicant not found');
+    }
 
     return {
       message: 'Applicant deleted successfully',
@@ -61,6 +77,7 @@ export class ApplicantController {
   }
 
   @Get()
+  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Applicant fetch failed',
   })
@@ -72,19 +89,26 @@ export class ApplicantController {
     return {
       message: 'All job fetched successfully',
       data: response,
-      Pagination: takePagination(response, queryFilter, total),
+      pagination: takePagination(response, queryFilter, total),
     };
   }
 
-  @Patch(':id')
+  @Patch(':applicantId')
   @ApiBadRequestResponse({
     description: 'Applicant Status Patch failed',
   })
   async patchApplicantStatus(
-    @Param('id') id: string,
-    @Body('status') status: string,
+    @Param() applicantParamDto: ApplicantParamDto,
+    @Body('status') status: ApplicationStatus,
   ): Promise<MessageResponseDto> {
-    await this.applicantService.patchStatus(id, status);
+    const res = await this.applicantService.update(
+      applicantParamDto.applicantId,
+      status,
+    );
+
+    if (!res) {
+      throw new NotFoundException('Applicant not found');
+    }
 
     return {
       message: 'Applicant status updated successfully',

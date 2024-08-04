@@ -12,7 +12,6 @@ import { AssetProviderInterface } from './provider/asset.provider.interface';
 export class AssetService {
   constructor(
     private readonly configService: ConfigService<AppConfig, true>,
-    private readonly assetLocal: AssetLocal,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -20,21 +19,18 @@ export class AssetService {
     const assetProvider = this.configService.get('asset', {
       infer: true,
     });
-    if (
-      assetProvider.Provider.assetProvider ===
-      (AssetProvider.LOCAL as AssetProvider)
-    ) {
+    if (assetProvider.Provider.assetProvider === AssetProvider.LOCAL) {
       return new AssetLocal(this.configService);
     }
 
     throw new Error('No provider found');
   }
 
-  async upload(buffer: Buffer, fileName: string): Promise<Asset | undefined> {
+  async upload(buffer: Buffer): Promise<Asset | undefined> {
     const provider = this.getProvider();
     const assetFor = AssetFor.CV;
 
-    const uniqueFileName = `${assetFor.toString().toLowerCase()}_${Date.now()}_${fileName}`;
+    const uniqueFileName = `${assetFor.toString().toLowerCase()}_${Date.now()}`;
     const { identifier, url } = await provider.upload(buffer, uniqueFileName);
 
     const assetRepo = this.dataSource.getRepository(Asset);
@@ -52,11 +48,11 @@ export class AssetService {
     return asset;
   }
 
-  async delete(identifier: string): Promise<void> {
+  async delete(id: string, identifier: string): Promise<void> {
     const provider = this.getProvider();
     await provider.delete(identifier);
 
     const assetRepo = this.dataSource.getRepository(Asset);
-    await assetRepo.delete({ identifier: identifier });
+    await assetRepo.delete({ id: id });
   }
 }
