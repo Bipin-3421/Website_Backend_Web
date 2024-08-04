@@ -37,7 +37,7 @@ export class ApplicantController {
   @UseInterceptors(
     FileInterceptor('CV', {
       fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png'];
+        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
 
         if (!MIME_TYPES.includes(file.mimetype)) {
           callback(

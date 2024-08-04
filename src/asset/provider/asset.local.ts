@@ -23,6 +23,13 @@ export class AssetLocal implements AssetProviderInterface {
     if (!fs.existsSync(pathToSave)) {
       fs.mkdirSync(pathToSave, { recursive: true });
     }
+
+    if (uniqueFileName.includes('.pdf')) {
+      uniqueFileName = uniqueFileName.concat('.pdf');
+    } else {
+      uniqueFileName = uniqueFileName.concat('.png');
+    }
+
     const absoluteFilePath = path.join(pathToSave, uniqueFileName);
     fs.writeFileSync(absoluteFilePath, buffer);
 
