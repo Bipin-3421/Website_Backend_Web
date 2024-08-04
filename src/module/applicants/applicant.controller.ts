@@ -25,7 +25,7 @@ import { ListApplicantsResponseDto } from './dto/get.applicant.dto';
 import { takePagination } from 'common/utils/pagination.utils';
 import { PublicRoute } from 'common/decorator/public.decorator';
 import { ApplicantParamDto } from './dto/param.dto';
-import { ApplicationStatus } from 'common/enum/applicant.status.enum';
+import { PatchApplicantDto } from './dto/patch.applicant.dto';
 
 @Controller('applicant')
 @ApiTags('Applicant API')
@@ -56,10 +56,8 @@ export class ApplicantController {
   })
   async createApplicant(
     @Body() applicantDetail: CreateApplicantDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File | null,
   ): Promise<MessageResponseWithIdDto> {
-    console.log(file);
-
     if (!file || file.size == 0) {
       throw new NotAcceptableException('CV is required');
     }
@@ -113,12 +111,13 @@ export class ApplicantController {
   }
 
   @Patch(':applicantId')
+  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Applicant Status Patch failed',
   })
   async patchApplicantStatus(
     @Param() applicantParamDto: ApplicantParamDto,
-    @Body('status') status: ApplicationStatus,
+    @Body() status: PatchApplicantDto,
   ): Promise<MessageResponseDto> {
     const res = await this.applicantService.update(
       applicantParamDto.applicantId,

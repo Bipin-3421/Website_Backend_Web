@@ -5,6 +5,7 @@ import { AssetService } from 'asset/asset.service';
 import { Applicant } from 'common/entities/applicant.entity';
 import { ApplicationStatus } from 'common/enum/applicant.status.enum';
 import { ApplicantFilterDto } from './dto/applicant.search.dto';
+import { PatchApplicantDto } from './dto/patch.applicant.dto';
 
 @Injectable()
 export class ApplicantService {
@@ -63,14 +64,14 @@ export class ApplicantService {
           ? queryParams.applicantStatus
           : undefined,
       },
-      take: queryParams.take ?? 10,
-      skip: (queryParams.page ?? 0) * (queryParams.take ?? 10),
+      take: queryParams.take,
+      skip: queryParams.page,
     });
 
     return filteredData;
   }
 
-  async update(id: string, status: ApplicationStatus) {
+  async update(id: string, applicantStatus: PatchApplicantDto) {
     const applicantRepo = this.dataSource.getRepository(Applicant);
     const applicant = await applicantRepo.findOne({
       where: { id: id },
@@ -78,7 +79,7 @@ export class ApplicantService {
     if (!applicant) {
       return false;
     }
-    applicant.status = status;
+    applicant.status = applicantStatus.status;
 
     return await applicantRepo.save(applicant);
   }

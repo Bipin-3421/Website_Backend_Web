@@ -5,7 +5,6 @@ export const takePagination = (
   query: PaginationDto,
   total: number,
 ) => {
-  console.log('res', query);
   const previousPage = query.page ? query.page - 1 : null;
   const nextPage: number = query.page ? query.page + 1 : 1;
   const take = query.take ? query.take : 10;
