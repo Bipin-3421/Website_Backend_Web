@@ -62,7 +62,7 @@ export class AssetService {
     }
 
     const provider = this.getProvider(asset.provider);
-    await provider.delete(asset?.identifier);
+    await provider.delete(asset.identifier);
 
     await assetRepo.delete({ id: id });
 
