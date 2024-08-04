@@ -33,7 +33,23 @@ export class ApplicantController {
   constructor(private readonly applicantService: ApplicantService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('CV'))
+  @PublicRoute()
+  @UseInterceptors(
+    FileInterceptor('CV', {
+      fileFilter(req, file, callback) {
+        const MIME_TYPES = ['image/jpeg', 'image/png'];
+
+        if (!MIME_TYPES.includes(file.mimetype)) {
+          callback(
+            new NotAcceptableException('Only JPEG and PNG files are allowed'),
+            false,
+          );
+        } else {
+          callback(null, true);
+        }
+      },
+    }),
+  )
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse({
     description: 'Job vacancy creation failed',
@@ -42,9 +58,12 @@ export class ApplicantController {
     @Body() applicantDetail: CreateApplicantDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<MessageResponseWithIdDto> {
-    if (file === undefined || file.size == 0) {
+    console.log(file);
+
+    if (!file || file.size == 0) {
       throw new NotAcceptableException('CV is required');
     }
+
     applicantDetail.cv = file;
     const applicant = await this.applicantService.create(applicantDetail);
 
