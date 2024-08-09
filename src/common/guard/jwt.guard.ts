@@ -1,58 +1,86 @@
 import {
+  Injectable,
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Injectable } from '@nestjs/common';
-import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
-import { verifyToken } from 'common/utils/jwt.utils';
+import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from 'common/dto/jwt.payload';
-import { IS_PUBLIC } from 'common/constant';
+import { AuthPayload } from 'types/jwt';
+import { RequirePermission } from 'common/decorator/require.decorator';
+import { verifyToken } from 'common/utils/jwt.utils';
+import { IS_PUBLIC, REQUEST_CONTEXT_KEY } from 'common/constant';
+import { RequestContext } from 'common/request-context';
 
 @Injectable()
-export class JwtServiceImpl implements CanActivate {
+export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly configService: ConfigService,
   ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<Request>();
-    const token = this.extractTokenFromHeader(request);
-
     const isPublic = this.reflector.get<boolean | undefined>(
       IS_PUBLIC,
-      context.getHandler(),
+      context.getHandler() || context.getClass(),
     );
 
+    const request: Request = context.switchToHttp().getRequest();
+    const token = this.extractTokenFromRequest(request);
+
     if (isPublic) {
-      return true;
+      return true; // Skip token verification for public routes
+    } else if (!token) {
+      throw new UnauthorizedException('Token not found');
     }
 
-    if (!token) {
-      throw new UnauthorizedException();
-    }
-
+    let payload: AuthPayload | null;
     try {
-      const payload = verifyToken<JwtPayload>(
+      payload = verifyToken<AuthPayload>(
         token,
-        this.configService.get('JWT_SECRET', {
-          infer: true,
-        }) ?? '',
+        this.configService.get('JWT_SECRET', { infer: true }) ?? '',
       );
-      request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException();
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    if (!payload) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    const requiredPermissions = this.reflector.get<
+      RequirePermission[] | undefined
+    >('REQUIRED_PERMISSION_KEY', context.getHandler());
+
+    const userPermission = payload.permission;
+    const requestContext = new RequestContext({
+      request,
+      data: { user: payload },
+    });
+    (request as any)[REQUEST_CONTEXT_KEY] = requestContext;
+
+    if (requiredPermissions) {
+      for (const requiredPermission of requiredPermissions) {
+        if (
+          requiredPermission.permission.resource === userPermission?.toString()
+        ) {
+          return true;
+        }
+      }
+      throw new UnauthorizedException('Insufficient permissions');
     }
 
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers['authorization']?.split(' ') ?? [];
+  private extractTokenFromRequest(request: Request): string | null {
+    const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader) {
+      return null;
+    }
+    const [bearer, token] = authorizationHeader.split(' ');
 
-    return type === 'Bearer' ? token : undefined;
+    return bearer === 'Bearer' && token ? token : null;
   }
 }

@@ -6,15 +6,18 @@ import { Applicant } from 'common/entities/applicant.entity';
 import { ApplicationStatus } from 'common/enum/applicant.status.enum';
 import { ApplicantFilterDto } from './dto/applicant.search.dto';
 import { PatchApplicantDto } from './dto/patch.applicant.dto';
+import { RequestContext } from 'common/request-context';
+import { TransactionalConnection } from 'module/connection/connection.service';
 
 @Injectable()
 export class ApplicantService {
   constructor(
     private readonly dataSource: DataSource,
+    private readonly connection: TransactionalConnection,
     private readonly assetService: AssetService,
   ) {}
 
-  async create(applicantDetail: CreateApplicantDto) {
+  async create(ctx: RequestContext, applicantDetail: CreateApplicantDto) {
     const asset = await this.assetService.upload(applicantDetail.cv.buffer);
 
     const applicant = new Applicant({
@@ -30,7 +33,10 @@ export class ApplicantService {
       vacancyId: applicantDetail.vacancyId,
       status: ApplicationStatus.INITIAL,
     });
-    const applicantRepo = this.dataSource.getRepository(Applicant);
+
+    console.log('asset', asset);
+
+    const applicantRepo = this.connection.getRepository(Applicant);
 
     return await applicantRepo.save(applicant);
   }

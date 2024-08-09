@@ -1,11 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'common/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { UserCreateDto } from './dto/user.create.dto';
 import { SignInDto } from './dto/sign.in.dto';
 import { ConfigService } from '@nestjs/config';
 import { signToken } from 'common/utils/jwt.utils';
+import { AuthPayload } from 'types/jwt';
+import { PermissionResource } from '../../types/permission';
+import { PaginationDto } from 'common/dto/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -13,36 +16,44 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
+    private readonly DataSource: DataSource,
   ) {}
 
   async createUser(createUserDto: UserCreateDto): Promise<User> {
-    const user = this.userRepository.create({
-      firstName: createUserDto.firstName,
-      lastName: createUserDto.lastName,
-      isActive: createUserDto.isActive,
-    });
+    const user = {
+      ...createUserDto,
+      permission: [PermissionResource.ALL],
+    };
 
     return await this.userRepository.save(user);
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  async findAll(pagination: PaginationDto) {
+    const userRepo = this.DataSource.getRepository(User);
+
+    return await userRepo.findAndCount({
+      take: pagination.take,
+      skip: pagination.page,
+    });
   }
 
   async login(signInDto: SignInDto): Promise<{ access_token: string }> {
     const user = await this.userRepository.findOne({
       where: {
-        firstName: signInDto.username,
-        lastName: signInDto.password,
+        firstName: signInDto.firstName,
+        lastName: signInDto.lastName,
       },
     });
 
-    if (!user) {
+    console.log('user', user);
+
+    if (!user?.isActive) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = {
+    const payload: AuthPayload = {
       userId: user.id,
+      permission: user.permission ? user.permission : undefined,
     };
 
     return {

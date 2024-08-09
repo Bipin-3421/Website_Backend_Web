@@ -1,10 +1,13 @@
 import * as jwt from 'jsonwebtoken';
+import { AuthPayload } from 'types/jwt';
 
 export function signToken(
-  payload: any,
+  payload: AuthPayload,
   secret: string,
-  options?: jwt.SignOptions,
+  timeout: string,
 ): string {
+  const options: jwt.SignOptions = { expiresIn: timeout };
+
   return jwt.sign(payload, secret, options);
 }
 

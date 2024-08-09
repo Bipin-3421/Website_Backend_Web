@@ -1,8 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiResponse } from 'common/response/api.response';
 import { UserCreateDto } from './dto/user.create.dto';
-import { User } from 'common/entities/user.entity';
 import { SignInDto } from './dto/sign.in.dto';
 import {
   ApiBadRequestResponse,
@@ -11,6 +16,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PublicRoute } from 'common/decorator/public.decorator';
+import { Require } from 'common/decorator/require.decorator';
+import { PermissionResource } from 'types/permission';
+import { MessageResponseWithIdDto } from 'common/dto/response.dto';
+import { ListGetUsersResponseDTO } from './dto/user.get.dto';
+import { PaginationDto } from 'common/dto/pagination.dto';
+import { takePagination } from 'common/utils/pagination.utils';
 
 @Controller('user')
 @ApiTags('User API')
@@ -19,6 +30,9 @@ export class UserController {
 
   @Post('login')
   @PublicRoute()
+  @Require({
+    resource: PermissionResource.ALL,
+  })
   @ApiBody({
     type: SignInDto,
     description: 'User login details',
@@ -26,20 +40,24 @@ export class UserController {
   async login(
     @Body()
     userLoginDto: SignInDto,
-  ): Promise<ApiResponse<any>> {
+  ): Promise<MessageResponseWithIdDto> {
     const res = await this.userService.login(userLoginDto);
 
-    if (res) {
-      console.log('user logged in', res);
-
-      return new ApiResponse(200, 'User logged in successfully', res);
+    if (!res) {
+      throw new BadRequestException('User login failed');
     }
 
-    return new ApiResponse(400, 'User login failed', '');
+    console.log('user logged in', res);
+
+    return {
+      message: 'User logged in successfully',
+      data: {
+        id: res.access_token,
+      },
+    };
   }
 
   @Post('create')
-  @PublicRoute()
   @ApiCreatedResponse({
     description: 'User created successfully',
     type: UserCreateDto,
@@ -53,26 +71,38 @@ export class UserController {
   })
   async createUser(
     @Body() UserCreateDto: UserCreateDto,
-  ): Promise<ApiResponse<Object>> {
+  ): Promise<MessageResponseWithIdDto> {
     const res = await this.userService.createUser(UserCreateDto);
 
-    console.log('create user data', res);
-
-    if (res) {
-      console.log('user created', res);
-      return new ApiResponse(200, 'User created successfully', res);
+    if (!res) {
+      throw new BadRequestException('User creation failed');
     }
 
-    return new ApiResponse(400, 'User creation failed', '');
+    return {
+      message: 'User created successfully',
+      data: {
+        id: res.id,
+      },
+    };
   }
 
   @Get('/all')
-  @PublicRoute()
-  async getAllUsers(): Promise<ApiResponse<User[]>> {
-    const res = await this.userService.findAll();
+  @Require({
+    resource: PermissionResource.ALL,
+  })
+  async getAllUsers(
+    @Query() pagination: PaginationDto,
+  ): Promise<ListGetUsersResponseDTO> {
+    const [res, total] = await this.userService.findAll(pagination);
 
-    console.log('all users', res);
+    if (total === 0) {
+      throw new BadRequestException('No users found');
+    }
 
-    return new ApiResponse(200, 'All users fetched successfully', res);
+    return {
+      message: 'All users fetched successfully',
+      data: res,
+      pagination: takePagination(res, pagination, total),
+    };
   }
 }
