@@ -1,21 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 import { CreateApplicantDto } from './dto/create.applicant.dto';
 import { AssetService } from 'asset/asset.service';
 import { Applicant } from 'common/entities/applicant.entity';
 import { ApplicationStatus } from 'common/enum/applicant.status.enum';
 import { ApplicantFilterDto } from './dto/applicant.search.dto';
 import { PatchApplicantDto } from './dto/patch.applicant.dto';
+import { RequestContext } from 'common/request-context';
+import { TransactionalConnection } from 'module/connection/connection.service';
 
 @Injectable()
 export class ApplicantService {
   constructor(
-    private readonly dataSource: DataSource,
+    private readonly connection: TransactionalConnection,
     private readonly assetService: AssetService,
   ) {}
 
-  async create(applicantDetail: CreateApplicantDto) {
-    const asset = await this.assetService.upload(applicantDetail.cv.buffer);
+  async create(ctx: RequestContext, applicantDetail: CreateApplicantDto) {
+    const asset = await this.assetService.upload(
+      ctx,
+      applicantDetail.cv.buffer,
+    );
 
     const applicant = new Applicant({
       name: applicantDetail.name,
@@ -30,13 +34,14 @@ export class ApplicantService {
       vacancyId: applicantDetail.vacancyId,
       status: ApplicationStatus.INITIAL,
     });
-    const applicantRepo = this.dataSource.getRepository(Applicant);
+
+    const applicantRepo = this.connection.getRepository(ctx, Applicant);
 
     return await applicantRepo.save(applicant);
   }
 
-  async delete(id: string): Promise<boolean> {
-    const applicantRepo = this.dataSource.getRepository(Applicant);
+  async delete(ctx: RequestContext, id: string): Promise<boolean> {
+    const applicantRepo = this.connection.getRepository(ctx, Applicant);
 
     const applicant = await applicantRepo.findOne({
       where: { id: id },
@@ -50,13 +55,13 @@ export class ApplicantService {
     }
 
     await applicantRepo.remove(applicant);
-    await this.assetService.delete(applicant.cv.id);
+    await this.assetService.delete(ctx, applicant.cv.id);
 
     return true;
   }
 
-  async findMany(queryParams: ApplicantFilterDto) {
-    const applicantRepo = this.dataSource.getRepository(Applicant);
+  async findMany(ctx: RequestContext, queryParams: ApplicantFilterDto) {
+    const applicantRepo = this.connection.getRepository(ctx, Applicant);
 
     const filteredData = await applicantRepo.findAndCount({
       where: {
@@ -71,8 +76,12 @@ export class ApplicantService {
     return filteredData;
   }
 
-  async update(id: string, applicantStatus: PatchApplicantDto) {
-    const applicantRepo = this.dataSource.getRepository(Applicant);
+  async update(
+    ctx: RequestContext,
+    id: string,
+    applicantStatus: PatchApplicantDto,
+  ) {
+    const applicantRepo = this.connection.getRepository(ctx, Applicant);
     const applicant = await applicantRepo.findOne({
       where: { id: id },
     });

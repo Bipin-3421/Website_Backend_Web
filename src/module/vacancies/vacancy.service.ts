@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, ILike } from 'typeorm';
 import { Vacancy } from 'common/entities/vacancy.entity';
 import { CreateVacancyRequestDto } from './dto/create.vacancy.dto';
 import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
 import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
+import { TransactionalConnection } from 'module/connection/connection.service';
+import { RequestContext } from 'common/request-context';
+import { ILike } from 'typeorm';
 
 @Injectable()
 export class VacancyService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly connection: TransactionalConnection) {}
 
-  async create(jobDetails: CreateVacancyRequestDto) {
+  async create(ctx: RequestContext, jobDetails: CreateVacancyRequestDto) {
+    const vacancyRepo = this.connection.getRepository(ctx, Vacancy);
+
     const vacancy = new Vacancy({
       designation: jobDetails.designation,
       position: jobDetails.position,
@@ -21,11 +25,11 @@ export class VacancyService {
       openingPosition: jobDetails.openingPosition,
     });
 
-    return await this.dataSource.getRepository(Vacancy).save(vacancy);
+    return await vacancyRepo.save(vacancy);
   }
 
-  async findMany(queryParams: VacancyFilterDto) {
-    const vacancyRepo = this.dataSource.getRepository(Vacancy);
+  async findMany(ctx: RequestContext, queryParams: VacancyFilterDto) {
+    const vacancyRepo = this.connection.getRepository(ctx, Vacancy);
 
     const filteredData = await vacancyRepo.findAndCount({
       where: {
@@ -41,20 +45,24 @@ export class VacancyService {
     return filteredData;
   }
 
-  async delete(id: string) {
-    return await this.dataSource.getRepository(Vacancy).delete(id);
+  async delete(ctx: RequestContext, id: string) {
+    return await this.connection.getRepository(ctx, Vacancy).delete({ id: id });
   }
 
-  async getVacancy(id: string) {
-    return await this.dataSource.getRepository(Vacancy).findOne({
+  async getVacancy(ctx: RequestContext, id: string) {
+    return await this.connection.getRepository(ctx, Vacancy).findOne({
       where: { id: id },
     });
   }
 
-  async update(details: UpdateVacancyRequestDto, id: string) {
-    const vacancyRepository = this.dataSource.getRepository(Vacancy);
+  async update(
+    ctx: RequestContext,
+    details: UpdateVacancyRequestDto,
+    id: string,
+  ) {
+    const vacancyRepo = this.connection.getRepository(ctx, Vacancy);
 
-    const originalVacancyDetails = await vacancyRepository.findOne({
+    const originalVacancyDetails = await vacancyRepo.findOne({
       where: { id: id },
     });
 
@@ -68,6 +76,6 @@ export class VacancyService {
       }
     });
 
-    return await vacancyRepository.save(originalVacancyDetails);
+    return await vacancyRepo.save(originalVacancyDetails);
   }
 }

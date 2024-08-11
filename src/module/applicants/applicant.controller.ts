@@ -26,6 +26,9 @@ import { takePagination } from 'common/utils/pagination.utils';
 import { PublicRoute } from 'common/decorator/public.decorator';
 import { ApplicantParamDto } from './dto/param.dto';
 import { PatchApplicantDto } from './dto/patch.applicant.dto';
+import { Ctx } from 'common/decorator/ctx.decorator';
+import { RequestContext } from 'common/request-context';
+import { Transaction } from 'common/decorator/transaction.decorator';
 
 @Controller('applicant')
 @ApiTags('Applicant API')
@@ -50,11 +53,13 @@ export class ApplicantController {
       },
     }),
   )
+  @Transaction()
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse({
     description: 'Job vacancy creation failed',
   })
   async createApplicant(
+    @Ctx() ctx: RequestContext,
     @Body() applicantDetail: CreateApplicantDto,
     @UploadedFile() file: Express.Multer.File | null,
   ): Promise<MessageResponseWithIdDto> {
@@ -63,7 +68,8 @@ export class ApplicantController {
     }
 
     applicantDetail.cv = file;
-    const applicant = await this.applicantService.create(applicantDetail);
+
+    const applicant = await this.applicantService.create(ctx, applicantDetail);
 
     return {
       message: 'Applicant created successfully',
@@ -78,9 +84,11 @@ export class ApplicantController {
     description: 'Job vacancy creation failed',
   })
   async deleteApplicant(
+    @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDto,
   ): Promise<MessageResponseDto> {
     const status = await this.applicantService.delete(
+      ctx,
       applicantParamDto.applicantId,
     );
 
@@ -99,9 +107,13 @@ export class ApplicantController {
     description: 'Applicant fetch failed',
   })
   async getAllJobApplicants(
+    @Ctx() ctx: RequestContext,
     @Query() queryFilter: ApplicantFilterDto,
   ): Promise<ListApplicantsResponseDto> {
-    const [response, total] = await this.applicantService.findMany(queryFilter);
+    const [response, total] = await this.applicantService.findMany(
+      ctx,
+      queryFilter,
+    );
 
     return {
       message: 'All job fetched successfully',
@@ -116,10 +128,12 @@ export class ApplicantController {
     description: 'Applicant Status Patch failed',
   })
   async patchApplicantStatus(
+    @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDto,
     @Body() status: PatchApplicantDto,
   ): Promise<MessageResponseDto> {
     const res = await this.applicantService.update(
+      ctx,
       applicantParamDto.applicantId,
       status,
     );

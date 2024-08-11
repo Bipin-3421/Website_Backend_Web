@@ -1,55 +1,80 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'common/entities/user.entity';
-import { Repository } from 'typeorm';
 import { UserCreateDto } from './dto/user.create.dto';
 import { SignInDto } from './dto/sign.in.dto';
 import { ConfigService } from '@nestjs/config';
 import { signToken } from 'common/utils/jwt.utils';
+import { AuthPayload } from 'types/jwt';
+import { PaginationDto } from 'common/dto/pagination.dto';
+import { RequestContext } from '../../common/request-context';
+import { AppConfig } from '../../config/configuration';
+import { TransactionalConnection } from 'module/connection/connection.service';
+import { PermissionAction, PermissionResource } from 'types/permission';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private readonly configService: ConfigService,
+    private readonly connection: TransactionalConnection,
+    private readonly configService: ConfigService<AppConfig, true>,
   ) {}
 
-  async createUser(createUserDto: UserCreateDto): Promise<User> {
-    const user = this.userRepository.create({
+  async createUser(
+    ctx: RequestContext,
+    createUserDto: UserCreateDto,
+  ): Promise<User> {
+    const userRepo = this.connection.getRepository(ctx, User);
+
+    const defaultPermission = {
+      resource: PermissionResource.ALL,
+      action: [PermissionAction.EDIT, PermissionAction.VIEW],
+    };
+
+    const user = new User({
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
-      isActive: createUserDto.isActive,
+      permission: [defaultPermission],
+      isActive: true,
     });
 
-    return await this.userRepository.save(user);
+    return await userRepo.save(user);
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  async findAll(ctx: RequestContext, pagination: PaginationDto) {
+    const userRepo = this.connection.getRepository(ctx, User);
+
+    return await userRepo.findAndCount({
+      take: pagination.take,
+      skip: pagination.page,
+    });
   }
 
-  async login(signInDto: SignInDto): Promise<{ access_token: string }> {
-    const user = await this.userRepository.findOne({
+  async login(
+    ctx: RequestContext,
+    signInDto: SignInDto,
+  ): Promise<{ access_token: string }> {
+    const userRepo = this.connection.getRepository(ctx, User);
+
+    const user = await userRepo.findOne({
       where: {
-        firstName: signInDto.username,
-        lastName: signInDto.password,
+        firstName: signInDto.firstName,
+        lastName: signInDto.lastName,
       },
     });
 
-    if (!user) {
+    if (!user?.isActive) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = {
+    const payload: AuthPayload = {
       userId: user.id,
+      permission: user.permission,
     };
 
     return {
       access_token: signToken(
         payload,
-        this.configService.get('JWT_SECRET', { infer: true }) ?? '',
-        this.configService.get('JWT_TIMEOUT', { infer: true }) ?? '1h',
+        this.configService.get('jwt.jwtSecret', { infer: true }) ?? '',
+        this.configService.get('jwt.jwtTimeOut', { infer: true }) ?? '1h',
       ),
     };
   }
