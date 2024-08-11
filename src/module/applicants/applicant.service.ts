@@ -34,8 +34,6 @@ export class ApplicantService {
       status: ApplicationStatus.INITIAL,
     });
 
-    console.log('asset', asset);
-
     const applicantRepo = this.connection.getRepository(Applicant);
 
     return await applicantRepo.save(applicant);

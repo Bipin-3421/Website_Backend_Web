@@ -3,7 +3,7 @@ import { REQUEST_CONTEXT_KEY } from 'common/constant';
 import { RequestContext } from 'common/request-context';
 
 export const Ctx = createParamDecorator(
-  <T extends boolean>(data: unknown, ctx: ExecutionContext): RequestContext => {
+  (data: unknown, ctx: ExecutionContext): RequestContext => {
     const request = ctx.switchToHttp().getRequest();
 
     const reqCtx: RequestContext = request[REQUEST_CONTEXT_KEY];

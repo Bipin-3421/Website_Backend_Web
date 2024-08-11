@@ -4,8 +4,14 @@ export enum PermissionResource {
   VACANCY = 'Vacancy',
 }
 
+export enum PermissionAction {
+  VIEW = 'View',
+  EDIT = 'Edit',
+}
+
 export type Permission = {
   resource: PermissionResource;
+  action: PermissionAction[];
 };
 
 //only for visible portion

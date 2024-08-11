@@ -9,19 +9,16 @@ import {
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user.create.dto';
 import { SignInDto } from './dto/sign.in.dto';
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { PublicRoute } from 'common/decorator/public.decorator';
 import { Require } from 'common/decorator/require.decorator';
-import { PermissionResource } from 'types/permission';
+import { PermissionAction, PermissionResource } from 'types/permission';
 import { MessageResponseWithIdDto } from 'common/dto/response.dto';
 import { ListGetUsersResponseDTO } from './dto/user.get.dto';
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { takePagination } from 'common/utils/pagination.utils';
+import { Ctx } from 'common/decorator/ctx.decorator';
+import { RequestContext } from 'common/request-context';
 
 @Controller('user')
 @ApiTags('User API')
@@ -30,24 +27,21 @@ export class UserController {
 
   @Post('login')
   @PublicRoute()
-  @Require({
-    resource: PermissionResource.ALL,
-  })
+  @Require()
   @ApiBody({
     type: SignInDto,
     description: 'User login details',
   })
   async login(
+    @Ctx() ctx: RequestContext,
     @Body()
     userLoginDto: SignInDto,
   ): Promise<MessageResponseWithIdDto> {
-    const res = await this.userService.login(userLoginDto);
+    const res = await this.userService.login(ctx, userLoginDto);
 
     if (!res) {
       throw new BadRequestException('User login failed');
     }
-
-    console.log('user logged in', res);
 
     return {
       message: 'User logged in successfully',
@@ -62,17 +56,16 @@ export class UserController {
     description: 'User created successfully',
     type: UserCreateDto,
   })
-  @ApiBadRequestResponse({
-    description: 'User creation failed',
+  @Require({
+    permission: PermissionResource.ALL,
+    action: PermissionAction.EDIT,
   })
-  @ApiBody({
-    type: UserCreateDto,
-    description: 'User creation details',
-  })
+  @PublicRoute()
   async createUser(
+    @Ctx() ctx: RequestContext,
     @Body() UserCreateDto: UserCreateDto,
   ): Promise<MessageResponseWithIdDto> {
-    const res = await this.userService.createUser(UserCreateDto);
+    const res = await this.userService.createUser(ctx, UserCreateDto);
 
     if (!res) {
       throw new BadRequestException('User creation failed');
@@ -88,15 +81,21 @@ export class UserController {
 
   @Get('/all')
   @Require({
-    resource: PermissionResource.ALL,
+    permission: PermissionResource.ALL,
+    action: PermissionAction.VIEW,
   })
   async getAllUsers(
+    @Ctx() ctx: RequestContext,
     @Query() pagination: PaginationDto,
   ): Promise<ListGetUsersResponseDTO> {
-    const [res, total] = await this.userService.findAll(pagination);
+    const [res, total] = await this.userService.findAll(ctx, pagination);
 
     if (total === 0) {
-      throw new BadRequestException('No users found');
+      return {
+        message: 'No users found',
+        data: [],
+        pagination: takePagination([], pagination, total),
+      };
     }
 
     return {

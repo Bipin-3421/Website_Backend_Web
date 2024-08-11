@@ -17,6 +17,10 @@ export interface AppConfig {
       rootPath: string;
     };
   };
+  Jwt: {
+    JwtSecret: string;
+    JwtTimeOut: string;
+  };
 }
 
 export default () => {
@@ -37,6 +41,10 @@ export default () => {
       local: {
         rootPath: process.env.FILE_UPLOAD_PATH ?? 'uploads',
       },
+    },
+    Jwt: {
+      JwtSecret: process.env.JWT_SECRET ?? '',
+      JwtTimeOut: process.env.JWT_TIMEOUT ?? '',
     },
   };
 

@@ -59,7 +59,7 @@ export class ApplicantController {
     description: 'Job vacancy creation failed',
   })
   async createApplicant(
-    @Ctx(true) ctx: RequestContext,
+    @Ctx() ctx: RequestContext,
     @Body() applicantDetail: CreateApplicantDto,
     @UploadedFile() file: Express.Multer.File | null,
   ): Promise<MessageResponseWithIdDto> {
@@ -84,6 +84,7 @@ export class ApplicantController {
     description: 'Job vacancy creation failed',
   })
   async deleteApplicant(
+    @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDto,
   ): Promise<MessageResponseDto> {
     const status = await this.applicantService.delete(
@@ -105,6 +106,7 @@ export class ApplicantController {
     description: 'Applicant fetch failed',
   })
   async getAllJobApplicants(
+    @Ctx() ctx: RequestContext,
     @Query() queryFilter: ApplicantFilterDto,
   ): Promise<ListApplicantsResponseDto> {
     const [response, total] = await this.applicantService.findMany(queryFilter);
@@ -122,6 +124,7 @@ export class ApplicantController {
     description: 'Applicant Status Patch failed',
   })
   async patchApplicantStatus(
+    @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDto,
     @Body() status: PatchApplicantDto,
   ): Promise<MessageResponseDto> {

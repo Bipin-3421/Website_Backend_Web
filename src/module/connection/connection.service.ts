@@ -34,10 +34,9 @@ export class TransactionalConnection {
     ctxOrTarget: RequestContext | ObjectType<Entity>,
     maybeTarget?: ObjectType<Entity>,
   ): Repository<Entity> {
-    console.log(ctxOrTarget);
     if (ctxOrTarget instanceof RequestContext) {
       let entityManager: EntityManager;
-      entityManager = (ctxOrTarget.getRequest as any)?.[ENTITIY_MANAGER_KEY];
+      entityManager = (ctxOrTarget.req as any)?.[ENTITIY_MANAGER_KEY];
 
       if (!entityManager || entityManager.queryRunner?.isReleased) {
         console.log('Entity manager not found using default');
