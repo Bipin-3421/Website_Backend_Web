@@ -73,8 +73,8 @@ export class UserService {
     return {
       access_token: signToken(
         payload,
-        this.configService.get('Jwt.JwtSecret', { infer: true }) ?? '',
-        this.configService.get('Jwt.JwtTimeOut', { infer: true }) ?? '1h',
+        this.configService.get('jwt.jwtSecret', { infer: true }) ?? '',
+        this.configService.get('jwt.jwtTimeOut', { infer: true }) ?? '1h',
       ),
     };
   }

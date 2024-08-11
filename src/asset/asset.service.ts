@@ -4,15 +4,16 @@ import { AppConfig } from 'config/configuration';
 import { AssetProvider } from 'common/enum/provider.enum';
 import { AssetFor } from 'common/enum/asset.for.enum';
 import { AssetLocal } from './provider/asset.local';
-import { DataSource } from 'typeorm';
 import { Asset } from 'common/entities/asset.entity';
 import { AssetProviderInterface } from './provider/asset.provider.interface';
+import { TransactionalConnection } from 'module/connection/connection.service';
+import { RequestContext } from 'common/request-context';
 
 @Injectable()
 export class AssetService {
   constructor(
     private readonly configService: ConfigService<AppConfig, true>,
-    private readonly dataSource: DataSource,
+    private readonly connection: TransactionalConnection,
   ) {}
 
   getProvider(provider?: string): AssetProviderInterface {
@@ -28,14 +29,16 @@ export class AssetService {
     throw new Error('No provider found');
   }
 
-  async upload(buffer: Buffer): Promise<Asset | undefined> {
+  async upload(
+    ctx: RequestContext,
+    buffer: Buffer,
+  ): Promise<Asset | undefined> {
+    const assetRepo = this.connection.getRepository(ctx, Asset);
     const provider = this.getProvider();
     const assetFor = AssetFor.CV;
 
     const uniqueFileName = `${assetFor.toString().toLowerCase()}_${Date.now()}`;
     const { identifier, url } = await provider.upload(buffer, uniqueFileName);
-
-    const assetRepo = this.dataSource.getRepository(Asset);
 
     const asset = new Asset({
       name: uniqueFileName,
@@ -50,8 +53,8 @@ export class AssetService {
     return asset;
   }
 
-  async delete(id: string): Promise<boolean> {
-    const assetRepo = this.dataSource.getRepository(Asset);
+  async delete(ctx: RequestContext, id: string): Promise<boolean> {
+    const assetRepo = this.connection.getRepository(ctx, Asset);
 
     const asset = await assetRepo.findOne({
       where: { id: id },

@@ -27,7 +27,6 @@ export class UserController {
 
   @Post('login')
   @PublicRoute()
-  @Require()
   @ApiBody({
     type: SignInDto,
     description: 'User login details',
@@ -60,7 +59,6 @@ export class UserController {
     permission: PermissionResource.ALL,
     action: PermissionAction.EDIT,
   })
-  @PublicRoute()
   async createUser(
     @Ctx() ctx: RequestContext,
     @Body() UserCreateDto: UserCreateDto,
@@ -89,14 +87,6 @@ export class UserController {
     @Query() pagination: PaginationDto,
   ): Promise<ListGetUsersResponseDTO> {
     const [res, total] = await this.userService.findAll(ctx, pagination);
-
-    if (total === 0) {
-      return {
-        message: 'No users found',
-        data: [],
-        pagination: takePagination([], pagination, total),
-      };
-    }
 
     return {
       message: 'All users fetched successfully',

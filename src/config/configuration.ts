@@ -17,9 +17,9 @@ export interface AppConfig {
       rootPath: string;
     };
   };
-  Jwt: {
-    JwtSecret: string;
-    JwtTimeOut: string;
+  jwt: {
+    jwtSecret: string;
+    jwtTimeOut: string;
   };
 }
 
@@ -42,9 +42,9 @@ export default () => {
         rootPath: process.env.FILE_UPLOAD_PATH ?? 'uploads',
       },
     },
-    Jwt: {
-      JwtSecret: process.env.JWT_SECRET ?? '',
-      JwtTimeOut: process.env.JWT_TIMEOUT ?? '',
+    jwt: {
+      jwtSecret: process.env.JWT_SECRET ?? '',
+      jwtTimeOut: process.env.JWT_TIMEOUT ?? '',
     },
   };
 

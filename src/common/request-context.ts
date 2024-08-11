@@ -8,7 +8,7 @@ export class RequestContext {
 
   private readonly _data: AuthPayload | undefined;
 
-  constructor(options: { req: Request; data: any }) {
+  constructor(options: { req: Request; data: AuthPayload | undefined }) {
     this._request = options.req;
     this._data = options.data;
   }

@@ -88,6 +88,7 @@ export class ApplicantController {
     @Param() applicantParamDto: ApplicantParamDto,
   ): Promise<MessageResponseDto> {
     const status = await this.applicantService.delete(
+      ctx,
       applicantParamDto.applicantId,
     );
 
@@ -109,7 +110,10 @@ export class ApplicantController {
     @Ctx() ctx: RequestContext,
     @Query() queryFilter: ApplicantFilterDto,
   ): Promise<ListApplicantsResponseDto> {
-    const [response, total] = await this.applicantService.findMany(queryFilter);
+    const [response, total] = await this.applicantService.findMany(
+      ctx,
+      queryFilter,
+    );
 
     return {
       message: 'All job fetched successfully',
@@ -129,6 +133,7 @@ export class ApplicantController {
     @Body() status: PatchApplicantDto,
   ): Promise<MessageResponseDto> {
     const res = await this.applicantService.update(
+      ctx,
       applicantParamDto.applicantId,
       status,
     );
