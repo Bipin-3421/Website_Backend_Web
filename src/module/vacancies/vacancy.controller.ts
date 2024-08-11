@@ -25,6 +25,8 @@ import {
 } from 'common/dto/response.dto';
 import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
 import { takePagination } from 'common/utils/pagination.utils';
+import { Ctx } from 'common/decorator/ctx.decorator';
+import { RequestContext } from 'common/request-context';
 
 @Controller('vacancy')
 @ApiTags('Job Vacancy API')
@@ -36,10 +38,11 @@ export class VacancyController {
     description: 'Job vacancy creation failed',
   })
   async createJobVacancy(
+    @Ctx() ctx: RequestContext,
     @Body()
     vacancyDetails: CreateVacancyRequestDto,
   ): Promise<MessageResponseWithIdDto> {
-    const res = await this.vacancyService.create(vacancyDetails);
+    const res = await this.vacancyService.create(ctx, vacancyDetails);
 
     return {
       message: 'Vacancy created successfully',
@@ -55,9 +58,13 @@ export class VacancyController {
     description: 'Job vacancy fetch failed',
   })
   async getAllJobVacancy(
+    @Ctx() ctx: RequestContext,
     @Query() queryFilter: VacancyFilterDto,
   ): Promise<ListVacanciesReponseDto> {
-    const [response, total] = await this.vacancyService.findMany(queryFilter);
+    const [response, total] = await this.vacancyService.findMany(
+      ctx,
+      queryFilter,
+    );
 
     return {
       message: 'All job fetched successfully',
@@ -71,10 +78,11 @@ export class VacancyController {
     description: 'Job vacancy deletion failed',
   })
   async deleteJobVacancy(
+    @Ctx() ctx: RequestContext,
     @Param()
     param: VacancyIdDto,
   ): Promise<MessageResponseDto> {
-    await this.vacancyService.delete(param.vacancyId);
+    await this.vacancyService.delete(ctx, param.vacancyId);
 
     return {
       message: 'Job deleted successfully',
@@ -87,10 +95,11 @@ export class VacancyController {
     description: 'Job vacancy fetch failed',
   })
   async getJobVacancyById(
+    @Ctx() ctx: RequestContext,
     @Param()
     param: VacancyIdDto,
   ): Promise<GetVacancyResponseDto> {
-    const res = await this.vacancyService.getVacancy(param.vacancyId);
+    const res = await this.vacancyService.getVacancy(ctx, param.vacancyId);
 
     if (!res) {
       throw new NotFoundException(
@@ -109,10 +118,12 @@ export class VacancyController {
     description: 'Job vacancy update failed',
   })
   async updateJobVacancy(
+    @Ctx() ctx: RequestContext,
     @Param() param: VacancyIdDto,
     @Body() vacancyDetails: UpdateVacancyRequestDto,
   ): Promise<MessageResponseWithIdDto> {
     const updatedVacancy = await this.vacancyService.update(
+      ctx,
       vacancyDetails,
       param.vacancyId,
     );

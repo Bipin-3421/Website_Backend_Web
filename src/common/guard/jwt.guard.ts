@@ -30,7 +30,7 @@ export class JwtAuthGuard implements CanActivate {
     const payload: AuthPayload | null = token
       ? verifyToken<AuthPayload>(
           token,
-          this.configService.get('Jwt.JwtSecret', { infer: true }) ?? '',
+          this.configService.get('jwt.jwtSecret', { infer: true }) ?? '',
         )
       : null;
 
