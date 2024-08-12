@@ -29,6 +29,8 @@ import { PatchApplicantDto } from './dto/patch.applicant.dto';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
 import { Transaction } from 'common/decorator/transaction.decorator';
+import { Require } from 'common/decorator/require.decorator';
+import { PermissionAction, PermissionResource } from 'types/permission';
 
 @Controller('applicant')
 @ApiTags('Applicant API')
@@ -80,6 +82,10 @@ export class ApplicantController {
   }
 
   @Delete(':applicantId')
+  @Require({
+    permission: PermissionResource.APPLICANT,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Job vacancy creation failed',
   })
@@ -102,7 +108,10 @@ export class ApplicantController {
   }
 
   @Get()
-  @PublicRoute()
+  @Require({
+    permission: PermissionResource.APPLICANT,
+    action: PermissionAction.VIEW,
+  })
   @ApiBadRequestResponse({
     description: 'Applicant fetch failed',
   })
@@ -123,7 +132,10 @@ export class ApplicantController {
   }
 
   @Patch(':applicantId')
-  @PublicRoute()
+  @Require({
+    permission: PermissionResource.APPLICANT,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Applicant Status Patch failed',
   })

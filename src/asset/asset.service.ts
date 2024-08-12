@@ -32,10 +32,10 @@ export class AssetService {
   async upload(
     ctx: RequestContext,
     buffer: Buffer,
+    assetFor: AssetFor,
   ): Promise<Asset | undefined> {
     const assetRepo = this.connection.getRepository(ctx, Asset);
     const provider = this.getProvider();
-    const assetFor = AssetFor.CV;
 
     const uniqueFileName = `${assetFor.toString().toLowerCase()}_${Date.now()}`;
     const { identifier, url } = await provider.upload(buffer, uniqueFileName);
