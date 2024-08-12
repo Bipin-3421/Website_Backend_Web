@@ -38,7 +38,6 @@ export class VacancyController {
   constructor(private readonly vacancyService: VacancyService) {}
 
   @Post()
-  @PublicRoute()
   // @Require({
   //   permission: PermissionResource.VACANCY,
   //   action: PermissionAction.EDIT,

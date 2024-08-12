@@ -36,7 +36,6 @@ export class ApplicantController {
   constructor(private readonly applicantService: ApplicantService) {}
 
   @Post()
-  @PublicRoute()
   @UseInterceptors(
     FileInterceptor('CV', {
       fileFilter(req, file, callback) {
@@ -80,7 +79,6 @@ export class ApplicantController {
   }
 
   @Delete(':applicantId')
-  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Job vacancy creation failed',
   })
@@ -124,7 +122,6 @@ export class ApplicantController {
   }
 
   @Patch(':applicantId')
-  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Applicant Status Patch failed',
   })
