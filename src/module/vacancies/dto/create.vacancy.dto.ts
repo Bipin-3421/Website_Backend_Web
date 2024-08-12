@@ -1,13 +1,16 @@
 import {
-  IsDateString,
+  IsISO8601,
   IsNotEmpty,
-  IsNumber,
+  IsNumberString,
   IsString,
   Length,
 } from 'class-validator';
 import { JobType } from '../../../common/enum/Job.type.enum';
+import { ApiProperty } from '@nestjs/swagger';
+import { Optional } from 'common/decorator/optional.decorator';
 
 export class CreateVacancyRequestDto {
+  @Length(1, 50)
   @IsString()
   @IsNotEmpty()
   designation: string;
@@ -16,20 +19,15 @@ export class CreateVacancyRequestDto {
   @IsNotEmpty()
   position: string;
 
-  @IsDateString()
+  @IsISO8601()
   @IsNotEmpty()
   datePosted: Date;
 
-  @IsDateString()
+  @IsISO8601()
   @IsNotEmpty()
-  deadline: Date;
+  deadLine: Date;
 
-  @Length(3, 50)
-  @IsString()
-  @IsNotEmpty()
-  salary: string;
-
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   experience: number;
 
@@ -38,4 +36,23 @@ export class CreateVacancyRequestDto {
 
   @IsNotEmpty()
   openingPosition: number;
+
+  @IsNotEmpty()
+  @Length(10, 200)
+  description: string;
+
+  @IsNotEmpty()
+  @Length(10, 200)
+  skill: string;
+
+  @IsNotEmpty()
+  department: string;
+
+  @ApiProperty({
+    description: 'image of the vacany',
+    type: 'string',
+    format: 'binary',
+  })
+  @Optional()
+  image: Express.Multer.File;
 }

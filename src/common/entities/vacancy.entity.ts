@@ -1,8 +1,10 @@
 import { JobType } from 'common/enum/Job.type.enum';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { BaseEntity } from './base.entity';
 import { Applicant } from './applicant.entity';
+import { JobStatus } from 'common/enum/job.status.enum';
+import { Asset } from './asset.entity';
 
 @Entity()
 export class Vacancy extends BaseEntity {
@@ -10,7 +12,7 @@ export class Vacancy extends BaseEntity {
     super(input);
   }
 
-  @Column()
+  @Column({ length: 50 })
   designation: string;
 
   @Column()
@@ -23,9 +25,6 @@ export class Vacancy extends BaseEntity {
   deadline: Date;
 
   @Column()
-  salary: string;
-
-  @Column()
   experience: number;
 
   @Column({ type: 'enum', enum: JobType })
@@ -34,6 +33,27 @@ export class Vacancy extends BaseEntity {
   @Column()
   openingPosition: number;
 
+  @Column()
+  department: string;
+
+  @Column({ length: 200 })
+  Skill: string;
+
+  @Column({ length: 200 })
+  description: string;
+
+  @Column({
+    type: 'enum',
+    enum: JobStatus,
+  })
+  status: JobStatus;
+
   @OneToMany(() => Applicant, (Applicant) => Applicant.vacancy)
   applicants: Applicant[];
+
+  @OneToOne(() => Asset, (asset) => asset.vacancy, {
+    cascade: true,
+  })
+  @JoinColumn({ name: 'image' })
+  image: Asset;
 }

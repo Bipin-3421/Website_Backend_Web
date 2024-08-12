@@ -80,6 +80,7 @@ export class ApplicantController {
   }
 
   @Delete(':applicantId')
+  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Job vacancy creation failed',
   })

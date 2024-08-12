@@ -51,6 +51,7 @@ export class UserController {
   }
 
   @Post('create')
+  @PublicRoute()
   @ApiCreatedResponse({
     description: 'User created successfully',
     type: UserCreateDto,

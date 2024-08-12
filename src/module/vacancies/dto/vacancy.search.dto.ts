@@ -1,20 +1,39 @@
 import { JobType } from '../../../common/enum/Job.type.enum';
 import { Optional } from 'common/decorator/optional.decorator';
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsISO8601, IsString } from 'class-validator';
 import { IntersectionType } from '@nestjs/swagger';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { JobStatus } from 'common/enum/job.status.enum';
 
-export class VacancySearchParamDto {
+export class VacancyFilterDto extends IntersectionType(PaginationDto) {
   @IsString()
   @Optional()
-  query?: string;
+  designation?: string;
 
   @Optional()
   @IsEnum(JobType)
   jobType?: JobType;
-}
 
-export class VacancyFilterDto extends IntersectionType(
-  VacancySearchParamDto,
-  PaginationDto,
-) {}
+  @IsString()
+  @Optional()
+  position: string;
+
+  @IsString()
+  @Optional()
+  @IsEnum(JobStatus)
+  status: JobStatus;
+
+  @Optional()
+  @IsISO8601()
+  datePosted: Date;
+
+  @Optional()
+  @IsISO8601()
+  deadLine: Date;
+
+  @Optional()
+  openingPosition: number;
+
+  @Optional()
+  experience: number;
+}

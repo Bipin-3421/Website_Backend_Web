@@ -7,6 +7,8 @@ import { ApplicantFilterDto } from './dto/applicant.search.dto';
 import { PatchApplicantDto } from './dto/patch.applicant.dto';
 import { RequestContext } from 'common/request-context';
 import { TransactionalConnection } from 'module/connection/connection.service';
+import { AssetFor } from 'common/enum/asset.for.enum';
+import { ILike } from 'typeorm';
 
 @Injectable()
 export class ApplicantService {
@@ -19,6 +21,7 @@ export class ApplicantService {
     const asset = await this.assetService.upload(
       ctx,
       applicantDetail.cv.buffer,
+      AssetFor.CV,
     );
 
     const applicant = new Applicant({
@@ -68,6 +71,18 @@ export class ApplicantService {
         status: queryParams.applicantStatus
           ? queryParams.applicantStatus
           : undefined,
+        name: queryParams.name ? ILike(`%${queryParams.name}%`) : undefined,
+        email: queryParams.email ? ILike(`%${queryParams.email}%`) : undefined,
+        phoneNumber: queryParams.phone
+          ? ILike(`%${queryParams.phone}%`)
+          : undefined,
+        address: queryParams.address,
+        vacancy: {
+          designation: ILike(`%${queryParams.designation}%`),
+        },
+      },
+      relations: {
+        vacancy: true,
       },
       take: queryParams.take,
       skip: queryParams.page,
