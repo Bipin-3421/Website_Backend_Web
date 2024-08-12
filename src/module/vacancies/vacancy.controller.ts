@@ -70,7 +70,7 @@ export class VacancyController {
     @UploadedFile() file: Express.Multer.File | null,
   ): Promise<MessageResponseWithIdDto> {
     if (!file || file.size == 0) {
-      throw new NotAcceptableException('CV is required');
+      throw new NotAcceptableException('Vacancy image is required');
     }
 
     vacancyDetails.image = file;

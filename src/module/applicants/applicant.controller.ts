@@ -108,7 +108,6 @@ export class ApplicantController {
   }
 
   @Get()
-  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Applicant fetch failed',
   })

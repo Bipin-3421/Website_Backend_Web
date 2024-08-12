@@ -1,6 +1,6 @@
 import {
+  IsDateString,
   IsEnum,
-  IsISO8601,
   IsNotEmpty,
   IsString,
   Length,
@@ -19,11 +19,11 @@ export class CreateVacancyRequestDto {
   @IsNotEmpty()
   position: string;
 
-  @IsISO8601()
+  @IsDateString()
   @IsNotEmpty()
   datePosted: Date;
 
-  @IsISO8601()
+  @IsDateString()
   @IsNotEmpty()
   deadLine: Date;
 
