@@ -1,13 +1,8 @@
-import {
-  IsISO8601,
-  IsNotEmpty,
-  IsNumberString,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsISO8601, IsNotEmpty, IsString, Length } from 'class-validator';
 import { JobType } from '../../../common/enum/Job.type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Optional } from 'common/decorator/optional.decorator';
+import { Transform } from 'class-transformer';
 
 export class CreateVacancyRequestDto {
   @Length(1, 50)
@@ -27,8 +22,10 @@ export class CreateVacancyRequestDto {
   @IsNotEmpty()
   deadLine: Date;
 
-  @IsNumberString()
   @IsNotEmpty()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   experience: number;
 
   @IsNotEmpty()

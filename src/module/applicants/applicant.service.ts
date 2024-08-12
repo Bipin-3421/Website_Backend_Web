@@ -76,9 +76,13 @@ export class ApplicantService {
         phoneNumber: queryParams.phone
           ? ILike(`%${queryParams.phone}%`)
           : undefined,
-        address: queryParams.address,
+        address: queryParams.address
+          ? ILike(`%${queryParams.address}%`)
+          : undefined,
         vacancy: {
-          designation: ILike(`%${queryParams.designation}%`),
+          designation: queryParams.designation
+            ? ILike(`%${queryParams.designation}%`)
+            : undefined,
         },
       },
       relations: {

@@ -1,13 +1,9 @@
-import {
-  IsEnum,
-  IsISO8601,
-  IsNumberString,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsEnum, IsISO8601, IsString, Length } from 'class-validator';
 import { JobType } from '../../../common/enum/Job.type.enum';
 import { Optional } from 'common/decorator/optional.decorator';
 import { JobStatus } from 'common/enum/job.status.enum';
+import { Transform } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateVacancyRequestDto {
   @IsString()
@@ -26,8 +22,10 @@ export class UpdateVacancyRequestDto {
   @Optional()
   deadline: Date | undefined;
 
-  @IsNumberString()
   @Optional()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   experience: number | undefined;
 
   @Optional()
@@ -49,6 +47,11 @@ export class UpdateVacancyRequestDto {
   department: string;
 
   @Optional()
+  @ApiProperty({
+    description: 'image of the vacany',
+    type: 'string',
+    format: 'binary',
+  })
   image: Express.Multer.File;
 
   @Optional()

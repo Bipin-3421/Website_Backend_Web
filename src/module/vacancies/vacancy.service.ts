@@ -11,6 +11,7 @@ import { JobStatus } from 'common/enum/job.status.enum';
 import { Asset } from '../../common/entities/asset.entity';
 import { patchEntity } from 'common/utils/patchEntity';
 import { AssetFor } from 'common/enum/asset.for.enum';
+import { dateFilter } from 'common/utils/dateFilter';
 
 @Injectable()
 export class VacancyService {
@@ -37,7 +38,7 @@ export class VacancyService {
       experience: jobDetails.experience,
       openingPosition: jobDetails.openingPosition,
       description: jobDetails.description,
-      Skill: jobDetails.skill,
+      skill: jobDetails.skill,
       department: jobDetails.department,
       status: JobStatus.ACTIVE,
       image: asset,
@@ -49,6 +50,8 @@ export class VacancyService {
   async findMany(ctx: RequestContext, queryParams: VacancyFilterDto) {
     const vacancyRepo = this.connection.getRepository(ctx, Vacancy);
 
+    console.log(queryParams);
+
     const filteredData = await vacancyRepo.findAndCount({
       where: {
         designation: queryParams.designation
@@ -59,10 +62,15 @@ export class VacancyService {
           ? ILike(`%${queryParams.position}%`)
           : undefined,
         status: queryParams.status,
-        datePosted: queryParams.datePosted,
-        deadline: queryParams.deadLine,
-        openingPosition: queryParams.openingPosition,
-        experience: queryParams.experience,
+        datePosted: dateFilter(
+          queryParams.datePostedFrom,
+          queryParams.datePostedTo,
+        ),
+        deadline: dateFilter(queryParams.deadLineFrom, queryParams.deadLineTo),
+        openingPosition: queryParams.openingPosition
+          ? queryParams.openingPosition
+          : undefined,
+        experience: queryParams.experience ? queryParams.experience : undefined,
       },
       take: queryParams.take ?? 10,
       skip: (queryParams.page ?? 0) * (queryParams.take ?? 10),

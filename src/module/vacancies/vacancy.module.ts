@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { VacancyService } from './vacancy.service';
 import { VacancyController } from './vacancy.controller';
-import { AssetService } from 'asset/asset.service';
+import { AssetModule } from 'asset/asset.module';
 
 @Module({
-  imports: [],
-  providers: [VacancyService, AssetService],
+  imports: [AssetModule],
+  providers: [VacancyService],
   controllers: [VacancyController],
   exports: [],
 })

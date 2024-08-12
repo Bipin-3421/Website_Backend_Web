@@ -66,7 +66,7 @@ export class VacancyController {
   async createJobVacancy(
     @Ctx() ctx: RequestContext,
     @Body() vacancyDetails: CreateVacancyRequestDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File | null,
   ): Promise<MessageResponseWithIdDto> {
     if (!file || file.size == 0) {
       throw new NotAcceptableException('CV is required');
@@ -106,7 +106,6 @@ export class VacancyController {
   }
 
   @Delete(':vacancyId')
-  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Job vacancy deletion failed',
   })
@@ -146,7 +145,6 @@ export class VacancyController {
   }
 
   @Patch(':vacancyId')
-  @PublicRoute()
   @UseInterceptors(
     FileInterceptor('image', {
       fileFilter(req, file, callback) {
@@ -171,7 +169,7 @@ export class VacancyController {
     @Ctx() ctx: RequestContext,
     @Param() param: VacancyIdDto,
     @Body() vacancyDetails: UpdateVacancyRequestDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File | null,
   ): Promise<MessageResponseWithIdDto> {
     if (!file || file.size == 0) {
       throw new NotAcceptableException('CV is required');

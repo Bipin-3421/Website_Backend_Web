@@ -37,7 +37,7 @@ export class Vacancy extends BaseEntity {
   department: string;
 
   @Column({ length: 200 })
-  Skill: string;
+  skill: string;
 
   @Column({ length: 200 })
   description: string;
@@ -54,6 +54,9 @@ export class Vacancy extends BaseEntity {
   @OneToOne(() => Asset, (asset) => asset.vacancy, {
     cascade: true,
   })
-  @JoinColumn({ name: 'image' })
+  @JoinColumn({ name: 'imageId' })
   image: Asset;
+
+  @Column()
+  imageId: string;
 }
