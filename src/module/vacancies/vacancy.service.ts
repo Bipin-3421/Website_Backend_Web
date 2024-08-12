@@ -50,8 +50,6 @@ export class VacancyService {
   async findMany(ctx: RequestContext, queryParams: VacancyFilterDto) {
     const vacancyRepo = this.connection.getRepository(ctx, Vacancy);
 
-    console.log(queryParams);
-
     const filteredData = await vacancyRepo.findAndCount({
       where: {
         designation: queryParams.designation
