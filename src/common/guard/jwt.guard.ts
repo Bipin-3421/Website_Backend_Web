@@ -13,6 +13,7 @@ import { verifyToken } from 'common/utils/jwt.utils';
 import { IS_PUBLIC, REQUIRED_PERMISSION_KEY } from 'common/constant';
 import { RequestContext } from 'common/request-context';
 import { AppConfig } from '../../config/configuration';
+import { PermissionResource } from 'types/permission';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -53,8 +54,9 @@ export class JwtAuthGuard implements CanActivate {
       for (const requiredPermission of requiredPermissions) {
         const foundPermission = userPermission.find((permission) => {
           if (
-            permission.resource === requiredPermission.permission &&
-            permission.action.includes(requiredPermission.action)
+            permission.resource === PermissionResource.ALL ||
+            (permission.resource === requiredPermission.permission &&
+              permission.action.includes(requiredPermission.action))
           ) {
             return true;
           }

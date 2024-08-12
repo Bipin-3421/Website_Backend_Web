@@ -31,6 +31,8 @@ import { takePagination } from 'common/utils/pagination.utils';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Require } from 'common/decorator/require.decorator';
+import { PermissionAction, PermissionResource } from 'types/permission';
 
 @Controller('vacancy')
 @ApiTags('Job Vacancy API')
@@ -38,10 +40,10 @@ export class VacancyController {
   constructor(private readonly vacancyService: VacancyService) {}
 
   @Post()
-  // @Require({
-  //   permission: PermissionResource.VACANCY,
-  //   action: PermissionAction.EDIT,
-  // })
+  @Require({
+    permission: PermissionResource.VACANCY,
+    action: PermissionAction.EDIT,
+  })
   @UseInterceptors(
     FileInterceptor('image', {
       fileFilter(req, file, callback) {
@@ -105,6 +107,10 @@ export class VacancyController {
   }
 
   @Delete(':vacancyId')
+  @Require({
+    permission: PermissionResource.VACANCY,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Job vacancy deletion failed',
   })
@@ -144,6 +150,10 @@ export class VacancyController {
   }
 
   @Patch(':vacancyId')
+  @Require({
+    permission: PermissionResource.VACANCY,
+    action: PermissionAction.EDIT,
+  })
   @UseInterceptors(
     FileInterceptor('image', {
       fileFilter(req, file, callback) {

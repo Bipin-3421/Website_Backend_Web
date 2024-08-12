@@ -131,7 +131,7 @@ export class VacancyService {
     if (image) {
       asset = await this.assetService.upload(
         ctx,
-        details.image.buffer,
+        image.buffer,
         AssetFor.VACANCY,
       );
 
