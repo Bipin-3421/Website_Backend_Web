@@ -108,6 +108,10 @@ export class ApplicantController {
   }
 
   @Get()
+  @Require({
+    permission: PermissionResource.APPLICANT,
+    action: PermissionAction.VIEW,
+  })
   @ApiBadRequestResponse({
     description: 'Applicant fetch failed',
   })
