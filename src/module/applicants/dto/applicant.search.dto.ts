@@ -1,5 +1,6 @@
 import { IntersectionType } from '@nestjs/swagger';
 import { IsEnum, IsString, IsEmail, IsNumber } from 'class-validator';
+
 import { Optional } from 'common/decorator/optional.decorator';
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { ApplicationStatus } from 'common/enum/applicant.status.enum';

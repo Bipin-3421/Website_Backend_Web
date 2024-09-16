@@ -5,7 +5,7 @@ export class MessageResponseDto {
   message: string;
 }
 
-export class MessageResponseWithIdDto {
+export class MessageResponseWithIdDTO {
   message: string;
 
   data: {

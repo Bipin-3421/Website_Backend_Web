@@ -3,8 +3,8 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { BaseEntity } from './base.entity';
 import { Applicant } from './applicant.entity';
-import { JobStatus } from 'common/enum/job.status.enum';
 import { Asset } from './asset.entity';
+import { jobStatus } from 'common/enum/jobStatus.enum';
 
 @Entity()
 export class Vacancy extends BaseEntity {
@@ -44,9 +44,9 @@ export class Vacancy extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: JobStatus,
+    enum: jobStatus,
   })
-  status: JobStatus;
+  status: jobStatus;
 
   @OneToMany(() => Applicant, (Applicant) => Applicant.vacancy)
   applicants: Applicant[];

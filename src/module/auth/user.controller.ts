@@ -13,7 +13,7 @@ import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { PublicRoute } from 'common/decorator/public.decorator';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
-import { MessageResponseWithIdDto } from 'common/dto/response.dto';
+import { MessageResponseWithIdDTO } from 'common/dto/response.dto';
 import { ListGetUsersResponseDTO } from './dto/user.get.dto';
 import { PaginationDto } from 'common/dto/pagination.dto';
 import { takePagination } from 'common/utils/pagination.utils';
@@ -35,7 +35,7 @@ export class UserController {
     @Ctx() ctx: RequestContext,
     @Body()
     userLoginDto: SignInDto,
-  ): Promise<MessageResponseWithIdDto> {
+  ): Promise<MessageResponseWithIdDTO> {
     const res = await this.userService.login(ctx, userLoginDto);
 
     if (!res) {
@@ -63,7 +63,7 @@ export class UserController {
   async createUser(
     @Ctx() ctx: RequestContext,
     @Body() UserCreateDto: UserCreateDto,
-  ): Promise<MessageResponseWithIdDto> {
+  ): Promise<MessageResponseWithIdDTO> {
     const res = await this.userService.createUser(ctx, UserCreateDto);
 
     if (!res) {

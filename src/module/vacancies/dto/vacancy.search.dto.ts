@@ -3,7 +3,7 @@ import { Optional } from 'common/decorator/optional.decorator';
 import { IsDateString, IsEnum, IsNumber, IsString } from 'class-validator';
 import { IntersectionType } from '@nestjs/swagger';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
-import { JobStatus } from 'common/enum/job.status.enum';
+import { jobStatus } from 'common/enum/jobStatus.enum';
 
 export class VacancyFilterDto extends IntersectionType(PaginationDto) {
   @IsString()
@@ -20,8 +20,8 @@ export class VacancyFilterDto extends IntersectionType(PaginationDto) {
 
   @IsString()
   @Optional()
-  @IsEnum(JobStatus)
-  status?: JobStatus;
+  @IsEnum(jobStatus)
+  status?: jobStatus;
 
   @Optional()
   @IsDateString()
