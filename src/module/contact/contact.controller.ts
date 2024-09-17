@@ -1,15 +1,30 @@
-import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Delete,
+  Query,
+  Patch,
+} from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
 import {
   ListResponseDTO,
-  SingleContactResponseDTO,
   CreateContactDTO,
+  ListContactQueryDTO,
+  UpdateContactRequestDTO,
+  ContactIdDTO,
+  GetSingleContactDTO,
 } from './contact.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { PublicRoute } from 'common/decorator/public.decorator';
-import { MessageResponseWithIdDTO } from 'common/dto/response.dto';
+import {
+  MessageResponseDTO,
+  MessageResponseWithIdDTO,
+} from 'common/dto/response.dto';
 
 @Controller('contact')
 @ApiTags('Contact Api')
@@ -33,8 +48,11 @@ export class ContactController {
 
   @PublicRoute()
   @Get()
-  async getAllContacts(@Ctx() ctx: RequestContext): Promise<ListResponseDTO> {
-    const response = await this.contactService.findMany(ctx);
+  async getAllContacts(
+    @Ctx() ctx: RequestContext,
+    @Query() query: ListContactQueryDTO,
+  ): Promise<ListResponseDTO> {
+    const response = await this.contactService.findMany(ctx, query);
     return {
       message: 'All contact Fetched Properly',
       data: response,
@@ -42,24 +60,50 @@ export class ContactController {
   }
 
   @PublicRoute()
-  @Get('/:contactID')
+  @Get('/:contactId')
   async getSingleContact(
     @Ctx() ctx: RequestContext,
-    @Param('contactID') id: string,
-  ) {
-    const contact = await this.contactService.findSingleContact(ctx, id);
+    @Param() param: ContactIdDTO,
+  ): Promise<GetSingleContactDTO> {
+    const contact = await this.contactService.findSingleContact(
+      ctx,
+      param.contactId,
+    );
     return {
-      contact,
+      data: contact,
     };
   }
 
   @PublicRoute()
-  @Delete('/:contactID')
+  @Patch('/:contactId')
+  async updateContact(
+    @Ctx() ctx: RequestContext,
+    @Param() param: ContactIdDTO,
+    @Body() contactDetail: UpdateContactRequestDTO,
+  ): Promise<MessageResponseWithIdDTO> {
+    const contact = await this.contactService.updateContact(
+      ctx,
+      param.contactId,
+      contactDetail,
+    );
+    return {
+      message: 'status updated successfully',
+      data: {
+        id: contact.id,
+      },
+    };
+  }
+
+  @PublicRoute()
+  @Delete('/:contactId')
   async deleteContact(
     @Ctx() ctx: RequestContext,
-    @Param('contactId') id: string,
-  ) {
-    const contact = await this.contactService.deleteSingleContact(ctx, id);
+    @Param() param: ContactIdDTO,
+  ): Promise<MessageResponseDTO> {
+    const contact = await this.contactService.deleteSingleContact(
+      ctx,
+      param.contactId,
+    );
     return {
       message: 'contact with id removed successfully',
     };

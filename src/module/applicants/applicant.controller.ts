@@ -17,7 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateApplicantDto } from './dto/create.applicant.dto';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import {
-  MessageResponseDto,
+  MessageResponseDTO,
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { ApplicantFilterDto } from './dto/applicant.search.dto';
@@ -92,7 +92,7 @@ export class ApplicantController {
   async deleteApplicant(
     @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDto,
-  ): Promise<MessageResponseDto> {
+  ): Promise<MessageResponseDTO> {
     const status = await this.applicantService.delete(
       ctx,
       applicantParamDto.applicantId,
@@ -143,7 +143,7 @@ export class ApplicantController {
     @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDto,
     @Body() status: PatchApplicantDto,
-  ): Promise<MessageResponseDto> {
+  ): Promise<MessageResponseDTO> {
     const res = await this.applicantService.update(
       ctx,
       applicantParamDto.applicantId,

@@ -23,7 +23,7 @@ import {
   ListVacanciesReponseDto,
 } from './dto/get.vacancy.dto';
 import {
-  MessageResponseDto,
+  MessageResponseDTO,
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
@@ -117,7 +117,7 @@ export class VacancyController {
   async deleteJobVacancy(
     @Ctx() ctx: RequestContext,
     @Param() param: VacancyIdDto,
-  ): Promise<MessageResponseDto> {
+  ): Promise<MessageResponseDTO> {
     await this.vacancyService.delete(ctx, param.vacancyId);
 
     return {
