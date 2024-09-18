@@ -36,11 +36,11 @@ export class ContactController {
   @Post()
   async createContact(
     @Ctx() ctx: RequestContext,
-    @Body() contactDetail: CreateContactDTO,
+    @Body() body: CreateContactDTO,
   ): Promise<MessageResponseWithIdDTO> {
-    const contact = await this.contactService.create(ctx, contactDetail);
+    const contact = await this.contactService.create(ctx, body);
     return {
-      message: 'contact created successfully',
+      message: 'Contact Created Successfully',
       data: {
         id: contact.id,
       },
@@ -55,9 +55,20 @@ export class ContactController {
   ): Promise<ListContactResponseDTO> {
     const [response, total] = await this.contactService.findMany(ctx, query);
     return {
-      message: 'All contact Fetched Properly',
+      message: 'All Contact Fetched Successfully',
+      data: response.map((res) => {
+        return {
+          id: res.id,
+          createdAt: res.createdAt,
+          updatedAt: res.updatedAt,
+          name: res.name,
+          email: res.email,
+          phoneNumber: res.phoneNumber,
+          message: res.message,
+          status: res.status,
+        };
+      }),
       pagination: getPaginationResponse(response, total, query),
-      data: response,
     };
   }
 
@@ -72,7 +83,17 @@ export class ContactController {
       param.contactId,
     );
     return {
-      data: contact,
+      message: 'Contact Fetched Successfully',
+      data: {
+        id: contact.id,
+        createdAt: contact.createdAt,
+        updatedAt: contact.updatedAt,
+        name: contact.name,
+        email: contact.email,
+        phoneNumber: contact.phoneNumber,
+        message: contact.message,
+        status: contact.status,
+      },
     };
   }
 
@@ -81,15 +102,15 @@ export class ContactController {
   async updateContact(
     @Ctx() ctx: RequestContext,
     @Param() param: ContactIdDTO,
-    @Body() contactDetail: UpdateContactRequestDTO,
+    @Body() body: UpdateContactRequestDTO,
   ): Promise<MessageResponseWithIdDTO> {
     const contact = await this.contactService.updateContact(
       ctx,
       param.contactId,
-      contactDetail,
+      body,
     );
     return {
-      message: 'status updated successfully',
+      message: 'Status Updated Successfully',
       data: {
         id: contact.id,
       },
@@ -107,7 +128,7 @@ export class ContactController {
       param.contactId,
     );
     return {
-      message: 'contact with id removed successfully',
+      message: 'Contact Removed Successfully',
     };
   }
 }

@@ -9,7 +9,7 @@ import { JobType } from '../../../common/enum/Job.type.enum';
 import { Optional } from 'common/decorator/optional.decorator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { jobStatus } from 'common/enum/jobStatus.enum';
+import { JobStatus } from 'common/enum/jobStatus.enum';
 
 export class UpdateVacancyRequestDto {
   @IsString()
@@ -67,6 +67,6 @@ export class UpdateVacancyRequestDto {
   image?: Express.Multer.File;
 
   @Optional()
-  @IsEnum(jobStatus)
-  status?: jobStatus;
+  @IsEnum(JobStatus)
+  status?: JobStatus;
 }

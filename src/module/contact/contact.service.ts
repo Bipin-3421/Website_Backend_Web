@@ -13,6 +13,7 @@ import { patchEntity } from 'common/utils/patchEntity';
 @Injectable()
 export class ContactService {
   constructor(private readonly connection: TransactionalConnection) {}
+
   async create(ctx: RequestContext, body: CreateContactDTO) {
     const contact = new Contact({
       name: body.name,
@@ -42,42 +43,42 @@ export class ContactService {
     });
   }
 
-  async findSingleContact(ctx: RequestContext, contactID: string) {
+  async findSingleContact(ctx: RequestContext, contactId: string) {
     const contactRepo = this.connection.getRepository(ctx, Contact);
     const data = await contactRepo.findOne({
       where: {
-        id: contactID,
+        id: contactId,
       },
     });
     if (!data) {
-      throw new NotFoundException('contact with given id is not found');
+      throw new NotFoundException('Contact  Not Found');
     }
     return data;
   }
 
   async updateContact(
     ctx: RequestContext,
-    contactID: string,
+    contactId: string,
     detail: UpdateContactRequestDTO,
   ) {
     const contactRepo = this.connection.getRepository(ctx, Contact);
-    const contact = await this.findSingleContact(ctx, contactID);
+    const contact = await this.findSingleContact(ctx, contactId);
     if (!contact) {
-      throw new NotFoundException('contact with the given id not found');
+      throw new NotFoundException('Contact Not Found');
     }
     patchEntity(contact, detail);
     return await contactRepo.save(contact);
   }
 
-  async deleteSingleContact(ctx: RequestContext, contactID: string) {
+  async deleteSingleContact(ctx: RequestContext, contactId: string) {
     const contactRepo = this.connection.getRepository(ctx, Contact);
     const contact = await contactRepo.findOne({
       where: {
-        id: contactID,
+        id: contactId,
       },
     });
     if (!contact) {
-      throw new NotFoundException('contact with given id is not found');
+      throw new NotFoundException('Contact Not Found');
     }
     return await contactRepo.remove(contact);
   }

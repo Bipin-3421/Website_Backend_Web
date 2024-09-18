@@ -11,7 +11,7 @@ import { Asset } from '../../common/entities/asset.entity';
 import { patchEntity } from 'common/utils/patchEntity';
 import { AssetFor } from 'common/enum/asset.for.enum';
 import { dateFilter } from 'common/utils/dateFilter';
-import { jobStatus } from 'common/enum/jobStatus.enum';
+import { JobStatus } from 'common/enum/jobStatus.enum';
 
 @Injectable()
 export class VacancyService {
@@ -40,7 +40,7 @@ export class VacancyService {
       description: jobDetails.description,
       skill: jobDetails.skill,
       department: jobDetails.department,
-      status: jobStatus.ACTIVE,
+      status: JobStatus.ACTIVE,
       image: asset,
     });
 

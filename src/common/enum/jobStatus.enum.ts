@@ -1,4 +1,4 @@
-export enum jobStatus {
+export enum JobStatus {
   ARCHIEVED = 'archieved',
   ACTIVE = 'active',
 }

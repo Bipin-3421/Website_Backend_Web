@@ -4,7 +4,7 @@ import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { BaseEntity } from './base.entity';
 import { Applicant } from './applicant.entity';
 import { Asset } from './asset.entity';
-import { jobStatus } from 'common/enum/jobStatus.enum';
+import { JobStatus } from 'common/enum/jobStatus.enum';
 
 @Entity()
 export class Vacancy extends BaseEntity {
@@ -44,9 +44,9 @@ export class Vacancy extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: jobStatus,
+    enum: JobStatus,
   })
-  status: jobStatus;
+  status: JobStatus;
 
   @OneToMany(() => Applicant, (Applicant) => Applicant.vacancy)
   applicants: Applicant[];

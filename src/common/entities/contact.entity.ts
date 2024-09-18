@@ -1,6 +1,6 @@
 import { Entity, Column, DeepPartial } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { jobStatus } from 'common/enum/jobStatus.enum';
+import { ContactStatus } from 'common/enum/contactStatus.enum';
 
 @Entity()
 export class Contact extends BaseEntity {
@@ -11,15 +11,20 @@ export class Contact extends BaseEntity {
   @Column({ type: String })
   name: string;
 
-  @Column({ type: String, unique: true })
+  @Column({ type: String })
   email: string;
 
-  @Column({ type: String, unique: true })
+  @Column({ type: String })
   phoneNumber: string;
 
   @Column({ type: String })
   message: string;
 
-  @Column({ type: 'enum', enum: jobStatus, default: jobStatus.ACTIVE })
-  status: jobStatus;
+  @Column({
+    type: 'enum',
+    enumName: 'ContactStatus',
+    enum: ContactStatus,
+    default: ContactStatus.ACTIVE,
+  })
+  status: ContactStatus;
 }

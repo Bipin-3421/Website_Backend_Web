@@ -1,7 +1,7 @@
-import { PartialType, IntersectionType } from '@nestjs/swagger';
+import { IntersectionType } from '@nestjs/swagger';
 import { IsString, IsEmail, IsUUID, IsEnum } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
-import { jobStatus } from 'common/enum/jobStatus.enum';
+import { ContactStatus } from 'common/enum/contactStatus.enum';
 import {
   PaginationParamDTO,
   PaginationResponseDTO,
@@ -35,10 +35,11 @@ export class GetContactDTO {
 
 export class ListContactResponseDTO {
   message: string;
-  pagination: PaginationResponseDTO;
   data: GetContactDTO[];
+  pagination: PaginationResponseDTO;
 }
 export class GetSingleContactDTO {
+  message: string;
   data: {
     id: string;
     createdAt: Date;
@@ -59,8 +60,8 @@ export class ListContactQueryDTO extends IntersectionType(
 export class UpdateContactRequestDTO {
   @IsString()
   @Optional()
-  @IsEnum(jobStatus)
-  status?: jobStatus;
+  @IsEnum(ContactStatus)
+  status?: ContactStatus;
 }
 
 export class ContactIdDTO {
