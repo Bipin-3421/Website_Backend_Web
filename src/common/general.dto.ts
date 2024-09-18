@@ -1,4 +1,4 @@
-import { IsString, IsNumber, Min } from 'class-validator';
+import { IsString, IsDateString, IsNumber, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { Optional } from './decorator/optional.decorator';
 
@@ -36,4 +36,14 @@ export class PaginationResponseDTO {
 
   @IsNumber()
   count: number;
+}
+
+export class DateFilterDTO {
+  @IsDateString()
+  @Optional()
+  dateFrom?: Date;
+
+  @IsDateString()
+  @Optional()
+  dateTo?: Date;
 }

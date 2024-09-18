@@ -9,6 +9,7 @@ import { TransactionalConnection } from 'module/connection/connection.service';
 import { Contact } from 'common/entities/contact.entity';
 import { FindOptionsWhere, ILike } from 'typeorm';
 import { patchEntity } from 'common/utils/patchEntity';
+import { dateFilter } from 'common/utils/dateFilter';
 
 @Injectable()
 export class ContactService {
@@ -27,14 +28,20 @@ export class ContactService {
 
   async findMany(
     ctx: RequestContext,
-    query: ListContactQueryDTO,
+    filters: ListContactQueryDTO,
   ): Promise<[Contact[], number]> {
-    const { search, take = 10, page = 0 } = query;
+    const { search, take = 10, page = 0 } = filters;
     const skip = (take || 0) * (page || 0);
-
-    const whereClause: FindOptionsWhere<Contact>[] = search
-      ? [{ name: ILike(`%${search}%`) }, { email: ILike(`%${search}%`) }]
-      : [];
+    const whereClause: FindOptionsWhere<Contact>[] = [
+      {
+        name: search ? ILike(`%${search}%`) : undefined,
+        createdAt: dateFilter(filters.dateFrom, filters.dateTo),
+      },
+      {
+        email: search ? ILike(`%${search}%`) : undefined,
+        createdAt: dateFilter(filters.dateFrom, filters.dateTo),
+      },
+    ];
     return this.connection.getRepository(ctx, Contact).findAndCount({
       where: whereClause.length ? whereClause : undefined,
       skip,

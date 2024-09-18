@@ -3,6 +3,7 @@ import { IsString, IsEmail, IsUUID, IsEnum } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 import { ContactStatus } from 'common/enum/contactStatus.enum';
 import {
+  DateFilterDTO,
   PaginationParamDTO,
   PaginationResponseDTO,
   SearchParamDTO,
@@ -50,6 +51,7 @@ export class GetContactResponseDTO {
 export class ListContactQueryDTO extends IntersectionType(
   SearchParamDTO,
   PaginationParamDTO,
+  DateFilterDTO,
 ) {}
 
 export class ListContactResponseDTO {

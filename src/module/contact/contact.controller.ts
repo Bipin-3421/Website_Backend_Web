@@ -26,6 +26,7 @@ import {
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
+import { DateFilterDTO } from 'common/general.dto';
 
 @Controller('contact')
 @ApiTags('Contact Api')
