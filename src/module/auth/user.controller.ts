@@ -15,7 +15,7 @@ import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
 import { MessageResponseWithIdDTO } from 'common/dto/response.dto';
 import { ListGetUsersResponseDTO } from './dto/user.get.dto';
-import { PaginationDto } from 'common/dto/pagination.dto';
+import { PaginationDTO } from 'common/dto/pagination.dto';
 import { takePagination } from 'common/utils/pagination.utils';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
@@ -85,7 +85,7 @@ export class UserController {
   })
   async getAllUsers(
     @Ctx() ctx: RequestContext,
-    @Query() pagination: PaginationDto,
+    @Query() pagination: PaginationDTO,
   ): Promise<ListGetUsersResponseDTO> {
     const [res, total] = await this.userService.findAll(ctx, pagination);
 

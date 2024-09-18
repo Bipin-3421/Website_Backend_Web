@@ -1,8 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
-import { IsString, IsEmail, IsUUID } from 'class-validator';
+import { PartialType, IntersectionType } from '@nestjs/swagger';
+import { IsString, IsEmail, IsUUID, IsEnum } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 import { jobStatus } from 'common/enum/jobStatus.enum';
-import { SearchParamDTO } from 'common/general.dto';
+import {
+  PaginationParamDTO,
+  PaginationResponseDTO,
+  SearchParamDTO,
+} from 'common/general.dto';
 
 export class CreateContactDTO {
   @IsString()
@@ -29,8 +33,9 @@ export class GetContactDTO {
   status: string;
 }
 
-export class ListResponseDTO {
+export class ListContactResponseDTO {
   message: string;
+  pagination: PaginationResponseDTO;
   data: GetContactDTO[];
 }
 export class GetSingleContactDTO {
@@ -46,11 +51,15 @@ export class GetSingleContactDTO {
   };
 }
 
-export class ListContactQueryDTO extends PartialType(SearchParamDTO) {}
+export class ListContactQueryDTO extends IntersectionType(
+  SearchParamDTO,
+  PaginationParamDTO,
+) {}
 
 export class UpdateContactRequestDTO {
   @IsString()
   @Optional()
+  @IsEnum(jobStatus)
   status?: jobStatus;
 }
 

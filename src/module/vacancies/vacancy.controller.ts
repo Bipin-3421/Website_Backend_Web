@@ -98,7 +98,6 @@ export class VacancyController {
       ctx,
       queryFilter,
     );
-
     return {
       message: 'All job fetched successfully',
       data: response,

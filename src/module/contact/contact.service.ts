@@ -24,15 +24,21 @@ export class ContactService {
     return await contactRepo.save(contact);
   }
 
-  async findMany(ctx: RequestContext, query: ListContactQueryDTO) {
-    const { search } = query;
+  async findMany(
+    ctx: RequestContext,
+    query: ListContactQueryDTO,
+  ): Promise<[Contact[], number]> {
+    const { search, take = 10, page = 0 } = query;
+    const skip = (take || 0) * (page || 0);
 
     const whereClause: FindOptionsWhere<Contact>[] = search
       ? [{ name: ILike(`%${search}%`) }, { email: ILike(`%${search}%`) }]
       : [];
-
-    return this.connection.getRepository(ctx, Contact).find({
+    return this.connection.getRepository(ctx, Contact).findAndCount({
       where: whereClause.length ? whereClause : undefined,
+      skip,
+      take,
+      order: { createdAt: 'DESC' },
     });
   }
 

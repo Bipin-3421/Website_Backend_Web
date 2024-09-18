@@ -12,7 +12,7 @@ import { ContactService } from './contact.service';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
 import {
-  ListResponseDTO,
+  ListContactResponseDTO,
   CreateContactDTO,
   ListContactQueryDTO,
   UpdateContactRequestDTO,
@@ -25,6 +25,7 @@ import {
   MessageResponseDTO,
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
+import { getPaginationResponse } from 'common/utils/pagination.utils';
 
 @Controller('contact')
 @ApiTags('Contact Api')
@@ -51,10 +52,11 @@ export class ContactController {
   async getAllContacts(
     @Ctx() ctx: RequestContext,
     @Query() query: ListContactQueryDTO,
-  ): Promise<ListResponseDTO> {
-    const response = await this.contactService.findMany(ctx, query);
+  ): Promise<ListContactResponseDTO> {
+    const [response, total] = await this.contactService.findMany(ctx, query);
     return {
       message: 'All contact Fetched Properly',
+      pagination: getPaginationResponse(response, total, query),
       data: response,
     };
   }
