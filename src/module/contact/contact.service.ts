@@ -51,7 +51,7 @@ export class ContactService {
       },
     });
     if (!data) {
-      throw new NotFoundException('Contact  Not Found');
+      throw new NotFoundException('Contact  not found');
     }
     return data;
   }
@@ -64,7 +64,7 @@ export class ContactService {
     const contactRepo = this.connection.getRepository(ctx, Contact);
     const contact = await this.findSingleContact(ctx, contactId);
     if (!contact) {
-      throw new NotFoundException('Contact Not Found');
+      throw new NotFoundException('Contact not found');
     }
     patchEntity(contact, detail);
     return await contactRepo.save(contact);
@@ -78,7 +78,7 @@ export class ContactService {
       },
     });
     if (!contact) {
-      throw new NotFoundException('Contact Not Found');
+      throw new NotFoundException('Contact not found');
     }
     return await contactRepo.remove(contact);
   }

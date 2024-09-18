@@ -22,7 +22,7 @@ export class CreateContactDTO {
   message: string;
 }
 
-export class GetContactDTO {
+export class ListContactDTO {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -33,12 +33,7 @@ export class GetContactDTO {
   status: string;
 }
 
-export class ListContactResponseDTO {
-  message: string;
-  data: GetContactDTO[];
-  pagination: PaginationResponseDTO;
-}
-export class GetSingleContactDTO {
+export class GetContactResponseDTO {
   message: string;
   data: {
     id: string;
@@ -56,6 +51,12 @@ export class ListContactQueryDTO extends IntersectionType(
   SearchParamDTO,
   PaginationParamDTO,
 ) {}
+
+export class ListContactResponseDTO {
+  message: string;
+  data: ListContactDTO[];
+  pagination: PaginationResponseDTO;
+}
 
 export class UpdateContactRequestDTO {
   @IsString()

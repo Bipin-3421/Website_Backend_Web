@@ -17,7 +17,7 @@ import {
   ListContactQueryDTO,
   UpdateContactRequestDTO,
   ContactIdDTO,
-  GetSingleContactDTO,
+  GetContactResponseDTO,
 } from './contact.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { PublicRoute } from 'common/decorator/public.decorator';
@@ -40,14 +40,13 @@ export class ContactController {
   ): Promise<MessageResponseWithIdDTO> {
     const contact = await this.contactService.create(ctx, body);
     return {
-      message: 'Contact Created Successfully',
+      message: 'Contact created successfully',
       data: {
         id: contact.id,
       },
     };
   }
 
-  @PublicRoute()
   @Get()
   async getAllContacts(
     @Ctx() ctx: RequestContext,
@@ -55,7 +54,7 @@ export class ContactController {
   ): Promise<ListContactResponseDTO> {
     const [response, total] = await this.contactService.findMany(ctx, query);
     return {
-      message: 'All Contact Fetched Successfully',
+      message: 'All contacts fetched successfully',
       data: response.map((res) => {
         return {
           id: res.id,
@@ -72,18 +71,17 @@ export class ContactController {
     };
   }
 
-  @PublicRoute()
   @Get('/:contactId')
   async getSingleContact(
     @Ctx() ctx: RequestContext,
     @Param() param: ContactIdDTO,
-  ): Promise<GetSingleContactDTO> {
+  ): Promise<GetContactResponseDTO> {
     const contact = await this.contactService.findSingleContact(
       ctx,
       param.contactId,
     );
     return {
-      message: 'Contact Fetched Successfully',
+      message: 'Contact fetched successfully',
       data: {
         id: contact.id,
         createdAt: contact.createdAt,
@@ -97,7 +95,6 @@ export class ContactController {
     };
   }
 
-  @PublicRoute()
   @Patch('/:contactId')
   async updateContact(
     @Ctx() ctx: RequestContext,
@@ -110,14 +107,13 @@ export class ContactController {
       body,
     );
     return {
-      message: 'Status Updated Successfully',
+      message: 'Status updated successfully',
       data: {
         id: contact.id,
       },
     };
   }
 
-  @PublicRoute()
   @Delete('/:contactId')
   async deleteContact(
     @Ctx() ctx: RequestContext,
@@ -128,7 +124,7 @@ export class ContactController {
       param.contactId,
     );
     return {
-      message: 'Contact Removed Successfully',
+      message: 'Contact deleted successfully',
     };
   }
 }

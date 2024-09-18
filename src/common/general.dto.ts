@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, Min } from 'class-validator';
+import { IsString, IsNumber, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { Optional } from './decorator/optional.decorator';
 
