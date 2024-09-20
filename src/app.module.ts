@@ -8,6 +8,7 @@ import { AssetModule } from 'asset/asset.module';
 import { ApplicantModule } from './module/applicants/applicant.module';
 import { ConnectionModule } from 'module/connection/connection.module';
 import { JwtAuthGuard } from 'common/guard/jwt.guard';
+import { ContactModule } from 'module/contact/contact.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from 'common/guard/jwt.guard';
     ApplicantModule,
     UserModule,
     AssetModule,
+    ContactModule,
   ],
   controllers: [],
   providers: [

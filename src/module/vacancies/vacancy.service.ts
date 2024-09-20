@@ -7,11 +7,11 @@ import { TransactionalConnection } from 'module/connection/connection.service';
 import { RequestContext } from 'common/request-context';
 import { ILike } from 'typeorm';
 import { AssetService } from 'asset/asset.service';
-import { JobStatus } from 'common/enum/job.status.enum';
 import { Asset } from '../../common/entities/asset.entity';
 import { patchEntity } from 'common/utils/patchEntity';
 import { AssetFor } from 'common/enum/asset.for.enum';
 import { dateFilter } from 'common/utils/dateFilter';
+import { JobStatus } from 'common/enum/jobStatus.enum';
 
 @Injectable()
 export class VacancyService {

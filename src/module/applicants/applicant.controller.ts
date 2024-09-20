@@ -17,8 +17,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateApplicantDto } from './dto/create.applicant.dto';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import {
-  MessageResponseDto,
-  MessageResponseWithIdDto,
+  MessageResponseDTO,
+  MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { ApplicantFilterDto } from './dto/applicant.search.dto';
 import { ListApplicantsResponseDto } from './dto/get.applicant.dto';
@@ -64,7 +64,7 @@ export class ApplicantController {
     @Ctx() ctx: RequestContext,
     @Body() applicantDetail: CreateApplicantDto,
     @UploadedFile() file: Express.Multer.File | null,
-  ): Promise<MessageResponseWithIdDto> {
+  ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
       throw new NotAcceptableException('CV is required');
     }
@@ -92,7 +92,7 @@ export class ApplicantController {
   async deleteApplicant(
     @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDto,
-  ): Promise<MessageResponseDto> {
+  ): Promise<MessageResponseDTO> {
     const status = await this.applicantService.delete(
       ctx,
       applicantParamDto.applicantId,
@@ -143,7 +143,7 @@ export class ApplicantController {
     @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDto,
     @Body() status: PatchApplicantDto,
-  ): Promise<MessageResponseDto> {
+  ): Promise<MessageResponseDTO> {
     const res = await this.applicantService.update(
       ctx,
       applicantParamDto.applicantId,

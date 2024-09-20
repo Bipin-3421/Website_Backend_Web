@@ -3,7 +3,8 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from 'config/configuration';
 async function bootstrap() {
   dotenv.config();
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,12 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  await app.listen(3000);
+  const configService = app.get<ConfigService<AppConfig, true>>(ConfigService);
+
+  const port = configService.get('port', { infer: true });
+
+  await app.listen(port, () => {
+    console.log(`server is working in port:${port}`);
+  });
 }
 void bootstrap();

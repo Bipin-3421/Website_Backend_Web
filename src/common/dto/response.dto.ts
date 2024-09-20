@@ -1,11 +1,11 @@
 import { IsNumber } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 
-export class MessageResponseDto {
+export class MessageResponseDTO {
   message: string;
 }
 
-export class MessageResponseWithIdDto {
+export class MessageResponseWithIdDTO {
   message: string;
 
   data: {

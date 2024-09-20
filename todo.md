@@ -1,6 +1,0 @@
-- [ DONE ] Setup nest
-- [ DONE ] Configure tsconfig and eslint(use flat config)
-- [ ] Configure husky for lint-staged and commitlint (optional)
-- [ ] Setup configuration module and typeorm
-- [ ] Base entity class
-- [ ] Basic user authentication

@@ -23,8 +23,8 @@ import {
   ListVacanciesReponseDto,
 } from './dto/get.vacancy.dto';
 import {
-  MessageResponseDto,
-  MessageResponseWithIdDto,
+  MessageResponseDTO,
+  MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
 import { takePagination } from 'common/utils/pagination.utils';
@@ -68,7 +68,7 @@ export class VacancyController {
     @Ctx() ctx: RequestContext,
     @Body() vacancyDetails: CreateVacancyRequestDto,
     @UploadedFile() file: Express.Multer.File | null,
-  ): Promise<MessageResponseWithIdDto> {
+  ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
       throw new NotAcceptableException('Vacancy image is required');
     }
@@ -98,7 +98,6 @@ export class VacancyController {
       ctx,
       queryFilter,
     );
-
     return {
       message: 'All job fetched successfully',
       data: response,
@@ -117,7 +116,7 @@ export class VacancyController {
   async deleteJobVacancy(
     @Ctx() ctx: RequestContext,
     @Param() param: VacancyIdDto,
-  ): Promise<MessageResponseDto> {
+  ): Promise<MessageResponseDTO> {
     await this.vacancyService.delete(ctx, param.vacancyId);
 
     return {
@@ -179,7 +178,7 @@ export class VacancyController {
     @Param() param: VacancyIdDto,
     @Body() vacancyDetails: UpdateVacancyRequestDto,
     @UploadedFile() file: Express.Multer.File | null,
-  ): Promise<MessageResponseWithIdDto> {
+  ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
       throw new NotAcceptableException('CV is required');
     }

@@ -7,9 +7,9 @@ import {
 } from 'class-validator';
 import { JobType } from '../../../common/enum/Job.type.enum';
 import { Optional } from 'common/decorator/optional.decorator';
-import { JobStatus } from 'common/enum/job.status.enum';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { JobStatus } from 'common/enum/jobStatus.enum';
 
 export class UpdateVacancyRequestDto {
   @IsString()

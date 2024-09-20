@@ -5,7 +5,7 @@ import { SignInDto } from './dto/sign.in.dto';
 import { ConfigService } from '@nestjs/config';
 import { signToken } from 'common/utils/jwt.utils';
 import { AuthPayload } from 'types/jwt';
-import { PaginationDto } from 'common/dto/pagination.dto';
+import { PaginationDTO } from 'common/dto/pagination.dto';
 import { RequestContext } from '../../common/request-context';
 import { AppConfig } from '../../config/configuration';
 import { TransactionalConnection } from 'module/connection/connection.service';
@@ -39,7 +39,7 @@ export class UserService {
     return await userRepo.save(user);
   }
 
-  async findAll(ctx: RequestContext, pagination: PaginationDto) {
+  async findAll(ctx: RequestContext, pagination: PaginationDTO) {
     const userRepo = this.connection.getRepository(ctx, User);
 
     return await userRepo.findAndCount({

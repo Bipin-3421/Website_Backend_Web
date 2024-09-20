@@ -2,7 +2,8 @@
 /dist
 /node_modules
 /build
-
+/todo.md
+/test.ts
 # Logs
 logs
 *.log
