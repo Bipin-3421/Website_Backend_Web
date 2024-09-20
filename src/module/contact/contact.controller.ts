@@ -54,7 +54,7 @@ export class ContactController {
   ): Promise<ListContactResponseDTO> {
     const [response, total] = await this.contactService.findMany(ctx, query);
     return {
-      message: 'All contacts fetched successfully',
+      message: 'Contacts fetched successfully',
       data: response.map((res) => {
         return {
           id: res.id,
@@ -108,7 +108,7 @@ export class ContactController {
       body,
     );
     return {
-      message: 'Status updated successfully',
+      message: 'Contact updated successfully',
       data: {
         id: contact.id,
       },
