@@ -28,7 +28,7 @@ export class ConnectionModule {
             password: dbConfig.password,
             database: dbConfig.database,
             entities: allEntities,
-            synchronize: true, // Set to false in production
+            synchronize: true,
           };
         },
       });

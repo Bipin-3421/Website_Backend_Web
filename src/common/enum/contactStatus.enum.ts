@@ -1,4 +1,4 @@
 export enum ContactStatus {
-  ACTIVE = 'active',
-  ARCHIVED = 'archived',
+  READ = 'read',
+  UNREAD = 'unread',
 }

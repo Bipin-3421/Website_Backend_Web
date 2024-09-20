@@ -24,7 +24,7 @@ export class Contact extends BaseEntity {
     type: 'enum',
     enumName: 'ContactStatus',
     enum: ContactStatus,
-    default: ContactStatus.ACTIVE,
+    default: ContactStatus.UNREAD,
   })
   status: ContactStatus;
 }
