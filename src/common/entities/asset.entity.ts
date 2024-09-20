@@ -4,6 +4,7 @@ import { AssetFor } from 'common/enum/asset.for.enum';
 import { AssetProvider } from 'common/enum/provider.enum';
 import { Applicant } from './applicant.entity';
 import { Vacancy } from './vacancy.entity';
+import { Member } from './member.entity';
 
 @Entity()
 export class Asset extends BaseEntity {
@@ -34,4 +35,7 @@ export class Asset extends BaseEntity {
 
   @OneToOne(() => Vacancy, (vacancy) => vacancy.image)
   vacancy: Vacancy;
+
+  @OneToOne(() => Member, (member) => member.image)
+  member: Member;
 }
