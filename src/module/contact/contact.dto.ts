@@ -3,11 +3,11 @@ import { IsString, IsEmail, IsUUID, IsEnum } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 import { ContactStatus } from 'common/enum/contactStatus.enum';
 import {
-  DateFilterDTO,
   PaginationParamDTO,
   PaginationResponseDTO,
-  SearchParamDTO,
-} from 'common/general.dto';
+} from 'common/dto/pagination.dto';
+import { SearchParamDTO } from 'common/dto/search.dto';
+import { DateFilterDTO } from 'common/dto/date.filter';
 
 export class CreateContactDTO {
   @IsString()

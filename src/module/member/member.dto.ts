@@ -8,10 +8,11 @@ import {
   IsUUID,
 } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
-import { AssetDTO } from 'common/dto/AssetDTO.dto';
+import { AssetDTO } from 'common/dto/asset.dto.';
 import { PaginationResponseDTO } from 'common/dto/response.dto';
 import { MemberRole } from 'common/enum/memberRole.enum';
-import { PaginationParamDTO, SearchParamDTO } from 'common/general.dto';
+import { PaginationParamDTO } from 'common/dto/pagination.dto';
+import { SearchParamDTO } from 'common/dto/search.dto';
 
 export class CreateMemberRequestDTO {
   @Length(1, 50)
