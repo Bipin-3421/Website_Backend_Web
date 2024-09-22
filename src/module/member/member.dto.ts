@@ -8,7 +8,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
-import { AssetDTO } from 'common/dto/asset.dto.';
+import { AssetDTO } from 'common/dto/asset.dto';
 import { PaginationResponseDTO } from 'common/dto/response.dto';
 import { MemberRole } from 'common/enum/memberRole.enum';
 import { PaginationParamDTO } from 'common/dto/pagination.dto';

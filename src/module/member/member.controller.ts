@@ -20,7 +20,6 @@ import {
 } from 'common/dto/response.dto';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PublicRoute } from 'common/decorator/public.decorator';
 import {
   CreateMemberRequestDTO,
   ListMemberResponseDTO,
@@ -35,7 +34,6 @@ import { getPaginationResponse } from 'common/utils/pagination.utils';
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
-  @PublicRoute()
   @Post()
   @UseInterceptors(
     FileInterceptor('image', {
@@ -77,7 +75,6 @@ export class MemberController {
     };
   }
 
-  @PublicRoute()
   @Get()
   async getAllMembers(
     @Ctx() ctx: RequestContext,
@@ -110,7 +107,7 @@ export class MemberController {
       pagination: getPaginationResponse(response, total, query),
     };
   }
-  @PublicRoute()
+
   @Patch(':memberId')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -150,7 +147,6 @@ export class MemberController {
     };
   }
 
-  @PublicRoute()
   @Delete(':memberId')
   async deleteMember(
     @Ctx() ctx: RequestContext,
