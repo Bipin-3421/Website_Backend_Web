@@ -5,11 +5,11 @@ import { SignInDto } from './dto/sign.in.dto';
 import { ConfigService } from '@nestjs/config';
 import { signToken } from 'common/utils/jwt.utils';
 import { AuthPayload } from 'types/jwt';
-import { PaginationDTO } from 'common/dto/pagination.dto';
 import { RequestContext } from '../../common/request-context';
 import { AppConfig } from '../../config/configuration';
 import { TransactionalConnection } from 'module/connection/connection.service';
 import { PermissionAction, PermissionResource } from 'types/permission';
+import { PaginationParamDTO } from 'common/dto/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -39,7 +39,7 @@ export class UserService {
     return await userRepo.save(user);
   }
 
-  async findAll(ctx: RequestContext, pagination: PaginationDTO) {
+  async findAll(ctx: RequestContext, pagination: PaginationParamDTO) {
     const userRepo = this.connection.getRepository(ctx, User);
 
     return await userRepo.findAndCount({

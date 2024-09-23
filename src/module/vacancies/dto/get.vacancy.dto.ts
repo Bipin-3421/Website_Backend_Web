@@ -1,5 +1,5 @@
 import { Vacancy } from 'common/entities/vacancy.entity';
-import { PaginationResponseDTO } from 'common/dto/response.dto';
+import { PaginationResponseDTO } from 'common/dto/pagination.dto';
 export class GetVacancyResponseDto {
   message: string;
   data: Vacancy;

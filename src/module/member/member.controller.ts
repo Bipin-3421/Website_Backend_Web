@@ -28,6 +28,7 @@ import {
   UpdateMemberRequestDTO,
 } from './member.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
+import { PublicRoute } from 'common/decorator/public.decorator';
 
 @Controller('member')
 @ApiTags('Member API')

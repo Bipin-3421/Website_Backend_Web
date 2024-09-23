@@ -1,4 +1,4 @@
-import { PaginationResponseDTO } from 'common/dto/response.dto';
+import { PaginationResponseDTO } from 'common/dto/pagination.dto';
 import { User } from 'common/entities/user.entity';
 
 export class ListGetUsersResponseDTO {

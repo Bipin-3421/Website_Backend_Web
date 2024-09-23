@@ -9,9 +9,11 @@ import {
 } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 import { AssetDTO } from 'common/dto/asset.dto';
-import { PaginationResponseDTO } from 'common/dto/response.dto';
 import { MemberRole } from 'common/enum/memberRole.enum';
-import { PaginationParamDTO } from 'common/dto/pagination.dto';
+import {
+  PaginationParamDTO,
+  PaginationResponseDTO,
+} from 'common/dto/pagination.dto';
 import { SearchParamDTO } from 'common/dto/search.dto';
 
 export class CreateMemberRequestDTO {
