@@ -26,17 +26,16 @@ export class CreateMemberRequestDTO {
   @IsEmail()
   email: string;
 
-  @Length(10, 10, { message: 'Phone number must be exactly 10 digits' })
   @IsString()
   @IsNotEmpty()
   phoneNumber: string;
 
   @Length(1, 50)
   @IsString()
+  @IsNotEmpty()
   designation: string;
 
   @IsEnum(MemberRole)
-  @IsString()
   role: MemberRole;
 
   @ApiProperty({
@@ -71,7 +70,7 @@ export class ListMemberQueryDTO extends IntersectionType(
   PaginationParamDTO,
 ) {
   @Optional()
-  role: MemberRole;
+  role?: MemberRole;
 }
 
 export class MemberParamDTO {
@@ -91,7 +90,6 @@ export class UpdateMemberRequestDTO {
   @IsEmail()
   email?: string;
 
-  @Length(10, 10, { message: 'Phone number must be exactly 10 digits' })
   @IsString()
   @Optional()
   phoneNumber?: string;
@@ -110,6 +108,7 @@ export class UpdateMemberRequestDTO {
     description: 'image of the member',
     type: 'string',
     format: 'binary',
+    required: false,
   })
   @Optional()
   image?: Express.Multer.File;

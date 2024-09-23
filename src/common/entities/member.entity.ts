@@ -16,7 +16,7 @@ export class Member extends BaseEntity {
   email: string;
 
   @Column({ type: String })
-  phoneNumer: string;
+  phoneNumber: string;
 
   @Column({ type: String })
   designation: string;

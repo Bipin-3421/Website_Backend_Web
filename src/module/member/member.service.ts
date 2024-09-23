@@ -31,7 +31,7 @@ export class MemberService {
     const member = new Member({
       name: body.name,
       email: body.email,
-      phoneNumer: body.phoneNumber,
+      phoneNumber: body.phoneNumber,
       designation: body.designation,
       role: body.role,
       image: asset,
@@ -39,6 +39,7 @@ export class MemberService {
 
     return await memberRepo.save(member);
   }
+
   async findManyMembers(
     ctx: RequestContext,
     query: ListMemberQueryDTO,
@@ -48,10 +49,9 @@ export class MemberService {
     const skip = (take || 0) * (page || 0);
 
     const whereClause: FindOptionsWhere<Member>[] = [
-      { name: search ? ILike(`%${search}%`) : undefined },
-      { email: search ? ILike(`%${search}%`) : undefined },
-      { phoneNumer: search ? ILike(`%${search}%`) : undefined },
-      { role: role ? role : undefined },
+      { name: search ? ILike(`%${search}%`) : undefined, role },
+      { email: search ? ILike(`%${search}%`) : undefined, role },
+      { phoneNumber: search ? ILike(`%${search}%`) : undefined, role },
     ];
 
     return this.connection.getRepository(ctx, Member).findAndCount({
@@ -68,13 +68,13 @@ export class MemberService {
     details: UpdateMemberRequestDTO,
     memberId: string,
   ) {
-    const memberRepo = this.connection.getRepository(ctx, Member);
+    const member = this.connection.getRepository(ctx, Member);
 
-    const originalMemberDetails = await memberRepo.findOne({
+    const originalMemberDetails = await member.findOne({
       where: {
         id: memberId,
       },
-      relations: { image: true },
+      relations: { image: !!details.image },
     });
 
     if (!originalMemberDetails) {
@@ -95,7 +95,7 @@ export class MemberService {
       originalMemberDetails.image = asset;
     }
 
-    return await memberRepo.save(originalMemberDetails);
+    return await member.save(originalMemberDetails);
   }
 
   async deleteMember(ctx: RequestContext, memberId: string) {

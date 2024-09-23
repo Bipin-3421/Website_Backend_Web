@@ -28,7 +28,6 @@ import {
   UpdateMemberRequestDTO,
 } from './member.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
-import { PublicRoute } from 'common/decorator/public.decorator';
 
 @Controller('member')
 @ApiTags('Member API')
@@ -62,12 +61,13 @@ export class MemberController {
     @UploadedFile() file: Express.Multer.File | null,
   ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
-      throw new NotAcceptableException('Vacancy image is required');
+      throw new NotAcceptableException('Member image is required');
     }
 
     body.image = file;
 
     const member = await this.memberService.create(ctx, body);
+
     return {
       message: 'Member created successfully',
       data: {
@@ -81,20 +81,21 @@ export class MemberController {
     @Ctx() ctx: RequestContext,
     @Query() query: ListMemberQueryDTO,
   ): Promise<ListMemberResponseDTO> {
-    const [response, total] = await this.memberService.findManyMembers(
+    const [members, total] = await this.memberService.findManyMembers(
       ctx,
       query,
     );
+
     return {
       message: 'Members fetched successfully',
-      data: response.map((res) => {
+      data: members.map((res) => {
         return {
           id: res.id,
           name: res.name,
           email: res.email,
           createdAt: res.createdAt,
           updatedAt: res.updatedAt,
-          phoneNumber: res.phoneNumer,
+          phoneNumber: res.phoneNumber,
           designation: res.designation,
           role: res.role,
           image: {
@@ -105,7 +106,7 @@ export class MemberController {
           imageId: res.imageId,
         };
       }),
-      pagination: getPaginationResponse(response, total, query),
+      pagination: getPaginationResponse(members, total, query),
     };
   }
 
@@ -141,7 +142,7 @@ export class MemberController {
     );
 
     return {
-      message: 'Member edited successfully',
+      message: 'Member updated successfully',
       data: {
         id: updatedMember.id,
       },

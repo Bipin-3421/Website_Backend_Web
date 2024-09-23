@@ -1,4 +1,4 @@
-import { IsString, IsDateString, IsNumber, Min } from 'class-validator';
+import { IsNumber, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { Optional } from 'common/decorator/optional.decorator';
 
