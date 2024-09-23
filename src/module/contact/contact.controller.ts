@@ -19,7 +19,7 @@ import {
   ContactIdDTO,
   GetContactResponseDTO,
 } from './contact.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiBadRequestResponse } from '@nestjs/swagger';
 import { PublicRoute } from 'common/decorator/public.decorator';
 import {
   MessageResponseDTO,
@@ -34,6 +34,9 @@ export class ContactController {
 
   @PublicRoute()
   @Post()
+  @ApiBadRequestResponse({
+    description: 'Contact creation failed',
+  })
   async createContact(
     @Ctx() ctx: RequestContext,
     @Body() body: CreateContactDTO,
@@ -48,6 +51,9 @@ export class ContactController {
   }
 
   @Get()
+  @ApiBadRequestResponse({
+    description: 'Contacts fetch failed',
+  })
   async getAllContacts(
     @Ctx() ctx: RequestContext,
     @Query() query: ListContactQueryDTO,
@@ -72,6 +78,9 @@ export class ContactController {
   }
 
   @Get('/:contactId')
+  @ApiBadRequestResponse({
+    description: 'Single contact fetch failed',
+  })
   async getSingleContact(
     @Ctx() ctx: RequestContext,
     @Param() param: ContactIdDTO,
@@ -96,6 +105,9 @@ export class ContactController {
   }
 
   @Patch('/:contactId')
+  @ApiBadRequestResponse({
+    description: 'Contact updation failed',
+  })
   async updateContact(
     @Ctx() ctx: RequestContext,
     @Param() param: ContactIdDTO,
@@ -115,6 +127,9 @@ export class ContactController {
   }
 
   @Delete('/:contactId')
+  @ApiBadRequestResponse({
+    description: 'Contact deletion failed',
+  })
   async deleteContact(
     @Ctx() ctx: RequestContext,
     @Param() param: ContactIdDTO,
