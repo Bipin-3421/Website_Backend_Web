@@ -68,21 +68,21 @@ export class MemberService {
     details: UpdateMemberRequestDTO,
     memberId: string,
   ) {
-    const member = this.connection.getRepository(ctx, Member);
+    const memberRepo = this.connection.getRepository(ctx, Member);
 
-    const originalMemberDetails = await member.findOne({
+    const member = await memberRepo.findOne({
       where: {
         id: memberId,
       },
       relations: { image: !!details.image },
     });
 
-    if (!originalMemberDetails) {
+    if (!member) {
       throw new NotFoundException('Member not found');
     }
 
     const { image, ...patch } = details;
-    patchEntity(originalMemberDetails, patch);
+    patchEntity(member, patch);
 
     let asset: Asset | undefined;
     if (image) {
@@ -92,10 +92,10 @@ export class MemberService {
         AssetFor.MEMBER,
       );
 
-      originalMemberDetails.image = asset;
+      member.image = asset;
     }
 
-    return await member.save(originalMemberDetails);
+    return await memberRepo.save(member);
   }
 
   async deleteMember(ctx: RequestContext, memberId: string) {

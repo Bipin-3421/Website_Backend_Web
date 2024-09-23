@@ -17,6 +17,8 @@ import { MessageResponseWithIdDTO } from 'common/dto/response.dto';
 import { PaginationParamDTO } from 'common/dto/pagination.dto';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
+import { getPaginationResponse } from 'common/utils/pagination.utils';
+import { ListGetUsersResponseDTO } from './dto/user.get.dto';
 
 @Controller('user')
 @ApiTags('User API')
@@ -84,12 +86,13 @@ export class UserController {
   async getAllUsers(
     @Ctx() ctx: RequestContext,
     @Query() pagination: PaginationParamDTO,
-  ) {
+  ): Promise<ListGetUsersResponseDTO> {
     const [res, total] = await this.userService.findAll(ctx, pagination);
 
     return {
       message: 'All users fetched successfully',
       data: res,
+      pagination: getPaginationResponse(res, total, pagination),
     };
   }
 }
