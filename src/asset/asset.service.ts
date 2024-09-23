@@ -33,7 +33,7 @@ export class AssetService {
     ctx: RequestContext,
     buffer: Buffer,
     assetFor: AssetFor,
-  ): Promise<Asset | undefined> {
+  ): Promise<Asset> {
     const assetRepo = this.connection.getRepository(ctx, Asset);
     const provider = this.getProvider();
 

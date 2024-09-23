@@ -10,8 +10,9 @@ import { AssetService } from 'asset/asset.service';
 import { Asset } from '../../common/entities/asset.entity';
 import { patchEntity } from 'common/utils/patchEntity';
 import { AssetFor } from 'common/enum/asset.for.enum';
-import { dateFilter } from 'common/utils/dateFilter';
 import { JobStatus } from 'common/enum/jobStatus.enum';
+import { DateFilterDTO } from 'common/dto/date.filter';
+import { dateFilter } from 'common/utils/dateFilter';
 
 @Injectable()
 export class VacancyService {

@@ -22,7 +22,7 @@ import {
 } from 'common/dto/response.dto';
 import { ApplicantFilterDto } from './dto/applicant.search.dto';
 import { ListApplicantsResponseDto } from './dto/get.applicant.dto';
-import { takePagination } from 'common/utils/pagination.utils';
+import { getPaginationResponse } from 'common/utils/pagination.utils';
 import { PublicRoute } from 'common/decorator/public.decorator';
 import { ApplicantParamDto } from './dto/param.dto';
 import { PatchApplicantDto } from './dto/patch.applicant.dto';
@@ -127,7 +127,7 @@ export class ApplicantController {
     return {
       message: 'All job fetched successfully',
       data: response,
-      pagination: takePagination(response, queryFilter, total),
+      pagination: getPaginationResponse(response, total, queryFilter),
     };
   }
 

@@ -14,11 +14,11 @@ import { PublicRoute } from 'common/decorator/public.decorator';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
 import { MessageResponseWithIdDTO } from 'common/dto/response.dto';
-import { ListGetUsersResponseDTO } from './dto/user.get.dto';
-import { PaginationDTO } from 'common/dto/pagination.dto';
-import { takePagination } from 'common/utils/pagination.utils';
+import { PaginationParamDTO } from 'common/dto/pagination.dto';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
+import { getPaginationResponse } from 'common/utils/pagination.utils';
+import { ListGetUsersResponseDTO } from './dto/user.get.dto';
 
 @Controller('user')
 @ApiTags('User API')
@@ -85,14 +85,14 @@ export class UserController {
   })
   async getAllUsers(
     @Ctx() ctx: RequestContext,
-    @Query() pagination: PaginationDTO,
+    @Query() pagination: PaginationParamDTO,
   ): Promise<ListGetUsersResponseDTO> {
     const [res, total] = await this.userService.findAll(ctx, pagination);
 
     return {
       message: 'All users fetched successfully',
       data: res,
-      pagination: takePagination(res, pagination, total),
+      pagination: getPaginationResponse(res, total, pagination),
     };
   }
 }

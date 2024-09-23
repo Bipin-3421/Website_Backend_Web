@@ -95,7 +95,6 @@ export class ContactController {
     };
   }
 
-  @PublicRoute()
   @Patch('/:contactId')
   async updateContact(
     @Ctx() ctx: RequestContext,

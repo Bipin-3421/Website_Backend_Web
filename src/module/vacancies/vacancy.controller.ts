@@ -27,7 +27,7 @@ import {
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
-import { takePagination } from 'common/utils/pagination.utils';
+import { getPaginationResponse } from 'common/utils/pagination.utils';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -101,7 +101,7 @@ export class VacancyController {
     return {
       message: 'All job fetched successfully',
       data: response,
-      Pagination: takePagination(response, queryFilter, total),
+      Pagination: getPaginationResponse(response, total, queryFilter),
     };
   }
 

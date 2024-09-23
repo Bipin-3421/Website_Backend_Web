@@ -2,10 +2,10 @@ import { JobType } from '../../../common/enum/Job.type.enum';
 import { Optional } from 'common/decorator/optional.decorator';
 import { IsDateString, IsEnum, IsNumber, IsString } from 'class-validator';
 import { IntersectionType } from '@nestjs/swagger';
-import { PaginationDTO } from '../../../common/dto/pagination.dto';
 import { JobStatus } from 'common/enum/jobStatus.enum';
+import { PaginationParamDTO } from 'common/dto/pagination.dto';
 
-export class VacancyFilterDto extends IntersectionType(PaginationDTO) {
+export class VacancyFilterDto extends IntersectionType(PaginationParamDTO) {
   @IsString()
   @Optional()
   designation?: string;

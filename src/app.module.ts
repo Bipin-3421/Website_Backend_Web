@@ -9,6 +9,7 @@ import { ApplicantModule } from './module/applicants/applicant.module';
 import { ConnectionModule } from 'module/connection/connection.module';
 import { JwtAuthGuard } from 'common/guard/jwt.guard';
 import { ContactModule } from 'module/contact/contact.module';
+import { MemberModule } from 'module/member/member.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ContactModule } from 'module/contact/contact.module';
     UserModule,
     AssetModule,
     ContactModule,
+    MemberModule,
   ],
   controllers: [],
   providers: [
