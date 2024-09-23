@@ -52,7 +52,7 @@ export class MemberController {
     }),
   )
   @ApiBadRequestResponse({
-    description: 'member creation failed',
+    description: 'Member creation failed',
   })
   @ApiConsumes('multipart/form-data')
   async createMember(
@@ -77,6 +77,9 @@ export class MemberController {
   }
 
   @Get()
+  @ApiBadRequestResponse({
+    description: 'Members  fetch failed',
+  })
   async getAllMembers(
     @Ctx() ctx: RequestContext,
     @Query() query: ListMemberQueryDTO,
@@ -127,6 +130,9 @@ export class MemberController {
       },
     }),
   )
+  @ApiBadRequestResponse({
+    description: 'Member updation failed',
+  })
   @ApiConsumes('multipart/form-data')
   async updateMember(
     @Ctx() ctx: RequestContext,
@@ -150,6 +156,9 @@ export class MemberController {
   }
 
   @Delete(':memberId')
+  @ApiBadRequestResponse({
+    description: 'Member deletion failed',
+  })
   async deleteMember(
     @Ctx() ctx: RequestContext,
     @Param() param: MemberParamDTO,
