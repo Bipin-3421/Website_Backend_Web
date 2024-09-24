@@ -30,7 +30,6 @@ import { PublicRoute } from 'common/decorator/public.decorator';
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
-  @PublicRoute()
   @Post()
   @ApiBadRequestResponse({
     description: 'Department creation failed',
@@ -48,7 +47,6 @@ export class DepartmentController {
     };
   }
 
-  @PublicRoute()
   @Get()
   @ApiBadRequestResponse({
     description: 'Departments fetch failed',
@@ -75,7 +73,6 @@ export class DepartmentController {
     };
   }
 
-  @PublicRoute()
   @Patch(':departmentId')
   @ApiBadRequestResponse({
     description: 'Department updation failed',
@@ -98,7 +95,6 @@ export class DepartmentController {
     };
   }
 
-  @PublicRoute()
   @Delete(':departmentId')
   @ApiBadRequestResponse({ description: 'Department deletion failed' })
   async deleteDepartment(

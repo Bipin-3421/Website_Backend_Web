@@ -22,8 +22,8 @@ export class DepartmentService {
     ctx: RequestContext,
     query: ListDepartmentQueryDTO,
   ) {
-    const { search, take, page } = query;
-    const skip = (take || 0) * (page || 0);
+    const { search, take = 10, page = 0 } = query;
+    const skip = take * page;
     const whereClause: FindOptionsWhere<Department>[] = [
       { department: search ? ILike(`%${search}%`) : undefined },
     ];
