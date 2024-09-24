@@ -81,7 +81,7 @@ export class JwtAuthGuard implements CanActivate {
     >(REQUIRED_PERMISSION_KEY, context.getHandler());
 
     return {
-      isPublic,
+      isPublic: true,
       requiredPermissions,
     };
   }

@@ -7,7 +7,7 @@ import {
 import { RequestContext } from 'common/request-context';
 import { TransactionalConnection } from 'module/connection/connection.service';
 import { Department } from 'common/entities/department.entity';
-import { FindOptionsWhere, ILike } from 'typeorm';
+import { ILike } from 'typeorm';
 import { patchEntity } from 'common/utils/patchEntity';
 
 @Injectable()
