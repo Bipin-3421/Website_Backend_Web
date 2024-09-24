@@ -11,6 +11,7 @@ import { JwtAuthGuard } from 'common/guard/jwt.guard';
 import { ContactModule } from 'module/contact/contact.module';
 import { MemberModule } from 'module/member/member.module';
 import { DepartmentModule } from 'module/department/department.module';
+import { DesignationModule } from 'module/designation/designation.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { DepartmentModule } from 'module/department/department.module';
     ContactModule,
     MemberModule,
     DepartmentModule,
+    DesignationModule,
   ],
   controllers: [],
   providers: [
