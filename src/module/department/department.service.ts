@@ -1,5 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateDepartmentDTO, ListDepartmentQueryDTO } from './department.dto';
+import {
+  CreateDepartmentDTO,
+  ListDepartmentQueryDTO,
+  UpdateDepartmentDTO,
+} from './department.dto';
 import { RequestContext } from 'common/request-context';
 import { TransactionalConnection } from 'module/connection/connection.service';
 import { Department } from 'common/entities/department.entity';
@@ -37,7 +41,7 @@ export class DepartmentService {
 
   async editDepartment(
     ctx: RequestContext,
-    body: CreateDepartmentDTO,
+    body: UpdateDepartmentDTO,
     departmentId: string,
   ) {
     const departmentRepo = this.connection.getRepository(ctx, Department);

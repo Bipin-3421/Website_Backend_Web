@@ -1,4 +1,4 @@
-import { IntersectionType } from '@nestjs/swagger';
+import { IntersectionType, PartialType } from '@nestjs/swagger';
 import { IsString, Length, IsNotEmpty, IsUUID } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 import {
@@ -36,3 +36,5 @@ export class DepartmentParamDTO {
   @IsUUID()
   departmentId: string;
 }
+
+export class UpdateDepartmentDTO extends PartialType(CreateDepartmentDTO) {}

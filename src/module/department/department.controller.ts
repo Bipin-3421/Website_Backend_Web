@@ -14,6 +14,7 @@ import {
   DepartmentParamDTO,
   ListDepartmentQueryDTO,
   ListDepartmentResponseDTO,
+  UpdateDepartmentDTO,
 } from './department.dto';
 import { RequestContext } from 'common/request-context';
 import { Ctx } from 'common/decorator/ctx.decorator';
@@ -79,7 +80,7 @@ export class DepartmentController {
   })
   async editDepartment(
     @Ctx() ctx: RequestContext,
-    @Body() body: CreateDepartmentDTO,
+    @Body() body: UpdateDepartmentDTO,
     @Param() param: DepartmentParamDTO,
   ): Promise<MessageResponseWithIdDTO> {
     const department = await this.departmentService.editDepartment(
