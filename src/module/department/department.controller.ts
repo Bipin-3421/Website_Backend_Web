@@ -24,7 +24,6 @@ import {
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
-import { PublicRoute } from 'common/decorator/public.decorator';
 
 @Controller('department')
 @ApiTags('Department Api')
@@ -40,6 +39,7 @@ export class DepartmentController {
     @Body() body: CreateDepartmentDTO,
   ): Promise<MessageResponseWithIdDTO> {
     const department = await this.departmentService.createDepartment(ctx, body);
+
     return {
       message: 'Department created successfully',
       data: {
@@ -58,13 +58,14 @@ export class DepartmentController {
   ): Promise<ListDepartmentResponseDTO> {
     const [departments, total] =
       await this.departmentService.findManyDepartments(ctx, query);
+
     return {
       message: 'Departments fetched successfully',
-      data: departments.map((res) => {
+      data: departments.map((department) => {
         return {
-          id: res.id,
-          department: res.name,
-          createdAt: res.createdAt,
+          id: department.id,
+          name: department.name,
+          createdAt: department.createdAt,
         };
       }),
       pagination: getPaginationResponse(departments, total, query),
@@ -75,16 +76,17 @@ export class DepartmentController {
   @ApiBadRequestResponse({
     description: 'Department updation failed',
   })
-  async editDepartment(
+  async updateDepartment(
     @Ctx() ctx: RequestContext,
     @Body() body: UpdateDepartmentDTO,
     @Param() param: DepartmentParamDTO,
   ): Promise<MessageResponseWithIdDTO> {
-    const department = await this.departmentService.editDepartment(
+    const department = await this.departmentService.updateDepartment(
       ctx,
       body,
       param.departmentId,
     );
+
     return {
       message: 'Department updated successfully',
       data: {
@@ -103,6 +105,7 @@ export class DepartmentController {
       ctx,
       param.departmentId,
     );
+
     return {
       message: 'Department deleted successfully',
     };

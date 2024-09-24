@@ -37,7 +37,7 @@ export class DepartmentService {
     });
   }
 
-  async editDepartment(
+  async updateDepartment(
     ctx: RequestContext,
     body: UpdateDepartmentDTO,
     departmentId: string,

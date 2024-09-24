@@ -20,7 +20,7 @@ export class ListDepartmentQueryDTO extends IntersectionType(
 
 export class ListDepartmentDTO {
   id: string;
-  department: string;
+  name: string;
   createdAt: Date;
 }
 
