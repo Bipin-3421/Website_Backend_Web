@@ -14,10 +14,10 @@ import { patchEntity } from 'common/utils/patchEntity';
 export class DepartmentService {
   constructor(private readonly connection: TransactionalConnection) {}
 
-  async createDepartment(body: CreateDepartmentDTO, ctx: RequestContext) {
+  async createDepartment(ctx: RequestContext, body: CreateDepartmentDTO) {
     const departmentRepo = this.connection.getRepository(ctx, Department);
     const department = new Department({
-      department: body.department,
+      name: body.name,
     });
     return await departmentRepo.save(department);
   }
@@ -28,11 +28,9 @@ export class DepartmentService {
   ) {
     const { search, take = 10, page = 0 } = query;
     const skip = take * page;
-    const whereClause: FindOptionsWhere<Department>[] = [
-      { department: search ? ILike(`%${search}%`) : undefined },
-    ];
+
     return this.connection.getRepository(ctx, Department).findAndCount({
-      where: whereClause.length ? whereClause : undefined,
+      where: search ? { name: ILike(`%${search}%`) } : undefined,
       skip,
       take,
       order: { createdAt: 'DESC' },
@@ -65,7 +63,7 @@ export class DepartmentService {
       },
     });
     if (!department) {
-      throw new NotFoundException('Contact not found');
+      throw new NotFoundException('Department not found');
     }
     return await departmentRepo.remove(department);
   }

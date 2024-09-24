@@ -8,5 +8,5 @@ export class Department extends BaseEntity {
   }
 
   @Column({ type: String })
-  department: string;
+  name: string;
 }

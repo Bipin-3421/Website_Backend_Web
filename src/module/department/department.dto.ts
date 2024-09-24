@@ -1,6 +1,5 @@
 import { IntersectionType, PartialType } from '@nestjs/swagger';
 import { IsString, Length, IsNotEmpty, IsUUID } from 'class-validator';
-import { Optional } from 'common/decorator/optional.decorator';
 import {
   PaginationParamDTO,
   PaginationResponseDTO,
@@ -11,7 +10,7 @@ export class CreateDepartmentDTO {
   @IsString()
   @Length(1, 30)
   @IsNotEmpty()
-  department: string;
+  name: string;
 }
 
 export class ListDepartmentQueryDTO extends IntersectionType(
@@ -23,7 +22,6 @@ export class ListDepartmentDTO {
   id: string;
   department: string;
   createdAt: Date;
-  updatedAt: Date;
 }
 
 export class ListDepartmentResponseDTO {

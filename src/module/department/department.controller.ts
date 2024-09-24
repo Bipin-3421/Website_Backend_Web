@@ -36,10 +36,10 @@ export class DepartmentController {
     description: 'Department creation failed',
   })
   async createDepartment(
-    @Body() body: CreateDepartmentDTO,
     @Ctx() ctx: RequestContext,
+    @Body() body: CreateDepartmentDTO,
   ): Promise<MessageResponseWithIdDTO> {
-    const department = await this.departmentService.createDepartment(body, ctx);
+    const department = await this.departmentService.createDepartment(ctx, body);
     return {
       message: 'Department created successfully',
       data: {
@@ -56,21 +56,18 @@ export class DepartmentController {
     @Ctx() ctx: RequestContext,
     @Query() query: ListDepartmentQueryDTO,
   ): Promise<ListDepartmentResponseDTO> {
-    const [response, total] = await this.departmentService.findManyDepartments(
-      ctx,
-      query,
-    );
+    const [departments, total] =
+      await this.departmentService.findManyDepartments(ctx, query);
     return {
       message: 'Departments fetched successfully',
-      data: response.map((res) => {
+      data: departments.map((res) => {
         return {
           id: res.id,
-          department: res.department,
+          department: res.name,
           createdAt: res.createdAt,
-          updatedAt: res.updatedAt,
         };
       }),
-      pagination: getPaginationResponse(response, total, query),
+      pagination: getPaginationResponse(departments, total, query),
     };
   }
 
@@ -89,7 +86,7 @@ export class DepartmentController {
       param.departmentId,
     );
     return {
-      message: 'Department edited successfully',
+      message: 'Department updated successfully',
       data: {
         id: department.id,
       },
