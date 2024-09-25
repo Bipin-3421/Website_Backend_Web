@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { RequestContext } from 'common/request-context';
-import { CreateDesignationDTO } from './designation.dto';
+import {
+  CreateDesignationDTO,
+  ListDesignationQueryDTO,
+} from './designation.dto';
 import { TransactionalConnection } from 'module/connection/connection.service';
 import { Designation } from 'common/entities/designation.entity';
 import { AssetService } from 'asset/asset.service';
 import { AssetFor } from 'common/enum/asset.for.enum';
 import { Department } from 'common/entities/department.entity';
+import { FindOptionsWhere, ILike } from 'typeorm';
 
 @Injectable()
 export class DesignationService {
@@ -40,7 +44,39 @@ export class DesignationService {
 
     return await designationRepo.save(designation);
   }
-  async findManyDesignations(ctx: RequestContext) {}
-}
+  async findManyDesignations(
+    ctx: RequestContext,
+    query: ListDesignationQueryDTO,
+  ) {
+    const { search, page = 10, take = 0 } = query;
 
-// 61073b59-4365-413f-b97f-dc98bf209329
+    const skip = take * page;
+
+    const whereClause: FindOptionsWhere<Designation>[] = [
+      { name: search ? ILike(`%${search}%`) : undefined },
+    ];
+
+    return this.connection.getRepository(ctx, Designation).findAndCount({
+      where: whereClause.length ? whereClause : undefined,
+      relations: { image: true, department: true },
+      skip,
+      take,
+      order: { createdAt: 'DESC' },
+    });
+  }
+  async findSingleDesignation(ctx: RequestContext, designationId: string) {
+    const designationRepo = this.connection.getRepository(Designation);
+
+    const designation = await designationRepo.findOne({
+      where: {
+        id: designationId,
+      },
+      relations: { image: true, department: true },
+    });
+    if (!designation) {
+      throw new NotFoundException('Designation not found');
+    }
+
+    return designation;
+  }
+}
