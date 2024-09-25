@@ -1,5 +1,6 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, Length, IsUUID } from 'class-validator';
+import { Optional } from 'common/decorator/optional.decorator';
 import { AssetDTO } from 'common/dto/asset.dto';
 import { DepartmentDTO } from 'common/dto/department.dto';
 import {
@@ -30,15 +31,35 @@ export class CreateDesignationDTO {
   description: string;
 }
 
+export class UpdateDesignationDTO {
+  @IsString()
+  @Optional()
+  @Length(1, 20)
+  name?: string;
+
+  @IsString()
+  @Optional()
+  department?: string;
+
+  @ApiProperty({
+    description: 'image of the designation',
+    type: 'string',
+    format: 'binary',
+  })
+  image?: Express.Multer.File;
+
+  @IsString()
+  @Optional()
+  @Length(1, 200)
+  description?: string;
+}
+
 export class ListDesignationDTO {
   id: string;
   name: string;
   createdAt: Date;
-  updatedAt: Date;
   department: DepartmentDTO;
-  departmentId: string;
   image: AssetDTO;
-  imageId: string;
   description: string;
 }
 
@@ -49,9 +70,7 @@ export class GetDesignationResponseDTO {
     name: string;
     createdAt: Date;
     department: DepartmentDTO;
-    departmentId: string;
     image: AssetDTO;
-    imageId: string;
     description: string;
   };
 }

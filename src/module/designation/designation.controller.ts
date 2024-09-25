@@ -4,10 +4,12 @@ import {
   Post,
   Query,
   Body,
+  Patch,
   UseInterceptors,
   NotAcceptableException,
   UploadedFile,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
@@ -17,12 +19,16 @@ import {
   GetDesignationResponseDTO,
   ListDesignationQueryDTO,
   ListDesignationResponseDTO,
+  UpdateDesignationDTO,
 } from './designation.dto';
 import { DesignationService } from './designation.service';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
-import { MessageResponseWithIdDTO } from 'common/dto/response.dto';
+import {
+  MessageResponseDTO,
+  MessageResponseWithIdDTO,
+} from 'common/dto/response.dto';
 
 @Controller('designation')
 @ApiTags('Designation Api')
@@ -75,7 +81,7 @@ export class DesignationController {
   }
 
   @ApiBadRequestResponse({
-    description: 'Designations fetch failed',
+    description: 'Designation list fetch failed',
   })
   @Get('')
   async getAllDesignations(
@@ -92,18 +98,15 @@ export class DesignationController {
           id: designation.id,
           name: designation.name,
           createdAt: designation.createdAt,
-          updatedAt: designation.updatedAt,
           image: {
             id: designation.image.id,
             name: designation.image.name,
             url: designation.image.url,
           },
-          imageId: designation.imageId,
           department: {
             id: designation.department.id,
             name: designation.department.name,
           },
-          departmentId: designation.departmentId,
           description: designation.description,
         };
       }),
@@ -134,15 +137,73 @@ export class DesignationController {
           id: designation.department.id,
           name: designation.department.name,
         },
-        departmentId: designation.departmentId,
         image: {
           id: designation.image.id,
           name: designation.image.name,
           url: designation.image.url,
         },
-        imageId: designation.imageId,
         description: designation.description,
       },
+    };
+  }
+
+  @Patch(':designationId')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      fileFilter(req, file, callback) {
+        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
+
+        if (!MIME_TYPES.includes(file.mimetype)) {
+          callback(
+            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
+            false,
+          );
+        } else {
+          callback(null, true);
+        }
+      },
+    }),
+  )
+  @ApiBadRequestResponse({
+    description: 'Designation updation failed',
+  })
+  @ApiConsumes('multipart/form-data')
+  async updateDesignation(
+    @Ctx() ctx: RequestContext,
+    @Body() body: UpdateDesignationDTO,
+    @UploadedFile() file: Express.Multer.File | null,
+    @Param() param: DesignationIdDTO,
+  ): Promise<MessageResponseWithIdDTO> {
+    body.image = file || undefined;
+    const updatedDegination = await this.designationService.updateDesignation(
+      ctx,
+      body,
+      param.designationId,
+    );
+
+    return {
+      message: 'Designation updated successfully',
+      data: {
+        id: updatedDegination.id,
+      },
+    };
+  }
+
+  @Delete(':designationId')
+  @ApiBadRequestResponse({
+    description: 'Designation deletion failed',
+  })
+  async deleteDesignation(
+    @Ctx() ctx: RequestContext,
+    @Param() param: DesignationIdDTO,
+  ): Promise<MessageResponseDTO> {
+    const deletedDesignation = await this.designationService.deleteDesignation(
+      ctx,
+      param.designationId,
+    );
+
+    return {
+      message: 'Designation deleted successfully',
     };
   }
 }
