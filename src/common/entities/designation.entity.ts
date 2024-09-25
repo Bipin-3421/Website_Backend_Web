@@ -19,18 +19,14 @@ export class Designation extends BaseEntity {
   @Column({ type: String })
   name: string;
 
-  @ManyToOne(() => Department, (department) => department.designation, {
-    cascade: true,
-  })
+  @ManyToOne(() => Department, (department) => department.designation)
   @JoinColumn({ name: 'departmentId' })
   department: Department;
 
   @Column()
   departmentId: string;
 
-  @OneToOne(() => Asset, (asset) => asset.designation, {
-    cascade: true,
-  })
+  @OneToOne(() => Asset, (asset) => asset.designation)
   @JoinColumn({ name: 'imageId' })
   image: Asset;
 

@@ -2,7 +2,7 @@ import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, Length, IsUUID } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 import { AssetDTO } from 'common/dto/asset.dto';
-import { DepartmentDTO } from 'common/dto/department.dto';
+
 import {
   PaginationParamDTO,
   PaginationResponseDTO,
@@ -15,9 +15,8 @@ export class CreateDesignationDTO {
   @Length(1, 100)
   name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  department: string;
+  @IsUUID()
+  departmentId: string;
 
   @ApiProperty({
     description: 'image of the designation',
@@ -37,9 +36,9 @@ export class UpdateDesignationDTO {
   @Length(1, 20)
   name?: string;
 
-  @IsString()
+  @IsUUID()
   @Optional()
-  department?: string;
+  departmentId?: string;
 
   @ApiProperty({
     description: 'image of the designation',
@@ -90,3 +89,11 @@ export class ListDesignationQueryDTO extends IntersectionType(
   SearchParamDTO,
   PaginationParamDTO,
 ) {}
+
+class DepartmentDTO {
+  @IsUUID()
+  id: string;
+
+  @IsString()
+  name: string;
+}

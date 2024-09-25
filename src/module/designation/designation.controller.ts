@@ -10,6 +10,7 @@ import {
   UploadedFile,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
@@ -80,10 +81,10 @@ export class DesignationController {
     };
   }
 
+  @Get('')
   @ApiBadRequestResponse({
     description: 'Designation list fetch failed',
   })
-  @Get('')
   async getAllDesignations(
     @Ctx() ctx: RequestContext,
     @Query() query: ListDesignationQueryDTO,
@@ -114,10 +115,10 @@ export class DesignationController {
     };
   }
 
+  @Get(':designationId')
   @ApiBadRequestResponse({
     description: 'Single Designation fetch failed',
   })
-  @Get(':designationId')
   async getSingleDesignation(
     @Ctx() ctx: RequestContext,
     @Param() param: DesignationIdDTO,
@@ -126,6 +127,9 @@ export class DesignationController {
       ctx,
       param.designationId,
     );
+    if (!designation) {
+      throw new NotFoundException('Designation not found');
+    }
 
     return {
       message: 'Designation fetched successfully',

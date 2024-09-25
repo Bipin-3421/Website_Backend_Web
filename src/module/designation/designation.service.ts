@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { RequestContext } from 'common/request-context';
 import {
   CreateDesignationDTO,
@@ -25,8 +29,8 @@ export class DesignationService {
     const designationRepo = this.connection.getRepository(Designation);
     const departmentRepo = this.connection.getRepository(Department);
 
-    const department = await departmentRepo.findOne({
-      where: { name: body.department },
+    const department = await departmentRepo.exists({
+      where: { id: body.departmentId },
     });
     if (!department) {
       throw new NotFoundException('Department not found');
@@ -41,12 +45,13 @@ export class DesignationService {
     const designation = new Designation({
       name: body.name,
       image: asset,
-      departmentId: department.id,
+      departmentId: body.departmentId,
       description: body.description,
     });
 
     return await designationRepo.save(designation);
   }
+
   async findManyDesignations(
     ctx: RequestContext,
     query: ListDesignationQueryDTO,
@@ -61,13 +66,14 @@ export class DesignationService {
     ];
 
     return this.connection.getRepository(ctx, Designation).findAndCount({
-      where: whereClause.length ? whereClause : undefined,
+      where: whereClause,
       relations: { image: true, department: true },
       skip,
       take,
       order: { createdAt: 'DESC' },
     });
   }
+
   async findSingleDesignation(ctx: RequestContext, designationId: string) {
     const designationRepo = this.connection.getRepository(Designation);
 
@@ -77,12 +83,10 @@ export class DesignationService {
       },
       relations: { image: true, department: true },
     });
-    if (!designation) {
-      throw new NotFoundException('Designation not found');
-    }
 
     return designation;
   }
+
   async updateDesignation(
     ctx: RequestContext,
     details: UpdateDesignationDTO,
@@ -94,25 +98,34 @@ export class DesignationService {
       where: {
         id: designationId,
       },
-      relations: { image: !!details.image, department: !!details.department },
     });
 
     if (!designation) {
       throw new NotFoundException('Designation not found');
     }
 
-    const { image, department, ...patch } = details;
+    const { image, ...patch } = details;
     patchEntity(designation, patch);
 
     let asset: Asset | undefined;
+
     if (image) {
+      if (designation.imageId) {
+        const oldAssetDeleted = await this.assetService.delete(
+          ctx,
+          designation.imageId,
+        );
+        if (!oldAssetDeleted) {
+          throw new InternalServerErrorException('Failed to delete old asset');
+        }
+      }
       asset = await this.assetService.upload(
         ctx,
         image.buffer,
         AssetFor.DESIGNATION,
       );
 
-      designation.image = asset;
+      designation.imageId = asset.id;
     }
 
     return await designationRepo.save(designation);
