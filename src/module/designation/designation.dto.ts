@@ -33,7 +33,7 @@ export class CreateDesignationDTO {
 export class UpdateDesignationDTO {
   @IsString()
   @Optional()
-  @Length(1, 20)
+  @Length(1, 100)
   name?: string;
 
   @IsUUID()

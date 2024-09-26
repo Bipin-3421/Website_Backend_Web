@@ -107,28 +107,27 @@ export class DesignationService {
     const { image, ...patch } = details;
     patchEntity(designation, patch);
 
-    let asset: Asset | undefined;
+    let oldAssetId: string | undefined;
 
     if (image) {
-      if (designation.imageId) {
-        const oldAssetDeleted = await this.assetService.delete(
-          ctx,
-          designation.imageId,
-        );
-        if (!oldAssetDeleted) {
-          throw new InternalServerErrorException('Failed to delete old asset');
-        }
-      }
-      asset = await this.assetService.upload(
+      const asset = await this.assetService.upload(
         ctx,
         image.buffer,
         AssetFor.DESIGNATION,
       );
 
+      oldAssetId = designation.imageId;
+
       designation.imageId = asset.id;
     }
 
-    return await designationRepo.save(designation);
+    await designationRepo.save(designation);
+
+    if (oldAssetId) {
+      await this.assetService.delete(ctx, oldAssetId);
+    }
+
+    return designation;
   }
 
   async deleteDesignation(ctx: RequestContext, designationId: string) {
