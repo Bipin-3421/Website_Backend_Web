@@ -26,6 +26,8 @@ import {
   ListMemberQueryDTO,
   MemberParamDTO,
   UpdateMemberRequestDTO,
+  MemberLoginDTO,
+  MemberVerifyDTO,
 } from './member.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
 
@@ -169,6 +171,39 @@ export class MemberController {
     );
     return {
       message: 'Member deleted successfully',
+    };
+  }
+
+  @Post('login')
+  @ApiBadRequestResponse({
+    description: 'Member logged in failed',
+  })
+  async loginMember(
+    @Ctx() ctx: RequestContext,
+    @Body() body: MemberLoginDTO,
+  ): Promise<MessageResponseWithIdDTO> {
+    const member = await this.memberService.loginMember(ctx, body);
+
+    return {
+      message: 'Member logged in successfully',
+      data: {
+        id: member.id,
+      },
+    };
+  }
+
+  @Post('login/verify')
+  async verifyMember(
+    @Ctx() ctx: RequestContext,
+    @Body() body: MemberVerifyDTO,
+  ): Promise<MessageResponseWithIdDTO> {
+    const member = await this.memberService.verifyMember(ctx, body);
+
+    return {
+      message: 'Member verified successfully',
+      data: {
+        id: member.id,
+      },
     };
   }
 }

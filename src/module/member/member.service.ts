@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  OnApplicationBootstrap,
+  Inject,
+  BadRequestException,
+} from '@nestjs/common';
 import { AssetService } from 'asset/asset.service';
 import { RequestContext } from 'common/request-context';
 import { TransactionalConnection } from 'module/connection/connection.service';
@@ -7,17 +13,36 @@ import { AssetFor } from 'common/enum/asset.for.enum';
 import {
   CreateMemberRequestDTO,
   ListMemberQueryDTO,
+  MemberLoginDTO,
+  MemberVerifyDTO,
   UpdateMemberRequestDTO,
 } from './member.dto';
 import { FindOptionsWhere, ILike } from 'typeorm';
 import { patchEntity } from 'common/utils/patchEntity';
 import { Asset } from 'common/entities/asset.entity';
+import { seedSuperAdmin } from 'common/seeds/backofficeSuperAdmin.seed';
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from 'config/configuration';
+import { generateOTP } from 'common/utils/generateOTP';
+import { MailerService } from '@nestjs-modules/mailer';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+
+let firstOtpKey = '';
+
 @Injectable()
-export class MemberService {
+export class MemberService implements OnApplicationBootstrap {
   constructor(
     private readonly connection: TransactionalConnection,
     private readonly assetService: AssetService,
+    private readonly configService: ConfigService<AppConfig, true>,
+    private readonly mailerService: MailerService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async onApplicationBootstrap(): Promise<void> {
+    await seedSuperAdmin(this.connection, this.configService);
+  }
 
   async create(ctx: RequestContext, body: CreateMemberRequestDTO) {
     const memberRepo = this.connection.getRepository(ctx, Member);
@@ -112,5 +137,54 @@ export class MemberService {
     }
 
     return await memberRepo.remove(member);
+  }
+
+  async loginMember(ctx: RequestContext, details: MemberLoginDTO) {
+    const memberRepo = this.connection.getRepository(ctx, Member);
+
+    const member = await memberRepo.findOne({
+      where: {
+        email: details.email,
+        phoneNumber: details.phoneNumber,
+      },
+    });
+
+    if (!member) throw new NotFoundException('Member not found');
+
+    const otp = generateOTP();
+
+    const cacheKey = `login-otp:${details.email}`;
+
+    await this.cacheManager.set(cacheKey, otp);
+
+    const cachedData = await this.cacheManager.get<string>(cacheKey);
+    console.log({ cacheKey, cachedData });
+    firstOtpKey = cacheKey;
+
+    const message = `Your login otp is ${otp}`;
+
+    this.mailerService.sendMail({
+      to: details.email,
+      subject: `OTP for backoffice blacktech login`,
+      html: message,
+    });
+
+    return member;
+  }
+
+  async verifyMember(ctx: RequestContext, details: MemberVerifyDTO) {
+    const memberRepo = this.connection.getRepository(ctx, Member);
+
+    const member = await memberRepo.findOne({
+      where: {
+        email: details.email,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Member not found');
+    }
+
+    return member;
   }
 }

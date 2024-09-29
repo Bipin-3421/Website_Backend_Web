@@ -21,6 +21,17 @@ export interface AppConfig {
     jwtSecret: string;
     jwtTimeOut: string;
   };
+  member: {
+    email: string;
+    phoneNumber: string;
+  };
+  email: {
+    host: string;
+    port: number;
+    user: string;
+    password: string;
+  };
+  docs: string;
 }
 
 export default () => {
@@ -46,6 +57,17 @@ export default () => {
       jwtSecret: process.env.JWT_SECRET ?? '',
       jwtTimeOut: process.env.JWT_TIMEOUT ?? '',
     },
+    member: {
+      email: process.env.SUPERADMINEMAIL ?? '',
+      phoneNumber: process.env.SUPERADMINPHONENUMBER ?? '',
+    },
+    email: {
+      host: process.env.EMAIL_HOST ?? '',
+      port: parseInt(process.env.EMAIL_PORT ?? ''),
+      user: process.env.EMAIL_USERNAME ?? '',
+      password: process.env.EMAIL_PASSWORD ?? '',
+    },
+    docs: process.env.DOCS_PASSWORD ?? '__change_me',
   };
 
   return config;

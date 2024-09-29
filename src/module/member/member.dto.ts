@@ -113,3 +113,23 @@ export class UpdateMemberRequestDTO {
   @Optional()
   image?: Express.Multer.File;
 }
+
+export class MemberLoginDTO {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  phoneNumber?: string;
+}
+
+export class MemberVerifyDTO {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  otp: string;
+}

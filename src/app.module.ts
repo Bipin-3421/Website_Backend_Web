@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
-import configuration from 'config/configuration';
-import { ConfigModule } from '@nestjs/config';
-import { UserModule } from 'module/auth/user.module';
+import configuration, { AppConfig } from 'config/configuration';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { VacancyModule } from 'module/vacancies/vacancy.module';
 import { AssetModule } from 'asset/asset.module';
@@ -12,24 +11,44 @@ import { ContactModule } from 'module/contact/contact.module';
 import { MemberModule } from 'module/member/member.module';
 import { DepartmentModule } from 'module/department/department.module';
 import { DesignationModule } from 'module/designation/designation.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      load: [configuration],
-      isGlobal: true,
-    }),
-    ConnectionModule.forRoot(),
     VacancyModule,
     ApplicantModule,
-    UserModule,
     AssetModule,
     ContactModule,
     MemberModule,
     DepartmentModule,
     DesignationModule,
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
+    }),
+    CacheModule.register({ isGlobal: true }),
+
+    ConnectionModule.forRoot(),
+
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService<AppConfig, true>) => {
+        const mailConfig = configService.get('email', { infer: true });
+        return {
+          transport: {
+            host: mailConfig.host,
+            secure: true,
+            auth: {
+              user: mailConfig.user,
+              pass: mailConfig.password,
+            },
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
   ],
-  controllers: [],
   providers: [
     {
       provide: APP_GUARD,
