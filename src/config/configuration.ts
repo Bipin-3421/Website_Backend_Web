@@ -21,6 +21,7 @@ export interface AppConfig {
     jwtSecret: string;
     jwtTimeOut: string;
   };
+  docs: string;
 }
 
 export default () => {
@@ -46,6 +47,7 @@ export default () => {
       jwtSecret: process.env.JWT_SECRET ?? '',
       jwtTimeOut: process.env.JWT_TIMEOUT ?? '',
     },
+    docs: process.env.DOCS_PASSWORD ?? '__change_me',
   };
 
   return config;
