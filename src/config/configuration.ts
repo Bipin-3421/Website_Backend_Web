@@ -32,6 +32,10 @@ export interface AppConfig {
     password: string;
   };
   docs: string;
+  redis: {
+    host: string;
+    port: number;
+  };
 }
 
 export default () => {
@@ -54,8 +58,8 @@ export default () => {
       },
     },
     jwt: {
-      jwtSecret: process.env.JWT_SECRET ?? '',
-      jwtTimeOut: process.env.JWT_TIMEOUT ?? '',
+      jwtSecret: process.env.JWT_SECRET ?? '__change_me',
+      jwtTimeOut: process.env.JWT_TIMEOUT ?? '1d',
     },
     member: {
       email: process.env.SUPERADMINEMAIL ?? '',
@@ -68,6 +72,10 @@ export default () => {
       password: process.env.EMAIL_PASSWORD ?? '',
     },
     docs: process.env.DOCS_PASSWORD ?? '__change_me',
+    redis: {
+      host: process.env.REDIS_HOST ?? 'localhost',
+      port: parseInt(process.env.REDIS_PORT ?? '6379'),
+    },
   };
 
   return config;

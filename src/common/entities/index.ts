@@ -4,12 +4,10 @@ import { Contact } from './contact.entity';
 import { Department } from './department.entity';
 import { Designation } from './designation.entity';
 import { Member } from './member.entity';
-import { User } from './user.entity';
 import { Vacancy } from './vacancy.entity';
 
 const allEntities = [
   Applicant,
-  User,
   Vacancy,
   Asset,
   Contact,

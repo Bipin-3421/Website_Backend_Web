@@ -33,7 +33,7 @@ export class Member extends BaseEntity {
     nullable: true,
   })
   @JoinColumn({ name: 'imageId' })
-  image: Asset;
+  image: Asset | null;
 
   @Column({ nullable: true })
   imageId: string;

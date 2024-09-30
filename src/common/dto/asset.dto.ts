@@ -3,11 +3,11 @@ import { IsString, IsUUID } from 'class-validator';
 export class AssetDTO {
   @IsString()
   @IsUUID()
-  id: string;
+  id: string | null;
 
   @IsString()
-  name: string;
+  name: string | null;
 
   @IsString()
-  url: string;
+  url: string | null;
 }

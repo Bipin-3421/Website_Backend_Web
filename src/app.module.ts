@@ -13,6 +13,7 @@ import { DepartmentModule } from 'module/department/department.module';
 import { DesignationModule } from 'module/designation/designation.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -27,7 +28,20 @@ import { CacheModule } from '@nestjs/cache-manager';
       load: [configuration],
       isGlobal: true,
     }),
-    CacheModule.register({ isGlobal: true }),
+
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      isGlobal: true,
+      useFactory: (configService: ConfigService<AppConfig, true>) => {
+        const redisConfig = configService.get('redis', { infer: true });
+        return {
+          store: redisStore,
+          host: redisConfig.host,
+          port: redisConfig.port,
+        };
+      },
+    }),
 
     ConnectionModule.forRoot(),
 

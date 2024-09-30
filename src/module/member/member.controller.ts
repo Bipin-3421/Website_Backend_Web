@@ -22,14 +22,18 @@ import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CreateMemberRequestDTO,
-  ListMemberResponseDTO,
   ListMemberQueryDTO,
   MemberParamDTO,
   UpdateMemberRequestDTO,
   MemberLoginDTO,
   MemberVerifyDTO,
+  VerifyResponseDTO,
+  ListMemberResponseDTO,
 } from './member.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
+import { PublicRoute } from 'common/decorator/public.decorator';
+import { Require } from 'common/decorator/require.decorator';
+import { PermissionAction, PermissionResource } from 'types/permission';
 
 @Controller('member')
 @ApiTags('Member API')
@@ -37,6 +41,10 @@ export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
   @Post()
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.EDIT,
+  })
   @UseInterceptors(
     FileInterceptor('image', {
       fileFilter(req, file, callback) {
@@ -79,6 +87,10 @@ export class MemberController {
   }
 
   @Get()
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.VIEW,
+  })
   @ApiBadRequestResponse({
     description: 'Members  fetch failed',
   })
@@ -104,11 +116,10 @@ export class MemberController {
           designation: res.designation,
           role: res.role,
           image: {
-            id: res.image.id,
-            name: res.image.name,
-            url: res.image.url,
+            id: res.image?.id || null,
+            name: res.image?.name || null,
+            url: res.image?.url || null,
           },
-          imageId: res.imageId,
         };
       }),
       pagination: getPaginationResponse(members, total, query),
@@ -116,6 +127,10 @@ export class MemberController {
   }
 
   @Patch(':memberId')
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.EDIT,
+  })
   @UseInterceptors(
     FileInterceptor('image', {
       fileFilter(req, file, callback) {
@@ -158,6 +173,10 @@ export class MemberController {
   }
 
   @Delete(':memberId')
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Member deletion failed',
   })
@@ -174,6 +193,7 @@ export class MemberController {
     };
   }
 
+  @PublicRoute()
   @Post('login')
   @ApiBadRequestResponse({
     description: 'Member logged in failed',
@@ -192,17 +212,18 @@ export class MemberController {
     };
   }
 
+  @PublicRoute()
   @Post('login/verify')
   async verifyMember(
     @Ctx() ctx: RequestContext,
     @Body() body: MemberVerifyDTO,
-  ): Promise<MessageResponseWithIdDTO> {
-    const member = await this.memberService.verifyMember(ctx, body);
+  ): Promise<VerifyResponseDTO> {
+    const accessToken = await this.memberService.verifyMember(ctx, body);
 
     return {
       message: 'Member verified successfully',
       data: {
-        id: member.id,
+        accessToken,
       },
     };
   }

@@ -56,7 +56,6 @@ export class ListMemberDTO {
   designation: string;
   role: MemberRole;
   image: AssetDTO;
-  imageId: string;
 }
 
 export class ListMemberResponseDTO {
@@ -132,4 +131,11 @@ export class MemberVerifyDTO {
   @IsString()
   @IsNotEmpty()
   otp: string;
+}
+
+export class VerifyResponseDTO {
+  message: string;
+  data: {
+    accessToken: string;
+  };
 }

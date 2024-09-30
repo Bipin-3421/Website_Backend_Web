@@ -1,6 +1,6 @@
-import { Permission } from './permission';
+import { MemberRole } from 'common/enum/memberRole.enum';
 
-export interface AuthPayload<ActiveUser extends boolean = any> {
-  userId: string;
-  permission: ActiveUser extends true ? Permission[] : undefined;
+export interface AuthPayload {
+  memberId: string;
+  role: MemberRole;
 }

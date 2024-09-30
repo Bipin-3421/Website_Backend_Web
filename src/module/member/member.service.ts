@@ -27,8 +27,8 @@ import { generateOTP } from 'common/utils/generateOTP';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-
-let firstOtpKey = '';
+import { AuthPayload } from 'types/jwt';
+import { signToken } from 'common/utils/jwt.utils';
 
 @Injectable()
 export class MemberService implements OnApplicationBootstrap {
@@ -155,11 +155,7 @@ export class MemberService implements OnApplicationBootstrap {
 
     const cacheKey = `login-otp:${details.email}`;
 
-    await this.cacheManager.set(cacheKey, otp);
-
-    const cachedData = await this.cacheManager.get<string>(cacheKey);
-    console.log({ cacheKey, cachedData });
-    firstOtpKey = cacheKey;
+    await this.cacheManager.set(cacheKey, otp, { ttl: 120 } as any);
 
     const message = `Your login otp is ${otp}`;
 
@@ -185,6 +181,31 @@ export class MemberService implements OnApplicationBootstrap {
       throw new NotFoundException('Member not found');
     }
 
-    return member;
+    const cacheKey = `login-otp:${details.email}`;
+
+    const cachedOTP = await this.cacheManager.get<string>(cacheKey);
+    console.log(cachedOTP);
+
+    if (!cachedOTP) {
+      throw new BadRequestException('OTP has expired ');
+    }
+
+    if (cachedOTP !== details.otp) {
+      throw new BadRequestException('Invalid OTP');
+    }
+
+    const jwt = this.configService.get('jwt.jwtSecret', { infer: true });
+    const jwtTimeOut = this.configService.get('jwt.jwtTimeOut', {
+      infer: true,
+    });
+
+    const payload: AuthPayload = {
+      memberId: member.id,
+      role: member.role,
+    };
+
+    const access_token = signToken(payload, jwt, jwtTimeOut);
+
+    return access_token;
   }
 }
