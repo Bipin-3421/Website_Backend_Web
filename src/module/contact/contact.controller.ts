@@ -55,7 +55,7 @@ export class ContactController {
   @Get()
   @Require({
     permission: PermissionResource.CONTACT,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.VIEW,
   })
   @ApiBadRequestResponse({
     description: 'Contacts fetch failed',
@@ -86,7 +86,7 @@ export class ContactController {
   @Get('/:contactId')
   @Require({
     permission: PermissionResource.CONTACT,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.VIEW,
   })
   @ApiBadRequestResponse({
     description: 'Single contact fetch failed',

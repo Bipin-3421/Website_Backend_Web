@@ -57,7 +57,7 @@ export class DepartmentController {
   @Get()
   @Require({
     permission: PermissionResource.DEPARTMENT,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.VIEW,
   })
   @ApiBadRequestResponse({
     description: 'Departments fetch failed',

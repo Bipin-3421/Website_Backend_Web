@@ -74,7 +74,7 @@ export class MemberController {
   @Get()
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.VIEW,
   })
   @ApiBadRequestResponse({
     description: 'Members  fetch failed',

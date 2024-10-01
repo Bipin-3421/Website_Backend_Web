@@ -16,7 +16,6 @@ import { AssetFor } from 'common/enum/asset.for.enum';
 import { Department } from 'common/entities/department.entity';
 import { FindOptionsWhere, ILike } from 'typeorm';
 import { patchEntity } from 'common/utils/patchEntity';
-import { Asset } from 'common/entities/asset.entity';
 
 @Injectable()
 export class DesignationService {

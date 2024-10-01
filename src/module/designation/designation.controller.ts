@@ -75,7 +75,7 @@ export class DesignationController {
   @Get('')
   @Require({
     permission: PermissionResource.DESIGNATION,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.VIEW,
   })
   @ApiBadRequestResponse({
     description: 'Designation list fetch failed',
@@ -113,7 +113,7 @@ export class DesignationController {
   @Get(':designationId')
   @Require({
     permission: PermissionResource.DESIGNATION,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.VIEW,
   })
   @ApiBadRequestResponse({
     description: 'Single Designation fetch failed',
