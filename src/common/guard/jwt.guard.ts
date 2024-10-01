@@ -13,7 +13,7 @@ import { verifyToken } from 'common/utils/jwt.utils';
 import { IS_PUBLIC, REQUIRED_PERMISSION_KEY } from 'common/constant';
 import { RequestContext } from 'common/request-context';
 import { AppConfig } from '../../config/configuration';
-import { PermissionResource } from 'types/permission';
+import { PermissionResource, roleToPermissionArray } from 'types/permission';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -41,16 +41,14 @@ export class JwtAuthGuard implements CanActivate {
     );
 
     if (isPublic) {
-      return true; // Skip token verification for public routes
+      return true;
     } else if (!ctx.data) {
       throw new UnauthorizedException('Token not found');
     }
 
-    const userPermission = ctx.data.permission || [];
+    const userPermission = roleToPermissionArray[ctx.data.role];
 
     if (requiredPermissions) {
-      let allowed = true;
-
       for (const requiredPermission of requiredPermissions) {
         const foundPermission = userPermission.find((permission) => {
           if (
@@ -62,13 +60,13 @@ export class JwtAuthGuard implements CanActivate {
           }
         });
 
-        allowed = allowed && !!foundPermission;
+        if (foundPermission === undefined) {
+          return false;
+        }
       }
-
-      return allowed;
     }
 
-    return false;
+    return true;
   }
 
   private getHandlerInfo(context: ExecutionContext) {
@@ -81,7 +79,7 @@ export class JwtAuthGuard implements CanActivate {
     >(REQUIRED_PERMISSION_KEY, context.getHandler());
 
     return {
-      isPublic: true,
+      isPublic,
       requiredPermissions,
     };
   }

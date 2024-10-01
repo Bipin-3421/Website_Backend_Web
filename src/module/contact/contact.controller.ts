@@ -26,14 +26,16 @@ import {
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
+import { Require } from 'common/decorator/require.decorator';
+import { PermissionAction, PermissionResource } from 'types/permission';
 
 @Controller('contact')
-@ApiTags('Contact Api')
+@ApiTags('Contact')
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
-  @PublicRoute()
   @Post()
+  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Contact creation failed',
   })
@@ -51,6 +53,10 @@ export class ContactController {
   }
 
   @Get()
+  @Require({
+    permission: PermissionResource.CONTACT,
+    action: PermissionAction.VIEW,
+  })
   @ApiBadRequestResponse({
     description: 'Contacts fetch failed',
   })
@@ -78,6 +84,10 @@ export class ContactController {
   }
 
   @Get('/:contactId')
+  @Require({
+    permission: PermissionResource.CONTACT,
+    action: PermissionAction.VIEW,
+  })
   @ApiBadRequestResponse({
     description: 'Single contact fetch failed',
   })
@@ -105,6 +115,10 @@ export class ContactController {
   }
 
   @Patch('/:contactId')
+  @Require({
+    permission: PermissionResource.CONTACT,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Contact updation failed',
   })
@@ -127,6 +141,10 @@ export class ContactController {
   }
 
   @Delete('/:contactId')
+  @Require({
+    permission: PermissionResource.CONTACT,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Contact deletion failed',
   })

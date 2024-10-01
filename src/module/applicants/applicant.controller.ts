@@ -13,7 +13,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApplicantService } from './applicant.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateApplicantDto } from './dto/create.applicant.dto';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import {
@@ -31,6 +30,7 @@ import { RequestContext } from 'common/request-context';
 import { Transaction } from 'common/decorator/transaction.decorator';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
+import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('applicant')
 @ApiTags('Applicant API')
@@ -39,22 +39,7 @@ export class ApplicantController {
 
   @Post()
   @PublicRoute()
-  @UseInterceptors(
-    FileInterceptor('CV', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('Only JPEG and PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @UseInterceptors(fileUpload('cv'))
   @Transaction()
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse({

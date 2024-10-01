@@ -12,10 +12,10 @@ export class Member extends BaseEntity {
   @Column({ type: String })
   name: string;
 
-  @Column({ type: String })
+  @Column({ type: String, unique: true })
   email: string;
 
-  @Column({ type: String })
+  @Column({ type: String, unique: true })
   phoneNumber: string;
 
   @Column({ type: String })
@@ -30,10 +30,11 @@ export class Member extends BaseEntity {
 
   @OneToOne(() => Asset, (asset) => asset.member, {
     cascade: true,
+    nullable: true,
   })
   @JoinColumn({ name: 'imageId' })
-  image: Asset;
+  image: Asset | null;
 
-  @Column()
+  @Column({ nullable: true })
   imageId: string;
 }

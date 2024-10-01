@@ -10,9 +10,11 @@ import * as basicAuth from 'express-basic-auth';
 async function bootstrap() {
   dotenv.config();
   const app = await NestFactory.create(AppModule);
+
   const configService = app.get<ConfigService<AppConfig, true>>(ConfigService);
 
   app.setGlobalPrefix('api/v1');
+
   const docsPassword = configService.get('docs', { infer: true });
   app.use(
     ['/docs', '/docs-json'],
@@ -30,7 +32,11 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 

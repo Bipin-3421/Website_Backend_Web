@@ -19,38 +19,33 @@ import {
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CreateMemberRequestDTO,
-  ListMemberResponseDTO,
   ListMemberQueryDTO,
   MemberParamDTO,
   UpdateMemberRequestDTO,
+  MemberLoginDTO,
+  MemberVerifyDTO,
+  VerifyResponseDTO,
+  ListMemberResponseDTO,
 } from './member.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
+import { PublicRoute } from 'common/decorator/public.decorator';
+import { Require } from 'common/decorator/require.decorator';
+import { PermissionAction, PermissionResource } from 'types/permission';
+import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('member')
-@ApiTags('Member API')
+@ApiTags('Member')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
   @Post()
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.EDIT,
+  })
+  @UseInterceptors(fileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Member creation failed',
   })
@@ -77,6 +72,10 @@ export class MemberController {
   }
 
   @Get()
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.VIEW,
+  })
   @ApiBadRequestResponse({
     description: 'Members  fetch failed',
   })
@@ -101,12 +100,13 @@ export class MemberController {
           phoneNumber: res.phoneNumber,
           designation: res.designation,
           role: res.role,
-          image: {
-            id: res.image.id,
-            name: res.image.name,
-            url: res.image.url,
-          },
-          imageId: res.imageId,
+          image: res.image
+            ? {
+                id: res.image.id,
+                name: res.image.name,
+                url: res.image.url,
+              }
+            : null,
         };
       }),
       pagination: getPaginationResponse(members, total, query),
@@ -114,22 +114,11 @@ export class MemberController {
   }
 
   @Patch(':memberId')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.EDIT,
+  })
+  @UseInterceptors(fileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Member updation failed',
   })
@@ -156,6 +145,10 @@ export class MemberController {
   }
 
   @Delete(':memberId')
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Member deletion failed',
   })
@@ -169,6 +162,44 @@ export class MemberController {
     );
     return {
       message: 'Member deleted successfully',
+    };
+  }
+
+  @Post('login')
+  @PublicRoute()
+  @ApiBadRequestResponse({
+    description: 'Member logged in failed',
+  })
+  async loginMember(
+    @Ctx() ctx: RequestContext,
+    @Body() body: MemberLoginDTO,
+  ): Promise<MessageResponseWithIdDTO> {
+    const member = await this.memberService.loginMember(ctx, body);
+
+    return {
+      message: 'Member logged in successfully',
+      data: {
+        id: member.id,
+      },
+    };
+  }
+
+  @Post('login/verify')
+  @PublicRoute()
+  @ApiBadRequestResponse({
+    description: 'Member verification failed',
+  })
+  async verifyMember(
+    @Ctx() ctx: RequestContext,
+    @Body() body: MemberVerifyDTO,
+  ): Promise<VerifyResponseDTO> {
+    const accessToken = await this.memberService.verifyMember(ctx, body);
+
+    return {
+      message: 'Member verified successfully',
+      data: {
+        accessToken,
+      },
     };
   }
 }

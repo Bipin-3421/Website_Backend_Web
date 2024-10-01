@@ -55,8 +55,7 @@ export class ListMemberDTO {
   phoneNumber: string;
   designation: string;
   role: MemberRole;
-  image: AssetDTO;
-  imageId: string;
+  image: AssetDTO | null;
 }
 
 export class ListMemberResponseDTO {
@@ -112,4 +111,27 @@ export class UpdateMemberRequestDTO {
   })
   @Optional()
   image?: Express.Multer.File;
+}
+
+export class MemberLoginDTO {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+}
+
+export class MemberVerifyDTO {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  otp: string;
+}
+
+export class VerifyResponseDTO {
+  message: string;
+  data: {
+    accessToken: string;
+  };
 }

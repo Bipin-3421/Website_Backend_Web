@@ -1,7 +1,13 @@
+import { MemberRole } from 'common/enum/memberRole.enum';
+
 export enum PermissionResource {
-  ALL = 'all',
+  ALL = 'All',
   APPLICANT = 'Applicant',
   VACANCY = 'Vacancy',
+  MEMBER = 'Member',
+  CONTACT = 'Contact',
+  DESIGNATION = 'Designation',
+  DEPARTMENT = 'Department',
 }
 
 export enum PermissionAction {
@@ -23,3 +29,36 @@ export const PermissionResouceList = [
     title: PermissionResource.VACANCY,
   },
 ];
+
+export const roleToPermissionArray: { [key in MemberRole]: Permission[] } = {
+  [MemberRole.SUPERADMIN]: [
+    {
+      resource: PermissionResource.ALL,
+      action: [PermissionAction.VIEW, PermissionAction.EDIT],
+    },
+  ],
+  [MemberRole.ADMIN]: [
+    {
+      resource: PermissionResource.APPLICANT,
+      action: [PermissionAction.VIEW, PermissionAction.EDIT],
+    },
+    {
+      resource: PermissionResource.VACANCY,
+      action: [PermissionAction.VIEW, PermissionAction.EDIT],
+    },
+    {
+      resource: PermissionResource.CONTACT,
+      action: [PermissionAction.VIEW, PermissionAction.EDIT],
+    },
+  ],
+  [MemberRole.MEMBER]: [
+    {
+      resource: PermissionResource.APPLICANT,
+      action: [PermissionAction.VIEW],
+    },
+    {
+      resource: PermissionResource.VACANCY,
+      action: [PermissionAction.VIEW],
+    },
+  ],
+};
