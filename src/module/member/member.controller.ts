@@ -43,7 +43,7 @@ export class MemberController {
   @Post()
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT && PermissionAction.VIEW,
   })
   @UseInterceptors(
     FileInterceptor('image', {
@@ -115,11 +115,13 @@ export class MemberController {
           phoneNumber: res.phoneNumber,
           designation: res.designation,
           role: res.role,
-          image: {
-            id: res.image?.id || null,
-            name: res.image?.name || null,
-            url: res.image?.url || null,
-          },
+          image: res.image
+            ? {
+                id: res.image.id,
+                name: res.image.name,
+                url: res.image.url,
+              }
+            : null,
         };
       }),
       pagination: getPaginationResponse(members, total, query),
@@ -193,8 +195,8 @@ export class MemberController {
     };
   }
 
-  @PublicRoute()
   @Post('login')
+  @PublicRoute()
   @ApiBadRequestResponse({
     description: 'Member logged in failed',
   })
@@ -212,8 +214,11 @@ export class MemberController {
     };
   }
 
-  @PublicRoute()
   @Post('login/verify')
+  @PublicRoute()
+  @ApiBadRequestResponse({
+    description: 'Member verification failed',
+  })
   async verifyMember(
     @Ctx() ctx: RequestContext,
     @Body() body: MemberVerifyDTO,

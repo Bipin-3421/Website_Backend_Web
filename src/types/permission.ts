@@ -5,6 +5,9 @@ export enum PermissionResource {
   APPLICANT = 'Applicant',
   VACANCY = 'Vacancy',
   MEMBER = 'Member',
+  CONTACT = 'Contact',
+  DESIGNATION = 'Designation',
+  DEPARTMENT = 'Department',
 }
 
 export enum PermissionAction {
@@ -30,7 +33,7 @@ export const PermissionResouceList = [
 export const roleToPermissionArray: { [key in MemberRole]: Permission[] } = {
   [MemberRole.SUPERADMIN]: [
     {
-      resource: PermissionResource.MEMBER,
+      resource: PermissionResource.ALL,
       action: [PermissionAction.VIEW, PermissionAction.EDIT],
     },
   ],
@@ -55,18 +58,3 @@ export const roleToPermissionArray: { [key in MemberRole]: Permission[] } = {
     },
   ],
 };
-
-const getPermissionsForRole = (ctx: {
-  data: { role: MemberRole };
-}): Permission[] => {
-  return roleToPermissionArray[ctx.data.role];
-};
-
-const ctx = {
-  data: {
-    role: MemberRole.ADMIN,
-  },
-};
-
-const permissions = getPermissionsForRole(ctx);
-console.log(permissions);

@@ -55,7 +55,7 @@ export class ListMemberDTO {
   phoneNumber: string;
   designation: string;
   role: MemberRole;
-  image: AssetDTO;
+  image: AssetDTO | null;
 }
 
 export class ListMemberResponseDTO {
