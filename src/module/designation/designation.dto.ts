@@ -27,8 +27,7 @@ export class CreateDesignationDTO {
 
   @IsString()
   @Length(1, 200)
-  @Optional()
-  description?: string;
+  description: string;
 }
 
 export class UpdateDesignationDTO {
@@ -60,7 +59,7 @@ export class ListDesignationDTO {
   createdAt: Date;
   department: DepartmentDTO;
   image: AssetDTO;
-  description: string | null;
+  description: string;
 }
 
 export class GetDesignationResponseDTO {
@@ -71,7 +70,7 @@ export class GetDesignationResponseDTO {
     createdAt: Date;
     department: DepartmentDTO;
     image: AssetDTO;
-    description: string | null;
+    description: string;
   };
 }
 

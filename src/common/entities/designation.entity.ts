@@ -33,6 +33,6 @@ export class Designation extends BaseEntity {
   @Column()
   imageId: string;
 
-  @Column({ type: String, nullable: true })
-  description: string | null;
+  @Column({ type: String, default: '' })
+  description: string;
 }
