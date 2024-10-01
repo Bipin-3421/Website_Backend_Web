@@ -28,7 +28,7 @@ import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
 
 @Controller('department')
-@ApiTags('Department Api')
+@ApiTags('Department ')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 

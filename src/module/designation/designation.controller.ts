@@ -34,7 +34,7 @@ import { PermissionAction, PermissionResource } from 'types/permission';
 import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('designation')
-@ApiTags('Designation Api')
+@ApiTags('Designation')
 export class DesignationController {
   constructor(private readonly designationService: DesignationService) {}
 

@@ -35,7 +35,7 @@ import { PermissionAction, PermissionResource } from 'types/permission';
 import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('vacancy')
-@ApiTags('Job Vacancy API')
+@ApiTags('Vacancy')
 export class VacancyController {
   constructor(private readonly vacancyService: VacancyService) {}
 

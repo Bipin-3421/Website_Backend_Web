@@ -30,7 +30,7 @@ import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
 
 @Controller('contact')
-@ApiTags('Contact Api')
+@ApiTags('Contact')
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 

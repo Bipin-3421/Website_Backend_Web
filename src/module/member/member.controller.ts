@@ -36,7 +36,7 @@ import { PermissionAction, PermissionResource } from 'types/permission';
 import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('member')
-@ApiTags('Member API')
+@ApiTags('Member')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
