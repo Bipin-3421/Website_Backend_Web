@@ -24,6 +24,8 @@ import {
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
+import { Require } from 'common/decorator/require.decorator';
+import { PermissionAction, PermissionResource } from 'types/permission';
 
 @Controller('department')
 @ApiTags('Department Api')
@@ -31,6 +33,10 @@ export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   @Post()
+  @Require({
+    permission: PermissionResource.DEPARTMENT,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Department creation failed',
   })
@@ -49,6 +55,10 @@ export class DepartmentController {
   }
 
   @Get()
+  @Require({
+    permission: PermissionResource.DEPARTMENT,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Departments fetch failed',
   })
@@ -73,6 +83,10 @@ export class DepartmentController {
   }
 
   @Patch(':departmentId')
+  @Require({
+    permission: PermissionResource.DEPARTMENT,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Department updation failed',
   })
@@ -96,6 +110,10 @@ export class DepartmentController {
   }
 
   @Delete(':departmentId')
+  @Require({
+    permission: PermissionResource.DEPARTMENT,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({ description: 'Department deletion failed' })
   async deleteDepartment(
     @Ctx() ctx: RequestContext,

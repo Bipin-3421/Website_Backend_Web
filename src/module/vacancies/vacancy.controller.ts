@@ -30,9 +30,9 @@ import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
+import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('vacancy')
 @ApiTags('Job Vacancy API')
@@ -44,22 +44,7 @@ export class VacancyController {
     permission: PermissionResource.VACANCY,
     action: PermissionAction.EDIT,
   })
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @UseInterceptors(fileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Job vacancy creation failed',
   })
@@ -153,22 +138,7 @@ export class VacancyController {
     permission: PermissionResource.VACANCY,
     action: PermissionAction.EDIT,
   })
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @UseInterceptors(fileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Job vacancy update failed',
   })

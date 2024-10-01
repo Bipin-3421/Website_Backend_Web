@@ -46,6 +46,10 @@ export const roleToPermissionArray: { [key in MemberRole]: Permission[] } = {
       resource: PermissionResource.VACANCY,
       action: [PermissionAction.VIEW, PermissionAction.EDIT],
     },
+    {
+      resource: PermissionResource.CONTACT,
+      action: [PermissionAction.VIEW, PermissionAction.EDIT],
+    },
   ],
   [MemberRole.MEMBER]: [
     {

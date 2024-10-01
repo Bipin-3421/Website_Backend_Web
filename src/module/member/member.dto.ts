@@ -117,10 +117,6 @@ export class MemberLoginDTO {
   @IsEmail()
   @IsNotEmpty()
   email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  phoneNumber?: string;
 }
 
 export class MemberVerifyDTO {

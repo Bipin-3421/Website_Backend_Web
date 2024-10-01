@@ -145,7 +145,6 @@ export class MemberService implements OnApplicationBootstrap {
     const member = await memberRepo.findOne({
       where: {
         email: details.email,
-        phoneNumber: details.phoneNumber,
       },
     });
 

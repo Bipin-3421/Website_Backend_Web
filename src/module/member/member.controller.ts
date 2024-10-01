@@ -19,7 +19,6 @@ import {
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CreateMemberRequestDTO,
   ListMemberQueryDTO,
@@ -34,6 +33,7 @@ import { getPaginationResponse } from 'common/utils/pagination.utils';
 import { PublicRoute } from 'common/decorator/public.decorator';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
+import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('member')
 @ApiTags('Member API')
@@ -43,24 +43,9 @@ export class MemberController {
   @Post()
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.EDIT && PermissionAction.VIEW,
+    action: PermissionAction.EDIT,
   })
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @UseInterceptors(fileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Member creation failed',
   })
@@ -89,7 +74,7 @@ export class MemberController {
   @Get()
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.EDIT,
   })
   @ApiBadRequestResponse({
     description: 'Members  fetch failed',
@@ -133,22 +118,7 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.EDIT,
   })
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @UseInterceptors(fileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Member updation failed',
   })

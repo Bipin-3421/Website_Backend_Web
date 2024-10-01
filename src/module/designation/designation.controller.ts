@@ -24,12 +24,14 @@ import {
 } from './designation.dto';
 import { DesignationService } from './designation.service';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
 import {
   MessageResponseDTO,
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
+import { Require } from 'common/decorator/require.decorator';
+import { PermissionAction, PermissionResource } from 'types/permission';
+import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('designation')
 @ApiTags('Designation Api')
@@ -37,22 +39,11 @@ export class DesignationController {
   constructor(private readonly designationService: DesignationService) {}
 
   @Post()
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @Require({
+    permission: PermissionResource.DESIGNATION,
+    action: PermissionAction.EDIT,
+  })
+  @UseInterceptors(fileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Designation creation failed',
   })
@@ -82,6 +73,10 @@ export class DesignationController {
   }
 
   @Get('')
+  @Require({
+    permission: PermissionResource.DESIGNATION,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Designation list fetch failed',
   })
@@ -116,6 +111,10 @@ export class DesignationController {
   }
 
   @Get(':designationId')
+  @Require({
+    permission: PermissionResource.DESIGNATION,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Single Designation fetch failed',
   })
@@ -152,22 +151,11 @@ export class DesignationController {
   }
 
   @Patch(':designationId')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(req, file, callback) {
-        const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-
-        if (!MIME_TYPES.includes(file.mimetype)) {
-          callback(
-            new NotAcceptableException('WEBP,SVG,JPG,PNG files are allowed'),
-            false,
-          );
-        } else {
-          callback(null, true);
-        }
-      },
-    }),
-  )
+  @Require({
+    permission: PermissionResource.DESIGNATION,
+    action: PermissionAction.EDIT,
+  })
+  @UseInterceptors(fileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Designation updation failed',
   })
@@ -194,6 +182,10 @@ export class DesignationController {
   }
 
   @Delete(':designationId')
+  @Require({
+    permission: PermissionResource.DESIGNATION,
+    action: PermissionAction.EDIT,
+  })
   @ApiBadRequestResponse({
     description: 'Designation deletion failed',
   })
