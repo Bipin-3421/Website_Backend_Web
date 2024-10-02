@@ -33,7 +33,7 @@ import { PermissionAction, PermissionResource } from 'types/permission';
 import { fileUpload } from 'common/file-upload.interceptor';
 
 @Controller('applicant')
-@ApiTags('Applicant API')
+@ApiTags('Applicant ')
 export class ApplicantController {
   constructor(private readonly applicantService: ApplicantService) {}
 

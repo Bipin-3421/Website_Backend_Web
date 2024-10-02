@@ -9,6 +9,7 @@ import {
 import { BaseEntity } from './base.entity';
 import { Department } from './department.entity';
 import { Asset } from './asset.entity';
+import { Vacancy } from './vacancy.entity';
 
 @Entity()
 export class Designation extends BaseEntity {
@@ -35,4 +36,8 @@ export class Designation extends BaseEntity {
 
   @Column({ type: String, default: '' })
   description: string;
+
+  @OneToOne(() => Vacancy, (vacancy) => vacancy.designationId)
+  @JoinColumn({ name: 'vacancyId' })
+  vacacy: Vacancy;
 }

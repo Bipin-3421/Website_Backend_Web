@@ -28,7 +28,6 @@ async function bootstrap() {
     .setTitle('Black tech web API')
     .setDescription('Backend API description')
     .setVersion('1.0')
-    .addTag('Black tech PVT LTD')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
