@@ -1,15 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Search } from '@nestjs/common';
 import { Vacancy } from 'common/entities/vacancy.entity';
 import { CreateVacancyRequestDto } from './dto/create.vacancy.dto';
 import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
 import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
 import { TransactionalConnection } from 'module/connection/connection.service';
 import { RequestContext } from 'common/request-context';
-import { ILike } from 'typeorm';
+import {
+  Between,
+  FindOptionsWhere,
+  ILike,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+} from 'typeorm';
 import { AssetService } from 'asset/asset.service';
 import { patchEntity } from 'common/utils/patchEntity';
 import { AssetFor } from 'common/enum/asset.for.enum';
 import { Designation } from 'common/entities/designation.entity';
+import { dateFilter } from 'common/utils/dateFilter';
+import { DateFilterDTO } from 'common/dto/date.filter';
 
 @Injectable()
 export class VacancyService {
@@ -57,25 +65,55 @@ export class VacancyService {
     return await vacancyRepo.save(vacancy);
   }
 
-  async findMany(ctx: RequestContext, queryParams: VacancyFilterDto) {
-    const vacancyRepo = this.connection.getRepository(ctx, Vacancy);
+  async findMany(ctx: RequestContext, query: VacancyFilterDto) {
+    const {
+      search,
+      take = 10,
+      page = 0,
+      designationId,
+      status,
+      jobLevel,
+      datePostedFrom,
+      datePostedTo,
+      deadlineFrom,
+      deadlineTo,
+    } = query;
 
-    const filteredData = await vacancyRepo.findAndCount({
-      where: {
-        designationId: queryParams.designationId
-          ? ILike(`%${queryParams.designationId}%`)
-          : undefined,
-        status: queryParams.status,
-        jobLevel: queryParams.jobLevel,
-      },
-      take: queryParams.take ?? 10,
-      skip: (queryParams.page ?? 0) * (queryParams.take ?? 10),
-      relations: { designation: true, image: true },
+    const skip = take * page;
+
+    const whereClause: FindOptionsWhere<Vacancy> = {
+      name: search ? ILike(`%${search}%`) : undefined,
+
+      designationId: designationId ? designationId : undefined,
+      status: status ? status : undefined,
+      jobLevel: jobLevel ? jobLevel : undefined,
+
+      datePosted:
+        datePostedFrom && datePostedTo
+          ? Between(new Date(datePostedFrom), new Date(datePostedTo))
+          : datePostedFrom
+            ? MoreThanOrEqual(new Date(datePostedFrom))
+            : datePostedTo
+              ? LessThanOrEqual(new Date(datePostedTo))
+              : undefined,
+
+      deadline:
+        deadlineFrom && deadlineTo
+          ? Between(new Date(deadlineFrom), new Date(deadlineTo))
+          : deadlineFrom
+            ? MoreThanOrEqual(new Date(deadlineFrom))
+            : deadlineTo
+              ? LessThanOrEqual(new Date(deadlineTo))
+              : undefined,
+    };
+
+    return this.connection.getRepository(ctx, Vacancy).findAndCount({
+      where: whereClause,
+      relations: { image: true, designation: true, applicants: true },
+      skip,
+      take,
       order: { createdAt: 'DESC' },
-      loadRelationIds: { relations: ['applicants'] },
     });
-
-    return filteredData;
   }
 
   async findSingleVacancy(ctx: RequestContext, vacancyId: string) {

@@ -158,11 +158,13 @@ export class MemberService implements OnApplicationBootstrap {
 
     const message = `Your login otp is ${otp}`;
 
-    this.mailerService.sendMail({
-      to: details.email,
-      subject: `OTP for backoffice blacktech login`,
-      html: message,
-    });
+    if (process.env.OTP !== 'dev') {
+      this.mailerService.sendMail({
+        to: details.email,
+        subject: `OTP for backoffice blacktech login`,
+        html: message,
+      });
+    }
 
     return member;
   }

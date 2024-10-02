@@ -81,14 +81,14 @@ export class VacancyController {
     @Ctx() ctx: RequestContext,
     @Query() queryFilter: VacancyFilterDto,
   ): Promise<ListVacanciesReponseDto> {
-    const [vacancy, total] = await this.vacancyService.findMany(
+    const [vacancies, total] = await this.vacancyService.findMany(
       ctx,
       queryFilter,
     );
 
     return {
       message: 'All job fetched successfully',
-      data: vacancy.map((vacancy) => {
+      data: vacancies.map((vacancy) => {
         return {
           id: vacancy.id,
           name: vacancy.name,
@@ -115,7 +115,7 @@ export class VacancyController {
           applicant: vacancy.applicants.length,
         };
       }),
-      Pagination: getPaginationResponse(vacancy, total, queryFilter),
+      Pagination: getPaginationResponse(vacancies, total, queryFilter),
     };
   }
 
