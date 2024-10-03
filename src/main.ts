@@ -16,8 +16,6 @@ async function bootstrap() {
 
   const configService = app.get<ConfigService<AppConfig, true>>(ConfigService);
 
-  app.setGlobalPrefix('api/v1');
-
   const docsPassword = configService.get('docs', { infer: true });
   app.use(
     ['/docs', '/docs-json'],
@@ -46,16 +44,17 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Black tech web API')
-    .setDescription('Backend API description')
+    .setTitle('BlackTech')
+    .setDescription('Api specification for blacktech backend')
     .setVersion('1.0')
-    .addTag('Black tech PVT LTD')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
+    customSiteTitle: 'blacktechBackend',
     swaggerOptions: {
       persistAuthorization: true,
+      tagsSorter: 'alpha',
     },
   });
 
