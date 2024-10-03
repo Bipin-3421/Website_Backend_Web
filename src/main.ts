@@ -7,6 +7,7 @@ import { AppConfig } from 'config/configuration';
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import * as basicAuth from 'express-basic-auth';
+import * as logger from 'morgan';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -25,6 +26,14 @@ async function bootstrap() {
   );
 
   const corsConfig = configService.get('cors', { infer: true });
+
+  app.use(
+    logger('dev', {
+      stream: {
+        write: (str) => Logger.log(str.trim(), `HttpRequest`),
+      },
+    }),
+  );
 
   app.use(
     cors({
