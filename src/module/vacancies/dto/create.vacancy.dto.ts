@@ -14,7 +14,6 @@ import { JobStatus } from 'common/enum/jobStatus.enum';
 
 export class CreateVacancyRequestDto {
   @IsString()
-  @IsNotEmpty()
   @Length(1, 50)
   name: string;
 
@@ -22,45 +21,36 @@ export class CreateVacancyRequestDto {
   designationId: string;
 
   @IsString()
-  @IsNotEmpty()
   jobLevel: string;
 
   @IsString()
-  @IsNotEmpty()
   salary: string;
 
   @IsString()
   @Length(10, 200)
-  @IsNotEmpty()
   skills: string;
 
-  @IsNotEmpty()
   @IsNumber()
   @Transform(({ value }) => {
     return Number(value);
   })
   experience: number;
 
-  @IsNotEmpty()
   @IsEnum(JobType)
   jobType: JobType;
 
   @IsDateString()
-  @IsNotEmpty()
   datePosted: Date;
 
   @IsDateString()
-  @IsNotEmpty()
   deadLine: Date;
 
-  @IsNotEmpty()
   @IsNumber()
   @Transform(({ value }) => {
     return Number(value);
   })
   vacancyOpening: number;
 
-  @IsNotEmpty()
   @Length(10, 200)
   @IsString()
   description: string;

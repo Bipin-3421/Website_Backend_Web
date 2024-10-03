@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
@@ -37,9 +38,9 @@ export class Designation extends BaseEntity {
   @Column({ type: String, default: '' })
   description: string;
 
-  @OneToOne(() => Vacancy, (vacancy) => vacancy.designation, {
+  @OneToMany(() => Vacancy, (vacancy) => vacancy.designation, {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  vacacy: Vacancy;
+  vacacy: Vacancy[];
 }

@@ -5,17 +5,12 @@ import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
 import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
 import { TransactionalConnection } from 'module/connection/connection.service';
 import { RequestContext } from 'common/request-context';
-import {
-  Between,
-  FindOptionsWhere,
-  ILike,
-  LessThanOrEqual,
-  MoreThanOrEqual,
-} from 'typeorm';
+import { ILike } from 'typeorm';
 import { AssetService } from 'asset/asset.service';
 import { patchEntity } from 'common/utils/patchEntity';
 import { AssetFor } from 'common/enum/asset.for.enum';
 import { Designation } from 'common/entities/designation.entity';
+import { dateFilter } from 'common/utils/dateFilter';
 
 @Injectable()
 export class VacancyService {
@@ -63,59 +58,30 @@ export class VacancyService {
     return await vacancyRepo.save(vacancy);
   }
 
-  async findMany(ctx: RequestContext, query: VacancyFilterDto) {
-    const {
-      search,
-      take = 10,
-      page = 0,
-      designationId,
-      status,
-      jobLevel,
-      datePostedFrom,
-      datePostedTo,
-      deadlineFrom,
-      deadlineTo,
-    } = query;
+  async findMany(ctx: RequestContext, filter: VacancyFilterDto) {
+    const { take = 10, page = 0 } = filter;
 
     const skip = take * page;
 
-    const whereClause: FindOptionsWhere<Vacancy> = {
-      name: search ? ILike(`%${search}%`) : undefined,
-
-      designationId: designationId ? designationId : undefined,
-      status: status ? status : undefined,
-      jobLevel: jobLevel ? jobLevel : undefined,
-
-      datePosted:
-        datePostedFrom && datePostedTo
-          ? Between(new Date(datePostedFrom), new Date(datePostedTo))
-          : datePostedFrom
-            ? MoreThanOrEqual(new Date(datePostedFrom))
-            : datePostedTo
-              ? LessThanOrEqual(new Date(datePostedTo))
-              : undefined,
-
-      deadline:
-        deadlineFrom && deadlineTo
-          ? Between(new Date(deadlineFrom), new Date(deadlineTo))
-          : deadlineFrom
-            ? MoreThanOrEqual(new Date(deadlineFrom))
-            : deadlineTo
-              ? LessThanOrEqual(new Date(deadlineTo))
-              : undefined,
-    };
-
     return this.connection.getRepository(ctx, Vacancy).findAndCount({
-      where: whereClause,
-      relations: { image: true, designation: true, applicants: true },
+      where: {
+        name: filter.search ? ILike(`%${filter.search}%`) : undefined,
+        designationId: filter.designationId,
+        status: filter.status,
+        jobLevel: filter.jobLevel,
+        datePosted: dateFilter(filter.datePostedFrom, filter.datePostedTo),
+        deadline: dateFilter(filter.deadlineFrom, filter.deadlineTo),
+      },
+      relations: { image: true, designation: true },
+      loadRelationIds: { relations: ['applicants'] },
       skip,
       take,
       order: { createdAt: 'DESC' },
     });
   }
 
-  async findSingleVacancy(ctx: RequestContext, vacancyId: string) {
-    return await this.connection.getRepository(ctx, Vacancy).findOne({
+  findSingleVacancy(ctx: RequestContext, vacancyId: string) {
+    return this.connection.getRepository(ctx, Vacancy).findOne({
       where: { id: vacancyId },
       relations: { image: true },
     });
@@ -124,12 +90,12 @@ export class VacancyService {
   async update(
     ctx: RequestContext,
     details: UpdateVacancyRequestDto,
-    VacancyId: string,
+    vacancyId: string,
   ) {
     const vacancyRepo = this.connection.getRepository(ctx, Vacancy);
 
     const vacancy = await vacancyRepo.findOne({
-      where: { id: VacancyId },
+      where: { id: vacancyId },
       relations: {
         image: true,
       },

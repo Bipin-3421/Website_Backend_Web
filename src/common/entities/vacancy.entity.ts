@@ -1,5 +1,12 @@
 import { JobType } from 'common/enum/Job.type.enum';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { BaseEntity } from './base.entity';
 import { Applicant } from './applicant.entity';
@@ -16,7 +23,7 @@ export class Vacancy extends BaseEntity {
   @Column({ type: String })
   name: string;
 
-  @OneToOne(() => Designation, (designation) => designation.vacacy)
+  @ManyToOne(() => Designation, (designation) => designation.vacacy)
   @JoinColumn({ name: 'designationId' })
   designation: Designation;
 
