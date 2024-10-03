@@ -39,6 +39,9 @@ export interface AppConfig {
   cors: {
     allowedDomains: string[];
   };
+  mail: {
+    otp: string;
+  };
 }
 
 export default () => {
@@ -81,6 +84,9 @@ export default () => {
     },
     cors: {
       allowedDomains: JSON.parse(process.env.CORS_ALLOWED_DOMAINS ?? '[]'),
+    },
+    mail: {
+      otp: process.env.OTP_ENV ?? '',
     },
   };
 

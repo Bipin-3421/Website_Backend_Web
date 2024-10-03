@@ -7,7 +7,6 @@ import { AppConfig } from 'config/configuration';
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import * as basicAuth from 'express-basic-auth';
-import * as logger from 'morgan';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -22,14 +21,6 @@ async function bootstrap() {
     basicAuth({
       users: { admin: docsPassword },
       challenge: true,
-    }),
-  );
-
-  app.use(
-    logger('dev', {
-      stream: {
-        write: (str) => Logger.log(str.trim(), `HttpRequest`),
-      },
     }),
   );
 

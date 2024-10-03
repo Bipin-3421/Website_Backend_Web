@@ -156,13 +156,16 @@ export class MemberService implements OnApplicationBootstrap {
 
     await this.cacheManager.set(cacheKey, otp, { ttl: 120 } as any);
 
-    const message = `Your login otp is ${otp}`;
+    const mail = this.configService.get('mail', { infer: true });
 
-    this.mailerService.sendMail({
-      to: details.email,
-      subject: `OTP for backoffice blacktech login`,
-      html: message,
-    });
+    const message = `Your login otp is ${otp}`;
+    if (mail.otp !== 'dev') {
+      this.mailerService.sendMail({
+        to: details.email,
+        subject: `OTP for backoffice blacktech login`,
+        html: message,
+      });
+    }
 
     return member;
   }
