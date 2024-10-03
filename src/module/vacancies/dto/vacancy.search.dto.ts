@@ -4,12 +4,10 @@ import { IntersectionType } from '@nestjs/swagger';
 import { JobStatus } from 'common/enum/jobStatus.enum';
 import { PaginationParamDTO } from 'common/dto/pagination.dto';
 import { SearchParamDTO } from 'common/dto/search.dto';
-import { DateFilterDTO } from 'common/dto/date.filter';
 
 export class VacancyFilterDto extends IntersectionType(
   PaginationParamDTO,
   SearchParamDTO,
-  DateFilterDTO,
 ) {
   @IsUUID()
   @Optional()
