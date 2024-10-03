@@ -37,7 +37,9 @@ export class Designation extends BaseEntity {
   @Column({ type: String, default: '' })
   description: string;
 
-  @OneToOne(() => Vacancy, (vacancy) => vacancy.designationId)
-  @JoinColumn({ name: 'vacancyId' })
+  @OneToOne(() => Vacancy, (vacancy) => vacancy.designation, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   vacacy: Vacancy;
 }

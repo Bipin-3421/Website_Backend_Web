@@ -16,8 +16,6 @@ import { AssetService } from 'asset/asset.service';
 import { patchEntity } from 'common/utils/patchEntity';
 import { AssetFor } from 'common/enum/asset.for.enum';
 import { Designation } from 'common/entities/designation.entity';
-import { dateFilter } from 'common/utils/dateFilter';
-import { DateFilterDTO } from 'common/dto/date.filter';
 
 @Injectable()
 export class VacancyService {
@@ -176,12 +174,10 @@ export class VacancyService {
     });
 
     if (!vacancy) {
-      return false;
+      throw new NotFoundException('Vacancy not found');
     }
 
     await vacancyRepo.remove(vacancy);
     await this.assetService.delete(ctx, vacancy.image.id);
-
-    return true;
   }
 }
