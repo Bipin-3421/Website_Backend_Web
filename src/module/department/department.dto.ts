@@ -30,6 +30,15 @@ export class ListDepartmentResponseDTO {
   pagination: PaginationResponseDTO;
 }
 
+export class SingleDepartmentResponseDTO {
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    createdAt: Date;
+  };
+}
+
 export class DepartmentParamDTO {
   @IsUUID()
   departmentId: string;

@@ -7,13 +7,16 @@ import {
   Body,
   Query,
   Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { DepartmentService } from './department.service';
 import {
   CreateDepartmentDTO,
   DepartmentParamDTO,
+  ListDepartmentDTO,
   ListDepartmentQueryDTO,
   ListDepartmentResponseDTO,
+  SingleDepartmentResponseDTO,
   UpdateDepartmentDTO,
 } from './department.dto';
 import { RequestContext } from 'common/request-context';
@@ -79,6 +82,36 @@ export class DepartmentController {
         };
       }),
       pagination: getPaginationResponse(departments, total, query),
+    };
+  }
+
+  @Get(':departmentId')
+  @Require({
+    permission: PermissionResource.DEPARTMENT,
+    action: PermissionAction.VIEW,
+  })
+  @ApiBadRequestResponse({
+    description: 'Department fetch failed',
+  })
+  async getSingleDepartment(
+    @Ctx() ctx: RequestContext,
+    @Param() param: DepartmentParamDTO,
+  ): Promise<SingleDepartmentResponseDTO> {
+    const department = await this.departmentService.findSingleDepartment(
+      ctx,
+      param.departmentId,
+    );
+    if (!department) {
+      throw new NotFoundException('Department not found');
+    }
+
+    return {
+      message: 'Department fetched successfully',
+      data: {
+        id: department.id,
+        name: department.name,
+        createdAt: department.createdAt,
+      },
     };
   }
 
