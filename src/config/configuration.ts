@@ -36,6 +36,9 @@ export interface AppConfig {
     host: string;
     port: number;
   };
+  cors: {
+    allowedDomains: string[];
+  };
 }
 
 export default () => {
@@ -75,6 +78,9 @@ export default () => {
     redis: {
       host: process.env.REDIS_HOST ?? 'localhost',
       port: parseInt(process.env.REDIS_PORT ?? '6379'),
+    },
+    cors: {
+      allowedDomains: JSON.parse(process.env.CORS_ALLOWED_DOMAINS ?? '[]'),
     },
   };
 

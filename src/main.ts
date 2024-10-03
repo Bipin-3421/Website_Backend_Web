@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from 'config/configuration';
 import * as basicAuth from 'express-basic-auth';
+import * as cors from 'cors';
 
 async function bootstrap() {
   dotenv.config();
@@ -21,6 +22,15 @@ async function bootstrap() {
     basicAuth({
       users: { admin: docsPassword },
       challenge: true,
+    }),
+  );
+
+  const corsConfig = configService.get('cors', { infer: true });
+
+  app.use(
+    cors({
+      origin: corsConfig.allowedDomains,
+      credentials: true,
     }),
   );
 
