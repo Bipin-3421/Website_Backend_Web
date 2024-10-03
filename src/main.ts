@@ -25,6 +25,8 @@ async function bootstrap() {
     }),
   );
 
+  const corsConfig = configService.get('cors', { infer: true });
+
   app.use(
     logger('dev', {
       stream: {
@@ -32,8 +34,6 @@ async function bootstrap() {
       },
     }),
   );
-
-  const corsConfig = configService.get('cors', { infer: true });
 
   app.use(
     cors({
