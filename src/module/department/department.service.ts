@@ -37,6 +37,16 @@ export class DepartmentService {
     });
   }
 
+  async findSingleDepartment(ctx: RequestContext, departmentId: string) {
+    const departmentRepo = this.connection.getRepository(Department);
+    const department = await departmentRepo.findOne({
+      where: {
+        id: departmentId,
+      },
+    });
+    return department;
+  }
+
   async updateDepartment(
     ctx: RequestContext,
     body: UpdateDepartmentDTO,
