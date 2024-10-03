@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppConfig } from 'config/configuration';
 import * as basicAuth from 'express-basic-auth';
 import * as cors from 'cors';
+import { AUTHORIZATION_HEADER } from 'common/constant';
 
 async function bootstrap() {
   dotenv.config();
@@ -31,6 +32,7 @@ async function bootstrap() {
     cors({
       origin: corsConfig.allowedDomains,
       credentials: true,
+      exposedHeaders: AUTHORIZATION_HEADER,
     }),
   );
 
