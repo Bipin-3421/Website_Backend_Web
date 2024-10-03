@@ -139,7 +139,6 @@ export class VacancyController {
     if (!vacancy) {
       throw new NotFoundException(`Vacancy  not found`);
     }
-    console.log(vacancy);
 
     return {
       message: 'Vacancy fetched successfully',
@@ -223,7 +222,7 @@ export class VacancyController {
     await this.vacancyService.delete(ctx, param.vacancyId);
 
     return {
-      message: 'Job deleted successfully',
+      message: 'Vacancy deleted successfully',
     };
   }
 }

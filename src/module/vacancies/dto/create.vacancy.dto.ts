@@ -55,6 +55,9 @@ export class CreateVacancyRequestDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
   vacancyOpening: number;
 
   @IsNotEmpty()
