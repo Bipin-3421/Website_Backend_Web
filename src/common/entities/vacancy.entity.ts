@@ -1,10 +1,18 @@
 import { JobType } from 'common/enum/Job.type.enum';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { BaseEntity } from './base.entity';
 import { Applicant } from './applicant.entity';
 import { Asset } from './asset.entity';
 import { JobStatus } from 'common/enum/jobStatus.enum';
+import { Designation } from './designation.entity';
 
 @Entity()
 export class Vacancy extends BaseEntity {
@@ -12,11 +20,30 @@ export class Vacancy extends BaseEntity {
     super(input);
   }
 
-  @Column({ length: 50 })
-  designation: string;
+  @Column({ type: String })
+  name: string;
 
-  @Column()
-  position: string;
+  @ManyToOne(() => Designation, (designation) => designation.vacacy)
+  @JoinColumn({ name: 'designationId' })
+  designation: Designation;
+
+  @Column({ type: String })
+  designationId: string;
+
+  @Column({ type: String })
+  jobLevel: string;
+
+  @Column({ type: String })
+  salary: string;
+
+  @Column({ type: String })
+  skills: string;
+
+  @Column({ type: String })
+  experience: number;
+
+  @Column({ type: 'enum', enum: JobType })
+  jobType: JobType;
 
   @Column({ type: 'timestamp with time zone' })
   datePosted: Date;
@@ -24,26 +51,15 @@ export class Vacancy extends BaseEntity {
   @Column({ type: 'timestamp with time zone' })
   deadline: Date;
 
-  @Column()
-  experience: number;
+  @Column({ type: Number })
+  vacancyOpening: number;
 
-  @Column({ type: 'enum', enum: JobType })
-  jobType: JobType;
-
-  @Column()
-  openingPosition: number;
-
-  @Column()
-  department: string;
-
-  @Column({ length: 200 })
-  skill: string;
-
-  @Column({ length: 200 })
+  @Column({ type: String, default: '' })
   description: string;
 
   @Column({
     type: 'enum',
+    enumName: 'JobStatus',
     enum: JobStatus,
   })
   status: JobStatus;
@@ -51,12 +67,10 @@ export class Vacancy extends BaseEntity {
   @OneToMany(() => Applicant, (Applicant) => Applicant.vacancy)
   applicants: Applicant[];
 
-  @OneToOne(() => Asset, (asset) => asset.vacancy, {
-    cascade: true,
-  })
+  @OneToOne(() => Asset, (asset) => asset.vacancy)
   @JoinColumn({ name: 'imageId' })
   image: Asset;
 
-  @Column()
+  @Column({ type: String })
   imageId: string;
 }

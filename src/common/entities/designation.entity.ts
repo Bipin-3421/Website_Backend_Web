@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { Department } from './department.entity';
 import { Asset } from './asset.entity';
+import { Vacancy } from './vacancy.entity';
 
 @Entity()
 export class Designation extends BaseEntity {
@@ -35,4 +37,10 @@ export class Designation extends BaseEntity {
 
   @Column({ type: String, default: '' })
   description: string;
+
+  @OneToMany(() => Vacancy, (vacancy) => vacancy.designation, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  vacacy: Vacancy[];
 }

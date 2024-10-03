@@ -13,11 +13,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { VacancyService } from './vacancy.service';
-import { PublicRoute } from 'common/decorator/public.decorator';
 import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CreateVacancyRequestDto } from './dto/create.vacancy.dto';
 import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
-import { VacancyIdDto } from './dto/param.dto';
+import { VacancyIdDTO } from './dto/param.dto';
 import {
   GetVacancyResponseDto,
   ListVacanciesReponseDto,
@@ -71,7 +70,10 @@ export class VacancyController {
   }
 
   @Get()
-  @PublicRoute()
+  @Require({
+    permission: PermissionResource.VACANCY,
+    action: PermissionAction.VIEW,
+  })
   @ApiBadRequestResponse({
     description: 'Job vacancy fetch failed',
   })
@@ -79,57 +81,88 @@ export class VacancyController {
     @Ctx() ctx: RequestContext,
     @Query() queryFilter: VacancyFilterDto,
   ): Promise<ListVacanciesReponseDto> {
-    const [response, total] = await this.vacancyService.findMany(
+    const [vacancies, total] = await this.vacancyService.findMany(
       ctx,
       queryFilter,
     );
+
     return {
       message: 'All job fetched successfully',
-      data: response,
-      Pagination: getPaginationResponse(response, total, queryFilter),
-    };
-  }
-
-  @Delete(':vacancyId')
-  @Require({
-    permission: PermissionResource.VACANCY,
-    action: PermissionAction.EDIT,
-  })
-  @ApiBadRequestResponse({
-    description: 'Job vacancy deletion failed',
-  })
-  async deleteJobVacancy(
-    @Ctx() ctx: RequestContext,
-    @Param() param: VacancyIdDto,
-  ): Promise<MessageResponseDTO> {
-    await this.vacancyService.delete(ctx, param.vacancyId);
-
-    return {
-      message: 'Job deleted successfully',
+      data: vacancies.map((vacancy) => {
+        return {
+          id: vacancy.id,
+          name: vacancy.name,
+          createdAt: vacancy.createdAt,
+          designation: {
+            id: vacancy.designation.id,
+            name: vacancy.designation.name,
+          },
+          jobLevel: vacancy.jobLevel,
+          salary: vacancy.salary,
+          skills: vacancy.skills,
+          experience: vacancy.experience,
+          jobType: vacancy.jobType,
+          datePosted: vacancy.datePosted,
+          deadline: vacancy.deadline,
+          vacancy: vacancy.vacancyOpening,
+          status: vacancy.status,
+          description: vacancy.description,
+          image: {
+            id: vacancy.image.id,
+            name: vacancy.image.name,
+            url: vacancy.image.url,
+          },
+          applicant: vacancy.applicants.length,
+        };
+      }),
+      Pagination: getPaginationResponse(vacancies, total, queryFilter),
     };
   }
 
   @Get(':vacancyId')
-  @PublicRoute()
+  @Require({
+    permission: PermissionResource.VACANCY,
+    action: PermissionAction.VIEW,
+  })
   @ApiBadRequestResponse({
     description: 'Job vacancy fetch failed',
   })
-  async getJobVacancyById(
+  async findSingleVacancy(
     @Ctx() ctx: RequestContext,
-    @Param()
-    param: VacancyIdDto,
+    @Param() param: VacancyIdDTO,
   ): Promise<GetVacancyResponseDto> {
-    const res = await this.vacancyService.getVacancy(ctx, param.vacancyId);
+    const vacancy = await this.vacancyService.findSingleVacancy(
+      ctx,
+      param.vacancyId,
+    );
 
-    if (!res) {
-      throw new NotFoundException(
-        `Vacancy with ID ${param.vacancyId} not found`,
-      );
+    if (!vacancy) {
+      throw new NotFoundException(`Vacancy  not found`);
     }
 
     return {
-      message: 'Specific job fetched successfully',
-      data: res,
+      message: 'Vacancy fetched successfully',
+      data: {
+        id: vacancy.id,
+        name: vacancy.name,
+        createdAt: vacancy.createdAt,
+        designationId: vacancy.designationId,
+        jobLevel: vacancy.jobLevel,
+        salary: vacancy.salary,
+        skills: vacancy.skills,
+        experience: vacancy.experience,
+        jobType: vacancy.jobType,
+        datePosted: vacancy.datePosted,
+        deadline: vacancy.deadline,
+        vacancy: vacancy.vacancyOpening,
+        status: vacancy.status,
+        description: vacancy.description,
+        image: {
+          id: vacancy.image.id,
+          name: vacancy.image.name,
+          url: vacancy.image.url,
+        },
+      },
     };
   }
 
@@ -145,18 +178,18 @@ export class VacancyController {
   @ApiConsumes('multipart/form-data')
   async updateJobVacancy(
     @Ctx() ctx: RequestContext,
-    @Param() param: VacancyIdDto,
-    @Body() vacancyDetails: UpdateVacancyRequestDto,
+    @Param() param: VacancyIdDTO,
+    @Body() body: UpdateVacancyRequestDto,
     @UploadedFile() file: Express.Multer.File | null,
   ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
       throw new NotAcceptableException('CV is required');
     }
-    vacancyDetails.image = file;
+    body.image = file;
 
     const updatedVacancy = await this.vacancyService.update(
       ctx,
-      vacancyDetails,
+      body,
       param.vacancyId,
     );
 
@@ -171,6 +204,25 @@ export class VacancyController {
       data: {
         id: updatedVacancy.id,
       },
+    };
+  }
+
+  @Delete(':vacancyId')
+  @Require({
+    permission: PermissionResource.VACANCY,
+    action: PermissionAction.EDIT,
+  })
+  @ApiBadRequestResponse({
+    description: 'Job vacancy deletion failed',
+  })
+  async deleteJobVacancy(
+    @Ctx() ctx: RequestContext,
+    @Param() param: VacancyIdDTO,
+  ): Promise<MessageResponseDTO> {
+    await this.vacancyService.delete(ctx, param.vacancyId);
+
+    return {
+      message: 'Vacancy deleted successfully',
     };
   }
 }

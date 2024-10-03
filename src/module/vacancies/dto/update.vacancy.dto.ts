@@ -3,6 +3,7 @@ import {
   IsEnum,
   IsNumber,
   IsString,
+  IsUUID,
   Length,
 } from 'class-validator';
 import { JobType } from '../../../common/enum/Job.type.enum';
@@ -14,19 +15,25 @@ import { JobStatus } from 'common/enum/jobStatus.enum';
 export class UpdateVacancyRequestDto {
   @IsString()
   @Optional()
-  designation?: string;
+  @Length(1, 50)
+  name?: string;
+
+  @IsUUID()
+  @Optional()
+  designationid?: string;
 
   @IsString()
   @Optional()
-  position?: string;
+  jobLevel?: string;
 
+  @IsString()
   @Optional()
-  @IsDateString()
-  datePosted?: Date;
+  salary?: string;
 
+  @IsString()
   @Optional()
-  @IsDateString()
-  deadline?: Date;
+  @Length(10, 200)
+  skills: string;
 
   @Optional()
   @Transform(({ value }) => {
@@ -39,10 +46,17 @@ export class UpdateVacancyRequestDto {
   @IsEnum(JobType)
   jobType?: JobType;
 
-  @IsString()
+  @Optional()
+  @IsDateString()
+  datePosted?: Date;
+
+  @Optional()
+  @IsDateString()
+  deadline?: Date;
+
   @Optional()
   @IsNumber()
-  openingPosition?: number;
+  vacancyOpening?: number;
 
   @Length(10, 200)
   @Optional()
@@ -50,13 +64,8 @@ export class UpdateVacancyRequestDto {
   description?: string;
 
   @Optional()
-  @Length(10, 200)
-  @IsString()
-  skill?: string;
-
-  @Optional()
-  @IsString()
-  department?: string;
+  @IsEnum(JobStatus)
+  status?: JobStatus;
 
   @Optional()
   @ApiProperty({
@@ -65,8 +74,4 @@ export class UpdateVacancyRequestDto {
     format: 'binary',
   })
   image?: Express.Multer.File;
-
-  @Optional()
-  @IsEnum(JobStatus)
-  status?: JobStatus;
 }

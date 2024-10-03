@@ -1,58 +1,61 @@
 import {
   IsDateString,
   IsEnum,
-  IsNotEmpty,
   IsString,
   Length,
+  IsUUID,
+  IsNumber,
 } from 'class-validator';
 import { JobType } from '../../../common/enum/Job.type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
+import { JobStatus } from 'common/enum/jobStatus.enum';
 
 export class CreateVacancyRequestDto {
+  @IsString()
   @Length(1, 50)
-  @IsString()
-  @IsNotEmpty()
-  designation: string;
+  name: string;
+
+  @IsUUID()
+  designationId: string;
 
   @IsString()
-  @IsNotEmpty()
-  position: string;
+  jobLevel: string;
 
-  @IsDateString()
-  @IsNotEmpty()
-  datePosted: Date;
+  @IsString()
+  salary: string;
 
-  @IsDateString()
-  @IsNotEmpty()
-  deadLine: Date;
+  @IsString()
+  @Length(10, 200)
+  skills: string;
 
-  @IsNotEmpty()
+  @IsNumber()
   @Transform(({ value }) => {
     return Number(value);
   })
   experience: number;
 
-  @IsNotEmpty()
   @IsEnum(JobType)
   jobType: JobType;
 
-  @IsNotEmpty()
-  openingPosition: number;
+  @IsDateString()
+  datePosted: Date;
 
-  @IsNotEmpty()
+  @IsDateString()
+  deadLine: Date;
+
+  @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
+  vacancyOpening: number;
+
   @Length(10, 200)
   @IsString()
   description: string;
 
-  @IsNotEmpty()
-  @Length(10, 200)
-  @IsString()
-  skill: string;
-
-  @IsNotEmpty()
-  @IsString()
-  department: string;
+  @IsEnum(JobStatus)
+  status: JobStatus;
 
   @ApiProperty({
     description: 'image of the vacany',
