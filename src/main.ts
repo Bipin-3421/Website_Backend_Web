@@ -1,13 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as dotenv from 'dotenv';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from 'config/configuration';
-import * as basicAuth from 'express-basic-auth';
-import * as cors from 'cors';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AUTHORIZATION_HEADER } from 'common/constant';
+import { AppConfig } from 'config/configuration';
+import * as cors from 'cors';
+import * as dotenv from 'dotenv';
+import * as basicAuth from 'express-basic-auth';
+import * as logger from 'morgan';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   dotenv.config();
@@ -23,6 +24,14 @@ async function bootstrap() {
     basicAuth({
       users: { admin: docsPassword },
       challenge: true,
+    }),
+  );
+
+  app.use(
+    logger('dev', {
+      stream: {
+        write: (str) => Logger.log(str.trim(), `HttpRequest`),
+      },
     }),
   );
 
