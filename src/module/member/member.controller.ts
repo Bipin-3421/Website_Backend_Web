@@ -10,6 +10,7 @@ import {
   NotAcceptableException,
   UploadedFile,
   Query,
+  Res,
 } from '@nestjs/common';
 import { MemberService } from './member.service';
 import { RequestContext } from 'common/request-context';
@@ -34,6 +35,8 @@ import { PublicRoute } from 'common/decorator/public.decorator';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
 import { fileUpload } from 'common/file-upload.interceptor';
+import { attachToken } from 'common/utils/attachToken';
+import { Response } from 'express';
 
 @Controller('member')
 @ApiTags('Member')
@@ -192,9 +195,10 @@ export class MemberController {
   async verifyMember(
     @Ctx() ctx: RequestContext,
     @Body() body: MemberVerifyDTO,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<VerifyResponseDTO> {
     const accessToken = await this.memberService.verifyMember(ctx, body);
-
+    attachToken(res, accessToken);
     return {
       message: 'Member verified successfully',
       data: {
