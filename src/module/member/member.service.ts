@@ -156,9 +156,10 @@ export class MemberService implements OnApplicationBootstrap {
 
     await this.cacheManager.set(cacheKey, otp, { ttl: 120 } as any);
 
-    const message = `Your login otp is ${otp}`;
+    const otpDev = this.configService.get('otpDev', { infer: true });
 
-    if (process.env.OTP !== 'dev') {
+    const message = `Your login otp is ${otp}`;
+    if (!otpDev) {
       this.mailerService.sendMail({
         to: details.email,
         subject: `OTP for backoffice blacktech login`,

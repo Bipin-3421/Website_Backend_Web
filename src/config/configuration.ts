@@ -36,6 +36,10 @@ export interface AppConfig {
     host: string;
     port: number;
   };
+  cors: {
+    allowedDomains: string[];
+  };
+  otpDev: boolean;
 }
 
 export default () => {
@@ -76,6 +80,10 @@ export default () => {
       host: process.env.REDIS_HOST ?? 'localhost',
       port: parseInt(process.env.REDIS_PORT ?? '6379'),
     },
+    cors: {
+      allowedDomains: JSON.parse(process.env.CORS_ALLOWED_DOMAINS ?? '[]'),
+    },
+    otpDev: process.env.OTP_ENV === 'dev',
   };
 
   return config;
