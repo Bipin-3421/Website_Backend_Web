@@ -93,7 +93,7 @@ export class ApplicantController {
     );
 
     return {
-      message: 'All job fetched successfully',
+      message: 'All Applicants fetched successfully',
       data: applicants.map((applicant) => {
         return {
           id: applicant.id,
