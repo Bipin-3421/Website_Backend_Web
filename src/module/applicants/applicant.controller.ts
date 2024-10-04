@@ -20,10 +20,13 @@ import {
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
 import { ApplicantFilterDto } from './dto/applicant.search.dto';
-import { ListApplicantsResponseDto } from './dto/get.applicant.dto';
+import {
+  ListApplicantsResponseDto,
+  SingleApplicantResponseDTO,
+} from './dto/get.applicant.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
 import { PublicRoute } from 'common/decorator/public.decorator';
-import { ApplicantParamDto } from './dto/param.dto';
+import { ApplicantParamDTO } from './dto/param.dto';
 import { PatchApplicantDto } from './dto/patch.applicant.dto';
 import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
@@ -37,6 +40,9 @@ import { fileUpload } from 'common/file-upload.interceptor';
 export class ApplicantController {
   constructor(private readonly applicantService: ApplicantService) {}
 
+  /**
+   * Create a new applicant
+   */
   @Post()
   @PublicRoute()
   @UseInterceptors(fileUpload('cv'))
@@ -66,32 +72,10 @@ export class ApplicantController {
     };
   }
 
-  @Delete(':applicantId')
-  @Require({
-    permission: PermissionResource.APPLICANT,
-    action: PermissionAction.EDIT,
-  })
-  @ApiBadRequestResponse({
-    description: 'Job vacancy creation failed',
-  })
-  async deleteApplicant(
-    @Ctx() ctx: RequestContext,
-    @Param() applicantParamDto: ApplicantParamDto,
-  ): Promise<MessageResponseDTO> {
-    const status = await this.applicantService.delete(
-      ctx,
-      applicantParamDto.applicantId,
-    );
-
-    if (!status) {
-      throw new NotAcceptableException('Applicant not found');
-    }
-
-    return {
-      message: 'Applicant deleted successfully',
-    };
-  }
-
+  /**
+   *
+   * List all applicants
+   */
   @Get()
   @Require({
     permission: PermissionResource.APPLICANT,
@@ -104,18 +88,83 @@ export class ApplicantController {
     @Ctx() ctx: RequestContext,
     @Query() queryFilter: ApplicantFilterDto,
   ): Promise<ListApplicantsResponseDto> {
-    const [response, total] = await this.applicantService.findMany(
+    const [applicants, total] = await this.applicantService.findMany(
       ctx,
       queryFilter,
     );
 
     return {
       message: 'All job fetched successfully',
-      data: response,
-      pagination: getPaginationResponse(response, total, queryFilter),
+      data: applicants.map((applicant) => {
+        return {
+          id: applicant.id,
+          name: applicant.name,
+          email: applicant.email,
+          phoneNumber: applicant.phoneNumber,
+          address: applicant.address,
+          createdAt: applicant.createdAt,
+          cv: {
+            id: applicant.cv.id,
+            name: applicant.cv.name,
+            url: applicant.cv.url,
+          },
+          githubUrl: applicant.githubUrl,
+          portfolioUrl: applicant.portfolioUrl,
+          referralSource: applicant.referralSource,
+          workExperience: applicant.workExperience,
+          vacancyId: applicant.vacancyId,
+          status: applicant.status,
+        };
+      }),
+      pagination: getPaginationResponse(applicants, total, queryFilter),
     };
   }
 
+  /**
+   * Fetch single applicant
+   */
+
+  @Get(':applicantId')
+  @Require({
+    permission: PermissionResource.APPLICANT,
+    action: PermissionAction.VIEW,
+  })
+  async getSingleApplicant(
+    @Ctx() ctx: RequestContext,
+    @Param() param: ApplicantParamDTO,
+  ): Promise<SingleApplicantResponseDTO> {
+    const applicant = await this.applicantService.findSingleAplicant(
+      ctx,
+      param.applicantId,
+    );
+
+    if (!applicant) {
+      throw new NotFoundException('Applicant not found');
+    }
+
+    return {
+      message: 'Applicant fetched successfully',
+      data: {
+        id: applicant.id,
+        name: applicant.name,
+        email: applicant.email,
+        phoneNumber: applicant.phoneNumber,
+        address: applicant.address,
+        createdAt: applicant.createdAt,
+        cvId: applicant.cvId,
+        githubUrl: applicant.githubUrl,
+        portfolioUrl: applicant.portfolioUrl,
+        referralSource: applicant.referralSource,
+        workExperience: applicant.workExperience,
+        vacancyId: applicant.vacancyId,
+        status: applicant.status,
+      },
+    };
+  }
+
+  /**
+   * Update single applicant
+   */
   @Patch(':applicantId')
   @Require({
     permission: PermissionResource.APPLICANT,
@@ -126,7 +175,7 @@ export class ApplicantController {
   })
   async patchApplicantStatus(
     @Ctx() ctx: RequestContext,
-    @Param() applicantParamDto: ApplicantParamDto,
+    @Param() applicantParamDto: ApplicantParamDTO,
     @Body() status: PatchApplicantDto,
   ): Promise<MessageResponseDTO> {
     const res = await this.applicantService.update(
@@ -141,6 +190,36 @@ export class ApplicantController {
 
     return {
       message: 'Applicant status updated successfully',
+    };
+  }
+
+  /**
+   *Delete sinlge applicant
+   */
+
+  @Delete(':applicantId')
+  @Require({
+    permission: PermissionResource.APPLICANT,
+    action: PermissionAction.EDIT,
+  })
+  @ApiBadRequestResponse({
+    description: 'Job vacancy creation failed',
+  })
+  async deleteApplicant(
+    @Ctx() ctx: RequestContext,
+    @Param() applicantParamDto: ApplicantParamDTO,
+  ): Promise<MessageResponseDTO> {
+    const status = await this.applicantService.delete(
+      ctx,
+      applicantParamDto.applicantId,
+    );
+
+    if (!status) {
+      throw new NotAcceptableException('Applicant not found');
+    }
+
+    return {
+      message: 'Applicant deleted successfully',
     };
   }
 }

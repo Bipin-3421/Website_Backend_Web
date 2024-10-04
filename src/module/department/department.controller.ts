@@ -13,7 +13,6 @@ import { DepartmentService } from './department.service';
 import {
   CreateDepartmentDTO,
   DepartmentParamDTO,
-  ListDepartmentDTO,
   ListDepartmentQueryDTO,
   ListDepartmentResponseDTO,
   SingleDepartmentResponseDTO,
@@ -21,7 +20,7 @@ import {
 } from './department.dto';
 import { RequestContext } from 'common/request-context';
 import { Ctx } from 'common/decorator/ctx.decorator';
-import { ApiBadRequestResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import {
   MessageResponseDTO,
   MessageResponseWithIdDTO,
@@ -35,6 +34,9 @@ import { PermissionAction, PermissionResource } from 'types/permission';
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
+  /**
+   * Create a new department
+   */
   @Post()
   @Require({
     permission: PermissionResource.DEPARTMENT,
@@ -57,11 +59,16 @@ export class DepartmentController {
     };
   }
 
+  /**
+   * List all departments
+   */
+
   @Get()
   @Require({
     permission: PermissionResource.DEPARTMENT,
     action: PermissionAction.VIEW,
   })
+  @ApiOperation({ summary: 'List all departments' })
   @ApiBadRequestResponse({
     description: 'Departments fetch failed',
   })
@@ -85,11 +92,15 @@ export class DepartmentController {
     };
   }
 
+  /**
+   *Fetch single department
+   */
   @Get(':departmentId')
   @Require({
     permission: PermissionResource.DEPARTMENT,
     action: PermissionAction.VIEW,
   })
+  @ApiOperation({ summary: 'Fetch  single department' })
   @ApiBadRequestResponse({
     description: 'Department fetch failed',
   })
@@ -115,11 +126,15 @@ export class DepartmentController {
     };
   }
 
+  /**
+   * Update single department
+   */
   @Patch(':departmentId')
   @Require({
     permission: PermissionResource.DEPARTMENT,
     action: PermissionAction.EDIT,
   })
+  @ApiOperation({ summary: 'Update single department' })
   @ApiBadRequestResponse({
     description: 'Department updation failed',
   })
@@ -142,11 +157,15 @@ export class DepartmentController {
     };
   }
 
+  /**
+   * Delete single department
+   */
   @Delete(':departmentId')
   @Require({
     permission: PermissionResource.DEPARTMENT,
     action: PermissionAction.EDIT,
   })
+  @ApiOperation({ summary: 'Delete single department' })
   @ApiBadRequestResponse({ description: 'Department deletion failed' })
   async deleteDepartment(
     @Ctx() ctx: RequestContext,

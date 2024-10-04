@@ -43,6 +43,9 @@ import { Response } from 'express';
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
+  /**
+   * Create a new member
+   */
   @Post()
   @Require({
     permission: PermissionResource.MEMBER,
@@ -74,6 +77,9 @@ export class MemberController {
     };
   }
 
+  /**
+   * List all members
+   */
   @Get()
   @Require({
     permission: PermissionResource.MEMBER,
@@ -116,6 +122,10 @@ export class MemberController {
     };
   }
 
+  /**
+   * Update single member
+   */
+
   @Patch(':memberId')
   @Require({
     permission: PermissionResource.MEMBER,
@@ -147,6 +157,9 @@ export class MemberController {
     };
   }
 
+  /**
+   *Delete single Member
+   */
   @Delete(':memberId')
   @Require({
     permission: PermissionResource.MEMBER,
@@ -168,6 +181,9 @@ export class MemberController {
     };
   }
 
+  /**
+   * Member login
+   */
   @Post('login')
   @PublicRoute()
   @ApiBadRequestResponse({
@@ -187,6 +203,9 @@ export class MemberController {
     };
   }
 
+  /**
+   * Member login verify
+   */
   @Post('login/verify')
   @PublicRoute()
   @ApiBadRequestResponse({

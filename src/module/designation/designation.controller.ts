@@ -38,6 +38,9 @@ import { fileUpload } from 'common/file-upload.interceptor';
 export class DesignationController {
   constructor(private readonly designationService: DesignationService) {}
 
+  /**
+   * Create a new designation
+   */
   @Post()
   @Require({
     permission: PermissionResource.DESIGNATION,
@@ -71,6 +74,10 @@ export class DesignationController {
       },
     };
   }
+
+  /**
+   * List all designations
+   */
 
   @Get('')
   @Require({
@@ -110,6 +117,9 @@ export class DesignationController {
     };
   }
 
+  /**
+   * Fetch single designation
+   */
   @Get(':designationId')
   @Require({
     permission: PermissionResource.DESIGNATION,
@@ -150,6 +160,10 @@ export class DesignationController {
     };
   }
 
+  /**
+   * Update single Designation
+   */
+
   @Patch(':designationId')
   @Require({
     permission: PermissionResource.DESIGNATION,
@@ -181,6 +195,9 @@ export class DesignationController {
     };
   }
 
+  /**
+   * Delete single designation
+   */
   @Delete(':designationId')
   @Require({
     permission: PermissionResource.DESIGNATION,
