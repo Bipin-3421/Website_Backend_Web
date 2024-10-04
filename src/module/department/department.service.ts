@@ -38,7 +38,7 @@ export class DepartmentService {
   }
 
   async findSingleDepartment(ctx: RequestContext, departmentId: string) {
-    const departmentRepo = this.connection.getRepository(Department);
+    const departmentRepo = this.connection.getRepository(ctx, Department);
     const department = await departmentRepo.findOne({
       where: {
         id: departmentId,

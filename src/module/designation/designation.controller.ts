@@ -78,7 +78,6 @@ export class DesignationController {
   /**
    * List all designations
    */
-
   @Get('')
   @Require({
     permission: PermissionResource.DESIGNATION,
@@ -163,7 +162,6 @@ export class DesignationController {
   /**
    * Update single Designation
    */
-
   @Patch(':designationId')
   @Require({
     permission: PermissionResource.DESIGNATION,

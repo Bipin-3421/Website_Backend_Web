@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { RequestContext } from 'common/request-context';
 import {
   CreateDesignationDTO,
@@ -25,8 +21,8 @@ export class DesignationService {
   ) {}
 
   async createDesignation(ctx: RequestContext, body: CreateDesignationDTO) {
-    const designationRepo = this.connection.getRepository(Designation);
-    const departmentRepo = this.connection.getRepository(Department);
+    const designationRepo = this.connection.getRepository(ctx, Designation);
+    const departmentRepo = this.connection.getRepository(ctx, Department);
 
     const department = await departmentRepo.exists({
       where: { id: body.departmentId },
@@ -74,7 +70,7 @@ export class DesignationService {
   }
 
   async findSingleDesignation(ctx: RequestContext, designationId: string) {
-    const designationRepo = this.connection.getRepository(Designation);
+    const designationRepo = this.connection.getRepository(ctx, Designation);
 
     const designation = await designationRepo.findOne({
       where: {
@@ -130,7 +126,7 @@ export class DesignationService {
   }
 
   async deleteDesignation(ctx: RequestContext, designationId: string) {
-    const designationRepo = this.connection.getRepository(Designation);
+    const designationRepo = this.connection.getRepository(ctx, Designation);
 
     const designation = await designationRepo.findOne({
       where: {

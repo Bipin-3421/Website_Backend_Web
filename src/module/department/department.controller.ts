@@ -62,7 +62,6 @@ export class DepartmentController {
   /**
    * List all departments
    */
-
   @Get()
   @Require({
     permission: PermissionResource.DEPARTMENT,

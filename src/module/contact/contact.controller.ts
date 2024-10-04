@@ -58,7 +58,6 @@ export class ContactController {
   /**
    * List all contacts
    */
-
   @Get()
   @Require({
     permission: PermissionResource.CONTACT,

@@ -41,7 +41,6 @@ export class VacancyController {
   /**
    *Create a new vacancy
    */
-
   @Post()
   @Require({
     permission: PermissionResource.VACANCY,

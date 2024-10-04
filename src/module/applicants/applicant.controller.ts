@@ -73,7 +73,6 @@ export class ApplicantController {
   }
 
   /**
-   *
    * List all applicants
    */
   @Get()
@@ -123,7 +122,6 @@ export class ApplicantController {
   /**
    * Fetch single applicant
    */
-
   @Get(':applicantId')
   @Require({
     permission: PermissionResource.APPLICANT,
@@ -194,9 +192,8 @@ export class ApplicantController {
   }
 
   /**
-   *Delete sinlge applicant
+   *Delete single applicant
    */
-
   @Delete(':applicantId')
   @Require({
     permission: PermissionResource.APPLICANT,

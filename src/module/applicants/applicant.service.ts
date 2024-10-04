@@ -77,7 +77,7 @@ export class ApplicantService {
   }
 
   async findSingleAplicant(ctx: RequestContext, applicantId: string) {
-    const applicantRepo = this.connection.getRepository(Applicant);
+    const applicantRepo = this.connection.getRepository(ctx, Applicant);
     const applicant = await applicantRepo.findOne({
       where: {
         id: applicantId,

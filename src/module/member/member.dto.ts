@@ -58,6 +58,20 @@ export class ListMemberDTO {
   image: AssetDTO | null;
 }
 
+export class singleMemberResponseDTO {
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    createdAt: Date;
+    phoneNumber: string;
+    designation: string;
+    role: MemberRole;
+    imageId: string;
+  };
+}
+
 export class ListMemberResponseDTO {
   message: string;
   data: ListMemberDTO[];
