@@ -38,6 +38,9 @@ import { fileUpload } from 'common/file-upload.interceptor';
 export class VacancyController {
   constructor(private readonly vacancyService: VacancyService) {}
 
+  /**
+   *Create a new vacancy
+   */
   @Post()
   @Require({
     permission: PermissionResource.VACANCY,
@@ -69,6 +72,9 @@ export class VacancyController {
     };
   }
 
+  /**
+   * List all vacancies
+   */
   @Get()
   @Require({
     permission: PermissionResource.VACANCY,
@@ -119,6 +125,9 @@ export class VacancyController {
     };
   }
 
+  /**
+   * Fetch single vacancy
+   */
   @Get(':vacancyId')
   @Require({
     permission: PermissionResource.VACANCY,
@@ -166,6 +175,9 @@ export class VacancyController {
     };
   }
 
+  /**
+   * Update single vacancy
+   */
   @Patch(':vacancyId')
   @Require({
     permission: PermissionResource.VACANCY,
@@ -207,6 +219,9 @@ export class VacancyController {
     };
   }
 
+  /**
+   * Delete single vacancy
+   */
   @Delete(':vacancyId')
   @Require({
     permission: PermissionResource.VACANCY,

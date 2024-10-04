@@ -39,7 +39,7 @@ export class Vacancy extends BaseEntity {
   @Column({ type: String })
   skills: string;
 
-  @Column({ type: String })
+  @Column({ type: Number })
   experience: number;
 
   @Column({ type: 'enum', enum: JobType })

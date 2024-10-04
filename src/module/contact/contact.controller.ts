@@ -34,6 +34,9 @@ import { PermissionAction, PermissionResource } from 'types/permission';
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
+  /**
+   * Create a new contact
+   */
   @Post()
   @PublicRoute()
   @ApiBadRequestResponse({
@@ -52,6 +55,9 @@ export class ContactController {
     };
   }
 
+  /**
+   * List all contacts
+   */
   @Get()
   @Require({
     permission: PermissionResource.CONTACT,
@@ -83,6 +89,9 @@ export class ContactController {
     };
   }
 
+  /**
+   * Fetch single contact
+   */
   @Get('/:contactId')
   @Require({
     permission: PermissionResource.CONTACT,
@@ -114,6 +123,9 @@ export class ContactController {
     };
   }
 
+  /**
+   * Update single contact
+   */
   @Patch('/:contactId')
   @Require({
     permission: PermissionResource.CONTACT,
@@ -140,6 +152,9 @@ export class ContactController {
     };
   }
 
+  /**
+   * Delete single contact
+   */
   @Delete('/:contactId')
   @Require({
     permission: PermissionResource.CONTACT,

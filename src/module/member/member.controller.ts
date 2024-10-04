@@ -11,6 +11,7 @@ import {
   UploadedFile,
   Query,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { MemberService } from './member.service';
 import { RequestContext } from 'common/request-context';
@@ -29,6 +30,7 @@ import {
   MemberVerifyDTO,
   VerifyResponseDTO,
   ListMemberResponseDTO,
+  singleMemberResponseDTO,
 } from './member.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
 import { PublicRoute } from 'common/decorator/public.decorator';
@@ -43,6 +45,9 @@ import { Response } from 'express';
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
+  /**
+   * Create a new member
+   */
   @Post()
   @Require({
     permission: PermissionResource.MEMBER,
@@ -74,6 +79,9 @@ export class MemberController {
     };
   }
 
+  /**
+   * List all members
+   */
   @Get()
   @Require({
     permission: PermissionResource.MEMBER,
@@ -116,6 +124,46 @@ export class MemberController {
     };
   }
 
+  /**
+   * Fetch single member
+   */
+  @Get(':memberId')
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.VIEW,
+  })
+  @ApiBadRequestResponse({
+    description: 'Single member fetch failed',
+  })
+  async getSingleMember(
+    @Ctx() ctx: RequestContext,
+    @Param() param: MemberParamDTO,
+  ): Promise<singleMemberResponseDTO> {
+    const member = await this.memberService.findSingleMember(
+      ctx,
+      param.memberId,
+    );
+    if (!member) {
+      throw new NotFoundException('Member not found');
+    }
+    return {
+      message: 'Member not found',
+      data: {
+        id: member.id,
+        createdAt: member.createdAt,
+        name: member.name,
+        email: member.email,
+        phoneNumber: member.phoneNumber,
+        designation: member.designation,
+        role: member.role,
+        imageId: member.imageId,
+      },
+    };
+  }
+
+  /**
+   * Update single member
+   */
   @Patch(':memberId')
   @Require({
     permission: PermissionResource.MEMBER,
@@ -147,6 +195,9 @@ export class MemberController {
     };
   }
 
+  /**
+   *Delete single Member
+   */
   @Delete(':memberId')
   @Require({
     permission: PermissionResource.MEMBER,
@@ -168,6 +219,9 @@ export class MemberController {
     };
   }
 
+  /**
+   * Member login
+   */
   @Post('login')
   @PublicRoute()
   @ApiBadRequestResponse({
@@ -187,6 +241,9 @@ export class MemberController {
     };
   }
 
+  /**
+   * Member login verify
+   */
   @Post('login/verify')
   @PublicRoute()
   @ApiBadRequestResponse({

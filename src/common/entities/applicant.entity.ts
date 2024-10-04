@@ -17,46 +17,50 @@ export class Applicant extends BaseEntity {
     super(input);
   }
 
-  @Column()
+  @Column({ type: String })
   name: string;
 
-  @Column()
+  @Column({ type: String })
   email: string;
 
-  @Column()
+  @Column({ type: String })
   phoneNumber: string;
 
-  @Column()
+  @Column({ type: String })
   address: string;
 
   @Column({ type: String, nullable: true })
-  githubURL: string | null;
+  githubUrl: string | null;
 
   @Column({ type: String, nullable: true })
-  portfolioURL: string | null;
+  portfolioUrl: string | null;
 
   @OneToOne(() => Asset, (asset) => asset.applicant, {
     cascade: true,
   })
-  @JoinColumn({ name: 'cv' })
+  @JoinColumn({ name: 'cvId' })
   cv: Asset;
 
-  @Column({ type: String, nullable: true })
-  referalSource: string | null;
+  @Column({ type: String })
+  cvId: string;
 
-  @Column()
-  workExperience: string;
+  @Column({ type: String, nullable: true })
+  referralSource: string | null;
+
+  @Column({ type: Number })
+  workExperience: number;
 
   @ManyToOne(() => Vacancy, (vacancy) => vacancy.applicants)
   @JoinColumn({ name: 'vacancyId' })
   vacancy: Vacancy;
 
-  @Column()
+  @Column({ type: String })
   vacancyId: string;
 
   @Column({
     type: 'enum',
     enum: ApplicationStatus,
+    enumName: 'ApplicationStatus',
   })
   status: ApplicationStatus;
 }

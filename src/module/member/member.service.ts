@@ -88,6 +88,17 @@ export class MemberService implements OnApplicationBootstrap {
     });
   }
 
+  async findSingleMember(ctx: RequestContext, memberId: string) {
+    const memberRepo = this.connection.getRepository(ctx, Member);
+    const member = await memberRepo.findOne({
+      where: {
+        id: memberId,
+      },
+    });
+
+    return member;
+  }
+
   async updateMember(
     ctx: RequestContext,
     details: UpdateMemberRequestDTO,

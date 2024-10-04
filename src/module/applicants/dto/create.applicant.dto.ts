@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsEmail, IsString, IsNumber } from 'class-validator';
 import { Optional } from 'common/decorator/optional.decorator';
 
 export class CreateApplicantDto {
@@ -37,12 +38,16 @@ export class CreateApplicantDto {
   portfolioUrl?: string;
 
   @ApiProperty({ description: 'The work experience of the applicant' })
-  workExperience: string;
+  @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value);
+  })
+  workExperience: number;
 
   @ApiProperty({ description: 'The referal source of the applicant' })
   @IsString()
   @Optional()
-  referalSource?: string;
+  referralSource?: string;
 
   @ApiProperty({ description: 'The vacancy id of the applicant' })
   @IsString()

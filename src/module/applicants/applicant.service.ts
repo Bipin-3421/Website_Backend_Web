@@ -29,10 +29,10 @@ export class ApplicantService {
       email: applicantDetail.email,
       phoneNumber: applicantDetail.phone,
       address: applicantDetail.address,
-      githubURL: applicantDetail.githubUrl,
-      portfolioURL: applicantDetail.portfolioUrl,
+      githubUrl: applicantDetail.githubUrl,
+      portfolioUrl: applicantDetail.portfolioUrl,
       cv: asset,
-      referalSource: applicantDetail.referalSource,
+      referralSource: applicantDetail.referralSource,
       workExperience: applicantDetail.workExperience,
       vacancyId: applicantDetail.vacancyId,
       status: ApplicationStatus.INITIAL,
@@ -41,26 +41,6 @@ export class ApplicantService {
     const applicantRepo = this.connection.getRepository(ctx, Applicant);
 
     return await applicantRepo.save(applicant);
-  }
-
-  async delete(ctx: RequestContext, id: string): Promise<boolean> {
-    const applicantRepo = this.connection.getRepository(ctx, Applicant);
-
-    const applicant = await applicantRepo.findOne({
-      where: { id: id },
-      relations: {
-        cv: true,
-      },
-    });
-
-    if (!applicant) {
-      return false;
-    }
-
-    await applicantRepo.remove(applicant);
-    await this.assetService.delete(ctx, applicant.cv.id);
-
-    return true;
   }
 
   async findMany(ctx: RequestContext, queryParams: ApplicantFilterDto) {
@@ -87,12 +67,23 @@ export class ApplicantService {
       },
       relations: {
         vacancy: true,
+        cv: true,
       },
       take: queryParams.take,
       skip: queryParams.page,
     });
 
     return filteredData;
+  }
+
+  async findSingleAplicant(ctx: RequestContext, applicantId: string) {
+    const applicantRepo = this.connection.getRepository(ctx, Applicant);
+    const applicant = await applicantRepo.findOne({
+      where: {
+        id: applicantId,
+      },
+    });
+    return applicant;
   }
 
   async update(
@@ -110,5 +101,25 @@ export class ApplicantService {
     applicant.status = applicantStatus.status;
 
     return await applicantRepo.save(applicant);
+  }
+
+  async delete(ctx: RequestContext, id: string): Promise<boolean> {
+    const applicantRepo = this.connection.getRepository(ctx, Applicant);
+
+    const applicant = await applicantRepo.findOne({
+      where: { id: id },
+      relations: {
+        cv: true,
+      },
+    });
+
+    if (!applicant) {
+      return false;
+    }
+
+    await applicantRepo.remove(applicant);
+    await this.assetService.delete(ctx, applicant.cv.id);
+
+    return true;
   }
 }
