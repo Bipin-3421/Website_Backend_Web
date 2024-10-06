@@ -20,7 +20,7 @@ export class AssetLocal implements AssetProviderInterface {
       infer: true,
     });
 
-    if (!fs.existsSync(AssetProvider.LOCAL)) {
+    if (!fs.existsSync(pathToSave)) {
       fs.mkdirSync(pathToSave, { recursive: true });
     }
 

@@ -19,7 +19,6 @@ import {
 } from './member.dto';
 import { FindOptionsWhere, ILike } from 'typeorm';
 import { patchEntity } from 'common/utils/patchEntity';
-import { Asset } from 'common/entities/asset.entity';
 import { seedSuperAdmin } from 'common/seeds/backofficeSuperAdmin.seed';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from 'config/configuration';

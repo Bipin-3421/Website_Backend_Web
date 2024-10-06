@@ -14,6 +14,7 @@ import {
   NotFoundException,
   UnauthorizedException,
   BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { MemberService } from './member.service';
 import { RequestContext } from 'common/request-context';
@@ -43,7 +44,6 @@ import { attachToken } from 'common/utils/attachToken';
 import { Response } from 'express';
 import { Throws } from 'common/decorator/throws.decorator';
 import { ValidationException } from 'common/errors/validation.error';
-import { ValidateResponse } from 'common/decorator/validateResponse.decorator';
 
 @Controller('member')
 @ApiTags('Member')
@@ -58,8 +58,12 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.EDIT,
   })
-  @Throws(UnauthorizedException, ValidationException, BadRequestException)
-  @ValidateResponse(MessageResponseWithIdDTO)
+  @Throws(
+    UnauthorizedException,
+    ValidationException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
   @UseInterceptors(fileUpload('image'))
   @ApiConsumes('multipart/form-data')
   async createMember(
@@ -91,8 +95,7 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.VIEW,
   })
-  @Throws(UnauthorizedException)
-  @ValidateResponse(ListMemberResponseDTO)
+  @Throws(UnauthorizedException, InternalServerErrorException)
   async getAllMembers(
     @Ctx() ctx: RequestContext,
     @Query() query: ListMemberQueryDTO,
@@ -135,8 +138,12 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.EDIT,
   })
-  @Throws(UnauthorizedException, ValidationException, BadRequestException)
-  @ValidateResponse(MessageResponseWithIdDTO)
+  @Throws(
+    UnauthorizedException,
+    ValidationException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
   @UseInterceptors(fileUpload('image'))
   @ApiConsumes('multipart/form-data')
   async updateMember(
@@ -165,8 +172,11 @@ export class MemberController {
    */
   @Post('login')
   @PublicRoute()
-  @Throws(ValidationException, BadRequestException)
-  @ValidateResponse(MessageResponseWithIdDTO)
+  @Throws(
+    ValidationException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
   async loginMember(
     @Ctx() ctx: RequestContext,
     @Body() body: MemberLoginDTO,
@@ -191,8 +201,7 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.VIEW,
   })
-  @Throws(UnauthorizedException)
-  @ValidateResponse(singleMemberResponseDTO)
+  @Throws(UnauthorizedException, InternalServerErrorException)
   async activeUser(
     @Ctx() ctx: RequestContext,
   ): Promise<singleMemberResponseDTO> {
@@ -225,8 +234,11 @@ export class MemberController {
    */
   @Post('login/verify')
   @PublicRoute()
-  @Throws(BadRequestException, ValidationException)
-  @ValidateResponse(VerifyResponseDTO)
+  @Throws(
+    BadRequestException,
+    ValidationException,
+    InternalServerErrorException,
+  )
   async verifyMember(
     @Ctx() ctx: RequestContext,
     @Body() body: MemberVerifyDTO,
@@ -250,8 +262,11 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.VIEW,
   })
-  @Throws(UnauthorizedException, BadRequestException)
-  @ValidateResponse(singleMemberResponseDTO)
+  @Throws(
+    UnauthorizedException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
   async getSingleMember(
     @Ctx() ctx: RequestContext,
     @Param() param: MemberParamDTO,
@@ -286,8 +301,11 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.EDIT,
   })
-  @Throws(UnauthorizedException, BadRequestException)
-  @ValidateResponse(MessageResponseDTO)
+  @Throws(
+    UnauthorizedException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
   async deleteMember(
     @Ctx() ctx: RequestContext,
     @Param() param: MemberParamDTO,
