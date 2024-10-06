@@ -159,8 +159,6 @@ export class MemberService implements OnApplicationBootstrap {
       },
     });
 
-    if (!member) throw new NotFoundException('Member not found');
-
     const otp = generateOTP();
 
     const cacheKey = `login-otp:${details.email}`;
@@ -177,7 +175,6 @@ export class MemberService implements OnApplicationBootstrap {
         html: message,
       });
     }
-
     return member;
   }
 
@@ -197,7 +194,6 @@ export class MemberService implements OnApplicationBootstrap {
     const cacheKey = `login-otp:${details.email}`;
 
     const cachedOTP = await this.cacheManager.get<string>(cacheKey);
-    console.log(cachedOTP);
 
     if (!cachedOTP) {
       throw new BadRequestException('OTP has expired ');
