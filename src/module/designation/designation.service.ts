@@ -138,6 +138,8 @@ export class DesignationService {
       throw new NotFoundException('Designation not found');
     }
 
-    return await designationRepo.remove(designation);
+    await designationRepo.remove(designation);
+    await this.assetService.delete(ctx, designation.imageId);
+    return designation;
   }
 }

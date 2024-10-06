@@ -19,7 +19,6 @@ import {
 } from './member.dto';
 import { FindOptionsWhere, ILike } from 'typeorm';
 import { patchEntity } from 'common/utils/patchEntity';
-import { Asset } from 'common/entities/asset.entity';
 import { seedSuperAdmin } from 'common/seeds/backofficeSuperAdmin.seed';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from 'config/configuration';
@@ -120,18 +119,26 @@ export class MemberService implements OnApplicationBootstrap {
     const { image, ...patch } = details;
     patchEntity(member, patch);
 
-    let asset: Asset | undefined;
+    let oldAssetId: string | undefined;
+
     if (image) {
-      asset = await this.assetService.upload(
+      const asset = await this.assetService.upload(
         ctx,
         image.buffer,
         AssetFor.MEMBER,
       );
 
-      member.image = asset;
+      oldAssetId = member.imageId;
+
+      member.imageId = asset.id;
     }
 
-    return await memberRepo.save(member);
+    await memberRepo.save(member);
+
+    if (oldAssetId) {
+      await this.assetService.delete(ctx, oldAssetId);
+    }
+    return member;
   }
 
   async deleteMember(ctx: RequestContext, memberId: string) {
@@ -147,7 +154,11 @@ export class MemberService implements OnApplicationBootstrap {
       throw new NotFoundException('Member not found');
     }
 
-    return await memberRepo.remove(member);
+    await memberRepo.remove(member);
+    if (member.imageId) {
+      await this.assetService.delete(ctx, member.imageId);
+    }
+    return member;
   }
 
   async loginMember(ctx: RequestContext, details: MemberLoginDTO) {
@@ -158,8 +169,6 @@ export class MemberService implements OnApplicationBootstrap {
         email: details.email,
       },
     });
-
-    if (!member) throw new NotFoundException('Member not found');
 
     const otp = generateOTP();
 
@@ -177,7 +186,6 @@ export class MemberService implements OnApplicationBootstrap {
         html: message,
       });
     }
-
     return member;
   }
 
@@ -197,7 +205,6 @@ export class MemberService implements OnApplicationBootstrap {
     const cacheKey = `login-otp:${details.email}`;
 
     const cachedOTP = await this.cacheManager.get<string>(cacheKey);
-    console.log(cachedOTP);
 
     if (!cachedOTP) {
       throw new BadRequestException('OTP has expired ');

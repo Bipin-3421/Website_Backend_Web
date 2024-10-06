@@ -8,6 +8,7 @@ import { Asset } from 'common/entities/asset.entity';
 import { AssetProviderInterface } from './provider/asset.provider.interface';
 import { TransactionalConnection } from 'module/connection/connection.service';
 import { RequestContext } from 'common/request-context';
+import { AzureBlobStorageProvider } from './provider/azure.provider';
 
 @Injectable()
 export class AssetService {
@@ -19,14 +20,16 @@ export class AssetService {
   getProvider(provider?: string): AssetProviderInterface {
     const assetProvider =
       provider ||
-      this.configService.get('asset', {
+      this.configService.get('assetProvider.name', {
         infer: true,
-      }).Provider.assetProvider;
+      });
     if (assetProvider === AssetProvider.LOCAL) {
       return new AssetLocal(this.configService);
+    } else if (assetProvider === AssetProvider.AZURE) {
+      return new AzureBlobStorageProvider(this.configService);
+    } else {
+      throw new Error('No provider found');
     }
-
-    throw new Error('No provider found');
   }
 
   async upload(

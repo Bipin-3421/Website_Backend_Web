@@ -9,12 +9,14 @@ export interface AppConfig {
     password: string;
     database: string;
   };
-  asset: {
-    Provider: {
-      assetProvider: AssetProvider;
-    };
+  assetProvider: {
+    name: AssetProvider;
     local: {
       rootPath: string;
+    };
+    azure: {
+      containerName: string;
+      connectionString: string;
     };
   };
   jwt: {
@@ -39,6 +41,7 @@ export interface AppConfig {
   cors: {
     allowedDomains: string[];
   };
+
   otpDev: boolean;
 }
 
@@ -52,10 +55,12 @@ export default () => {
       password: process.env.DATABASE_PASSWORD ?? 'a2004',
       database: process.env.DATABASE_NAME ?? 'testDB',
     },
-    asset: {
-      Provider: {
-        assetProvider: (process.env.ASSET_PROVIDER ??
-          AssetProvider.LOCAL) as AssetProvider,
+    assetProvider: {
+      name: (process.env.ASSET_PROVIDER ??
+        AssetProvider.LOCAL) as AssetProvider,
+      azure: {
+        containerName: process.env.AZURE_CONTAINER_NAME ?? '',
+        connectionString: process.env.AZURE_CONNECTION_STRING ?? '',
       },
       local: {
         rootPath: process.env.FILE_UPLOAD_PATH ?? 'uploads',

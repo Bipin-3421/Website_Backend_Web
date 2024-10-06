@@ -52,7 +52,11 @@ export class ListContactQueryDTO extends IntersectionType(
   SearchParamDTO,
   PaginationParamDTO,
   DateFilterDTO,
-) {}
+) {
+  @Optional()
+  @IsEnum(ContactStatus)
+  status?: ContactStatus;
+}
 
 export class ListContactResponseDTO {
   message: string;
@@ -61,7 +65,6 @@ export class ListContactResponseDTO {
 }
 
 export class UpdateContactRequestDTO {
-  @IsString()
   @Optional()
   @IsEnum(ContactStatus)
   status?: ContactStatus;

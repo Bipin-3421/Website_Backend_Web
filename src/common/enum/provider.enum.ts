@@ -1,5 +1,5 @@
 export enum AssetProvider {
-  AZURE = 'azure',
-  S3 = 's3',
-  LOCAL = 'local',
+  AZURE = 'Azure',
+  S3 = 'S3',
+  LOCAL = 'Local',
 }

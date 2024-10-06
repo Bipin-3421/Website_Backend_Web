@@ -12,6 +12,9 @@ import {
   Query,
   Res,
   NotFoundException,
+  UnauthorizedException,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { MemberService } from './member.service';
 import { RequestContext } from 'common/request-context';
@@ -20,7 +23,7 @@ import {
   MessageResponseDTO,
   MessageResponseWithIdDTO,
 } from 'common/dto/response.dto';
-import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import {
   CreateMemberRequestDTO,
   ListMemberQueryDTO,
@@ -39,6 +42,8 @@ import { PermissionAction, PermissionResource } from 'types/permission';
 import { fileUpload } from 'common/file-upload.interceptor';
 import { attachToken } from 'common/utils/attachToken';
 import { Response } from 'express';
+import { Throws } from 'common/decorator/throws.decorator';
+import { ValidationException } from 'common/errors/validation.error';
 
 @Controller('member')
 @ApiTags('Member')
@@ -53,10 +58,13 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.EDIT,
   })
+  @Throws(
+    UnauthorizedException,
+    ValidationException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
   @UseInterceptors(fileUpload('image'))
-  @ApiBadRequestResponse({
-    description: 'Member creation failed',
-  })
   @ApiConsumes('multipart/form-data')
   async createMember(
     @Ctx() ctx: RequestContext,
@@ -87,9 +95,7 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.VIEW,
   })
-  @ApiBadRequestResponse({
-    description: 'Members  fetch failed',
-  })
+  @Throws(UnauthorizedException, InternalServerErrorException)
   async getAllMembers(
     @Ctx() ctx: RequestContext,
     @Query() query: ListMemberQueryDTO,
@@ -125,43 +131,6 @@ export class MemberController {
   }
 
   /**
-   * Fetch single member
-   */
-  @Get(':memberId')
-  @Require({
-    permission: PermissionResource.MEMBER,
-    action: PermissionAction.VIEW,
-  })
-  @ApiBadRequestResponse({
-    description: 'Single member fetch failed',
-  })
-  async getSingleMember(
-    @Ctx() ctx: RequestContext,
-    @Param() param: MemberParamDTO,
-  ): Promise<singleMemberResponseDTO> {
-    const member = await this.memberService.findSingleMember(
-      ctx,
-      param.memberId,
-    );
-    if (!member) {
-      throw new NotFoundException('Member not found');
-    }
-    return {
-      message: 'Member not found',
-      data: {
-        id: member.id,
-        createdAt: member.createdAt,
-        name: member.name,
-        email: member.email,
-        phoneNumber: member.phoneNumber,
-        designation: member.designation,
-        role: member.role,
-        imageId: member.imageId,
-      },
-    };
-  }
-
-  /**
    * Update single member
    */
   @Patch(':memberId')
@@ -169,10 +138,13 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.EDIT,
   })
+  @Throws(
+    UnauthorizedException,
+    ValidationException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
   @UseInterceptors(fileUpload('image'))
-  @ApiBadRequestResponse({
-    description: 'Member updation failed',
-  })
   @ApiConsumes('multipart/form-data')
   async updateMember(
     @Ctx() ctx: RequestContext,
@@ -196,42 +168,22 @@ export class MemberController {
   }
 
   /**
-   *Delete single Member
-   */
-  @Delete(':memberId')
-  @Require({
-    permission: PermissionResource.MEMBER,
-    action: PermissionAction.EDIT,
-  })
-  @ApiBadRequestResponse({
-    description: 'Member deletion failed',
-  })
-  async deleteMember(
-    @Ctx() ctx: RequestContext,
-    @Param() param: MemberParamDTO,
-  ): Promise<MessageResponseDTO> {
-    const deletedMember = await this.memberService.deleteMember(
-      ctx,
-      param.memberId,
-    );
-    return {
-      message: 'Member deleted successfully',
-    };
-  }
-
-  /**
    * Member login
    */
   @Post('login')
   @PublicRoute()
-  @ApiBadRequestResponse({
-    description: 'Member logged in failed',
-  })
+  @Throws(
+    ValidationException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
   async loginMember(
     @Ctx() ctx: RequestContext,
     @Body() body: MemberLoginDTO,
   ): Promise<MessageResponseWithIdDTO> {
     const member = await this.memberService.loginMember(ctx, body);
+
+    if (!member) throw new NotFoundException('Member not found');
 
     return {
       message: 'Member logged in successfully',
@@ -242,13 +194,51 @@ export class MemberController {
   }
 
   /**
+   * Fetch active member
+   */
+  @Get('active')
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.VIEW,
+  })
+  @Throws(UnauthorizedException, InternalServerErrorException)
+  async activeUser(
+    @Ctx() ctx: RequestContext,
+  ): Promise<singleMemberResponseDTO> {
+    const member = await this.memberService.findSingleMember(
+      ctx,
+      String(ctx.data?.memberId),
+    );
+
+    if (!member) {
+      throw new NotFoundException('Member not found');
+    }
+
+    return {
+      message: 'Active member fetched successfully',
+      data: {
+        id: member.id,
+        name: member.name,
+        email: member.email,
+        phoneNumber: member.phoneNumber,
+        createdAt: member.createdAt,
+        designation: member.designation,
+        role: member.role,
+        imageId: member.imageId,
+      },
+    };
+  }
+
+  /**
    * Member login verify
    */
   @Post('login/verify')
   @PublicRoute()
-  @ApiBadRequestResponse({
-    description: 'Member verification failed',
-  })
+  @Throws(
+    BadRequestException,
+    ValidationException,
+    InternalServerErrorException,
+  )
   async verifyMember(
     @Ctx() ctx: RequestContext,
     @Body() body: MemberVerifyDTO,
@@ -261,6 +251,71 @@ export class MemberController {
       data: {
         accessToken,
       },
+    };
+  }
+
+  /**
+   * Fetch single member
+   */
+  @Get(':memberId')
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.VIEW,
+  })
+  @Throws(
+    UnauthorizedException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
+  async getSingleMember(
+    @Ctx() ctx: RequestContext,
+    @Param() param: MemberParamDTO,
+  ): Promise<singleMemberResponseDTO> {
+    const member = await this.memberService.findSingleMember(
+      ctx,
+      param.memberId,
+    );
+    if (!member) {
+      throw new NotFoundException('Member not found');
+    }
+    return {
+      message: 'Member fetched  successfully',
+      data: {
+        id: member.id,
+        createdAt: member.createdAt,
+        name: member.name,
+        email: member.email,
+        phoneNumber: member.phoneNumber,
+        designation: member.designation,
+        role: member.role,
+        imageId: member.imageId,
+      },
+    };
+  }
+
+  /**
+   *Delete single member
+   */
+  @Delete(':memberId')
+  @Require({
+    permission: PermissionResource.MEMBER,
+    action: PermissionAction.EDIT,
+  })
+  @Throws(
+    UnauthorizedException,
+    BadRequestException,
+    InternalServerErrorException,
+  )
+  async deleteMember(
+    @Ctx() ctx: RequestContext,
+    @Param() param: MemberParamDTO,
+  ): Promise<MessageResponseDTO> {
+    const deletedMember = await this.memberService.deleteMember(
+      ctx,
+      param.memberId,
+    );
+    return {
+      message: 'Member deleted successfully',
     };
   }
 }
