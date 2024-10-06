@@ -41,6 +41,9 @@ export class ContactService {
         email: search ? ILike(`%${search}%`) : undefined,
         createdAt: dateFilter(filters.dateFrom, filters.dateTo),
       },
+      {
+        status: filters.status,
+      },
     ];
     return this.connection.getRepository(ctx, Contact).findAndCount({
       where: whereClause.length ? whereClause : undefined,
