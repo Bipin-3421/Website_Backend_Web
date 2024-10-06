@@ -16,11 +16,11 @@ export class AssetLocal implements AssetProviderInterface {
     buffer: Buffer,
     uniqueFileName: string,
   ): { identifier: string; url: string } {
-    const pathToSave = this.configService.get('asset.local.rootPath', {
+    const pathToSave = this.configService.get('assetProvider.local.rootPath', {
       infer: true,
     });
 
-    if (!fs.existsSync(pathToSave)) {
+    if (!fs.existsSync(AssetProvider.LOCAL)) {
       fs.mkdirSync(pathToSave, { recursive: true });
     }
 
@@ -37,7 +37,7 @@ export class AssetLocal implements AssetProviderInterface {
   }
 
   delete(identifier: string): Promise<boolean> | boolean {
-    const filePath = this.configService.get('asset.local.rootPath', {
+    const filePath = this.configService.get('assetProvider.local.rootPath', {
       infer: true,
     });
     const absoluteFilePath = path.join(filePath, identifier);

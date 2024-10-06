@@ -120,18 +120,26 @@ export class MemberService implements OnApplicationBootstrap {
     const { image, ...patch } = details;
     patchEntity(member, patch);
 
-    let asset: Asset | undefined;
+    let oldAssetId: string | undefined;
+
     if (image) {
-      asset = await this.assetService.upload(
+      const asset = await this.assetService.upload(
         ctx,
         image.buffer,
         AssetFor.MEMBER,
       );
 
-      member.image = asset;
+      oldAssetId = member.imageId;
+
+      member.imageId = asset.id;
     }
 
-    return await memberRepo.save(member);
+    await memberRepo.save(member);
+
+    if (oldAssetId) {
+      await this.assetService.delete(ctx, oldAssetId);
+    }
+    return member;
   }
 
   async deleteMember(ctx: RequestContext, memberId: string) {
@@ -147,7 +155,11 @@ export class MemberService implements OnApplicationBootstrap {
       throw new NotFoundException('Member not found');
     }
 
-    return await memberRepo.remove(member);
+    await memberRepo.remove(member);
+    if (member.imageId) {
+      await this.assetService.delete(ctx, member.imageId);
+    }
+    return member;
   }
 
   async loginMember(ctx: RequestContext, details: MemberLoginDTO) {
