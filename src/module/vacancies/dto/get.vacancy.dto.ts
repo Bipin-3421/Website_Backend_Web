@@ -2,6 +2,7 @@ import { Vacancy } from 'common/entities/vacancy.entity';
 import { PaginationResponseDTO } from 'common/dto/pagination.dto';
 import { JobStatus } from 'common/enum/jobStatus.enum';
 import { AssetDTO } from 'common/dto/asset.dto';
+import { JobType } from 'common/enum/Job.type.enum';
 export class GetVacancyResponseDto {
   message: string;
   data: {
@@ -13,7 +14,7 @@ export class GetVacancyResponseDto {
     salary: string;
     skills: string;
     experience: number;
-    jobType: string;
+    jobType: JobType;
     datePosted: Date;
     deadline: Date;
     vacancy: number;
@@ -32,7 +33,7 @@ export class ListVacancyDTO {
   salary: string;
   skills: string;
   experience: number;
-  jobType: string;
+  jobType: JobType;
   datePosted: Date;
   deadline: Date;
   vacancy: number;

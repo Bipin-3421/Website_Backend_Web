@@ -109,7 +109,6 @@ export class MemberService implements OnApplicationBootstrap {
       where: {
         id: memberId,
       },
-      relations: { image: !!details.image },
     });
 
     if (!member) {
@@ -138,6 +137,8 @@ export class MemberService implements OnApplicationBootstrap {
     if (oldAssetId) {
       await this.assetService.delete(ctx, oldAssetId);
     }
+    console.log(member);
+
     return member;
   }
 
