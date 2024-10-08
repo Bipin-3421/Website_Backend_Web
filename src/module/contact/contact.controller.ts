@@ -47,7 +47,8 @@ export class ContactController {
     @Body() body: CreateContactDTO,
   ): Promise<MessageResponseWithIdDTO> {
     const contact = await this.contactService.create(ctx, body);
-    return {
+    
+return {
       message: 'Contact created successfully',
       data: {
         id: contact.id,
@@ -71,7 +72,8 @@ export class ContactController {
     @Query() query: ListContactQueryDTO,
   ): Promise<ListContactResponseDTO> {
     const [response, total] = await this.contactService.findMany(ctx, query);
-    return {
+    
+return {
       message: 'Contacts fetched successfully',
       data: response.map((res) => {
         return {
@@ -108,7 +110,8 @@ export class ContactController {
       ctx,
       param.contactId,
     );
-    return {
+    
+return {
       message: 'Contact fetched successfully',
       data: {
         id: contact.id,
@@ -144,7 +147,8 @@ export class ContactController {
       param.contactId,
       body,
     );
-    return {
+    
+return {
       message: 'Contact updated successfully',
       data: {
         id: contact.id,
@@ -171,7 +175,8 @@ export class ContactController {
       ctx,
       param.contactId,
     );
-    return {
+    
+return {
       message: 'Contact deleted successfully',
     };
   }

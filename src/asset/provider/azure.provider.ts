@@ -8,6 +8,7 @@ import { AssetProvider } from 'common/enum/provider.enum';
 @Injectable()
 export class AzureBlobStorageProvider implements AssetProviderInterface {
   constructor(private readonly configService: ConfigService<AppConfig, true>) {}
+
   readonly type: AssetProvider = AssetProvider.AZURE;
 
   async upload(

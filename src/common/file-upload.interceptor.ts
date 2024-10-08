@@ -22,5 +22,6 @@ export const fileUpload = (
       }
     },
   };
-  return FileInterceptor(fieldName, multerOptions);
+  
+return FileInterceptor(fieldName, multerOptions);
 };

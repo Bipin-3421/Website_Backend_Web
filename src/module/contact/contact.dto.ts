@@ -25,17 +25,25 @@ export class CreateContactDTO {
 
 export class ListContactDTO {
   id: string;
+
   createdAt: Date;
+
   updatedAt: Date;
+
   name: string;
+
   email: string;
+
   phoneNumber: string;
+
   message: string;
+
   status: string;
 }
 
 export class GetContactResponseDTO {
   message: string;
+
   data: {
     id: string;
     createdAt: Date;
@@ -60,7 +68,9 @@ export class ListContactQueryDTO extends IntersectionType(
 
 export class ListContactResponseDTO {
   message: string;
+
   data: ListContactDTO[];
+
   pagination: PaginationResponseDTO;
 }
 

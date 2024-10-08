@@ -20,18 +20,23 @@ export class ListDepartmentQueryDTO extends IntersectionType(
 
 export class ListDepartmentDTO {
   id: string;
+
   name: string;
+
   createdAt: Date;
 }
 
 export class ListDepartmentResponseDTO {
   message: string;
+
   data: ListDepartmentDTO[];
+
   pagination: PaginationResponseDTO;
 }
 
 export class SingleDepartmentResponseDTO {
   message: string;
+
   data: {
     id: string;
     name: string;

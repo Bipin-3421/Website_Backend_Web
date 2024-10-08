@@ -55,15 +55,21 @@ export class UpdateDesignationDTO {
 
 export class ListDesignationDTO {
   id: string;
+
   name: string;
+
   createdAt: Date;
+
   department: DepartmentDTO;
+
   image: AssetDTO;
+
   description: string;
 }
 
 export class GetDesignationResponseDTO {
   message: string;
+
   data: {
     id: string;
     name: string;
@@ -76,7 +82,9 @@ export class GetDesignationResponseDTO {
 
 export class ListDesignationResponseDTO {
   message: string;
+
   data: ListDesignationDTO[];
+
   pagination: PaginationResponseDTO;
 }
 
