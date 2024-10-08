@@ -64,7 +64,7 @@ export class MemberService implements OnApplicationBootstrap {
     return await memberRepo.save(member);
   }
 
-  async findManyMembers(
+  findManyMembers(
     ctx: RequestContext,
     query: ListMemberQueryDTO,
   ): Promise<[Member[], number]> {
@@ -93,6 +93,7 @@ export class MemberService implements OnApplicationBootstrap {
       where: {
         id: memberId,
       },
+      relations: { image: true },
     });
 
     return member;
@@ -159,6 +160,7 @@ export class MemberService implements OnApplicationBootstrap {
     if (member.imageId) {
       await this.assetService.delete(ctx, member.imageId);
     }
+
     return member;
   }
 
@@ -181,12 +183,13 @@ export class MemberService implements OnApplicationBootstrap {
 
     const message = `Your login otp is ${otp}`;
     if (!otpDev) {
-      this.mailerService.sendMail({
+      await this.mailerService.sendMail({
         to: details.email,
         subject: `OTP for backoffice blacktech login`,
         html: message,
       });
     }
+
     return member;
   }
 

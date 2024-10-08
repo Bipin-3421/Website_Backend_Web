@@ -224,7 +224,13 @@ export class MemberController {
         createdAt: member.createdAt,
         designation: member.designation,
         role: member.role,
-        imageId: member.imageId,
+        image: member.image
+          ? {
+              id: member.image.id,
+              name: member.image.name,
+              url: member.image.url,
+            }
+          : null,
       },
     };
   }
@@ -246,6 +252,7 @@ export class MemberController {
   ): Promise<VerifyResponseDTO> {
     const accessToken = await this.memberService.verifyMember(ctx, body);
     attachToken(res, accessToken);
+
     return {
       message: 'Member verified successfully',
       data: {
@@ -278,6 +285,7 @@ export class MemberController {
     if (!member) {
       throw new NotFoundException('Member not found');
     }
+
     return {
       message: 'Member fetched  successfully',
       data: {
@@ -288,7 +296,13 @@ export class MemberController {
         phoneNumber: member.phoneNumber,
         designation: member.designation,
         role: member.role,
-        imageId: member.imageId,
+        image: member.image
+          ? {
+              id: member.image.id,
+              name: member.image.name,
+              url: member.image.url,
+            }
+          : null,
       },
     };
   }
@@ -314,6 +328,7 @@ export class MemberController {
       ctx,
       param.memberId,
     );
+
     return {
       message: 'Member deleted successfully',
     };
