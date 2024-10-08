@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Search } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Vacancy } from 'common/entities/vacancy.entity';
 import { CreateVacancyRequestDto } from './dto/create.vacancy.dto';
 import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
@@ -58,7 +58,7 @@ export class VacancyService {
     return await vacancyRepo.save(vacancy);
   }
 
-  async findMany(ctx: RequestContext, filter: VacancyFilterDto) {
+  findMany(ctx: RequestContext, filter: VacancyFilterDto) {
     const { take = 10, page = 0 } = filter;
 
     const skip = take * page;
@@ -123,8 +123,8 @@ export class VacancyService {
     if (oldAssetId) {
       await this.assetService.delete(ctx, oldAssetId);
     }
-    
-return vacancy;
+
+    return vacancy;
   }
 
   async delete(ctx: RequestContext, vacancyId: string) {

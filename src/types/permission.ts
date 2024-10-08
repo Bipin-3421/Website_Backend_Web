@@ -30,7 +30,7 @@ export const PermissionResouceList = [
   },
 ];
 
-export const roleToPermissionArray: { [key in MemberRole]: Permission[] } = {
+export const RoleToPermissionArray: { [key in MemberRole]: Permission[] } = {
   [MemberRole.SUPERADMIN]: [
     {
       resource: PermissionResource.ALL,

@@ -39,7 +39,7 @@ import { getPaginationResponse } from 'common/utils/pagination.utils';
 import { PublicRoute } from 'common/decorator/public.decorator';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
-import { fileUpload } from 'common/file-upload.interceptor';
+import { FileUpload } from 'common/file-upload.interceptor';
 import { attachToken } from 'common/utils/attachToken';
 import { Response } from 'express';
 import { Throws } from 'common/decorator/throws.decorator';
@@ -64,7 +64,7 @@ export class MemberController {
     BadRequestException,
     InternalServerErrorException,
   )
-  @UseInterceptors(fileUpload('image'))
+  @UseInterceptors(FileUpload('image'))
   @ApiConsumes('multipart/form-data')
   async createMember(
     @Ctx() ctx: RequestContext,
@@ -144,7 +144,7 @@ export class MemberController {
     BadRequestException,
     InternalServerErrorException,
   )
-  @UseInterceptors(fileUpload('image'))
+  @UseInterceptors(FileUpload('image'))
   @ApiConsumes('multipart/form-data')
   async updateMember(
     @Ctx() ctx: RequestContext,

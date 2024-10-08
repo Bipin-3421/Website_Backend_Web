@@ -62,6 +62,8 @@ async function bootstrap() {
 
   const port = configService.get('port', { infer: true });
 
-  await app.listen(port);
+  await app.listen(port, () => {
+    Logger.log(`Server is working on port:${port}`);
+  });
 }
 void bootstrap();

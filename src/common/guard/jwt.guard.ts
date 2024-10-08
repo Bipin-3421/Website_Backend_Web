@@ -13,7 +13,7 @@ import { verifyToken } from 'common/utils/jwt.utils';
 import { IS_PUBLIC, REQUIRED_PERMISSION_KEY } from 'common/constant';
 import { RequestContext } from 'common/request-context';
 import { AppConfig } from '../../config/configuration';
-import { PermissionResource, roleToPermissionArray } from 'types/permission';
+import { PermissionResource, RoleToPermissionArray } from 'types/permission';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -46,7 +46,7 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Token not found');
     }
 
-    const userPermission = roleToPermissionArray[ctx.data.role];
+    const userPermission = RoleToPermissionArray[ctx.data.role];
 
     if (requiredPermissions) {
       for (const requiredPermission of requiredPermissions) {

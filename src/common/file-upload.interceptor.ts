@@ -2,11 +2,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { NotAcceptableException } from '@nestjs/common';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 
-const MIME_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
+const mimeTypes = ['image/jpeg', 'image/png', 'application/pdf'];
 
-export const fileUpload = (
+export const FileUpload = (
   fieldName: string,
-  allowedTypes: string[] = MIME_TYPES,
+  allowedTypes: string[] = mimeTypes,
 ): ReturnType<typeof FileInterceptor> => {
   const multerOptions: MulterOptions = {
     fileFilter: (req, file, callback) => {
@@ -22,6 +22,6 @@ export const fileUpload = (
       }
     },
   };
-  
-return FileInterceptor(fieldName, multerOptions);
+
+  return FileInterceptor(fieldName, multerOptions);
 };

@@ -33,7 +33,7 @@ import { RequestContext } from 'common/request-context';
 import { Transaction } from 'common/decorator/transaction.decorator';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
-import { fileUpload } from 'common/file-upload.interceptor';
+import { FileUpload } from 'common/file-upload.interceptor';
 
 @Controller('applicant')
 @ApiTags('Applicant ')
@@ -45,7 +45,7 @@ export class ApplicantController {
    */
   @Post()
   @PublicRoute()
-  @UseInterceptors(fileUpload('cv'))
+  @UseInterceptors(FileUpload('cv'))
   @Transaction()
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse({

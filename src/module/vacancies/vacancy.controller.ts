@@ -31,7 +31,7 @@ import { Ctx } from 'common/decorator/ctx.decorator';
 import { RequestContext } from 'common/request-context';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
-import { fileUpload } from 'common/file-upload.interceptor';
+import { FileUpload } from 'common/file-upload.interceptor';
 
 @Controller('vacancy')
 @ApiTags('Vacancy')
@@ -46,7 +46,7 @@ export class VacancyController {
     permission: PermissionResource.VACANCY,
     action: PermissionAction.EDIT,
   })
-  @UseInterceptors(fileUpload('image'))
+  @UseInterceptors(FileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Job vacancy creation failed',
   })
@@ -183,7 +183,7 @@ export class VacancyController {
     permission: PermissionResource.VACANCY,
     action: PermissionAction.EDIT,
   })
-  @UseInterceptors(fileUpload('image'))
+  @UseInterceptors(FileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Job vacancy update failed',
   })

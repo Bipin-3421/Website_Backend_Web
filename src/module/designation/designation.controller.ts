@@ -31,7 +31,7 @@ import {
 } from 'common/dto/response.dto';
 import { Require } from 'common/decorator/require.decorator';
 import { PermissionAction, PermissionResource } from 'types/permission';
-import { fileUpload } from 'common/file-upload.interceptor';
+import { FileUpload } from 'common/file-upload.interceptor';
 
 @Controller('designation')
 @ApiTags('Designation')
@@ -46,7 +46,7 @@ export class DesignationController {
     permission: PermissionResource.DESIGNATION,
     action: PermissionAction.EDIT,
   })
-  @UseInterceptors(fileUpload('image'))
+  @UseInterceptors(FileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Designation creation failed',
   })
@@ -167,7 +167,7 @@ export class DesignationController {
     permission: PermissionResource.DESIGNATION,
     action: PermissionAction.EDIT,
   })
-  @UseInterceptors(fileUpload('image'))
+  @UseInterceptors(FileUpload('image'))
   @ApiBadRequestResponse({
     description: 'Designation updation failed',
   })
