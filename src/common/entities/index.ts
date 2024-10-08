@@ -6,7 +6,7 @@ import { Designation } from './designation.entity';
 import { Member } from './member.entity';
 import { Vacancy } from './vacancy.entity';
 
-const allEntities = [
+const AllEntities = [
   Applicant,
   Vacancy,
   Asset,
@@ -16,4 +16,4 @@ const allEntities = [
   Designation,
 ];
 
-export { allEntities };
+export { AllEntities };

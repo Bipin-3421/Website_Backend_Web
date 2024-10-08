@@ -32,8 +32,5 @@ export async function seedSuperAdmin(
     });
 
     await memberRepository.save(member);
-    console.log('Super Admin seeded successfully!');
-  } else {
-    console.log('Super Admin already exists, skipping seeding.');
   }
 }

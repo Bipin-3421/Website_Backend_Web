@@ -47,10 +47,7 @@ export class DesignationService {
     return await designationRepo.save(designation);
   }
 
-  async findManyDesignations(
-    ctx: RequestContext,
-    query: ListDesignationQueryDTO,
-  ) {
+  findManyDesignations(ctx: RequestContext, query: ListDesignationQueryDTO) {
     const { search, page = 10, take = 0 } = query;
 
     const skip = take * page;
@@ -140,7 +137,7 @@ export class DesignationService {
 
     await designationRepo.remove(designation);
     await this.assetService.delete(ctx, designation.imageId);
-    
-return designation;
+
+    return designation;
   }
 }

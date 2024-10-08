@@ -39,7 +39,6 @@ export class TransactionalConnection {
       entityManager = (ctxOrTarget.req as any)?.[ENTITIY_MANAGER_KEY];
 
       if (!entityManager || entityManager.queryRunner?.isReleased) {
-        console.log('Entity manager not found using default');
         entityManager = this.dataSource.manager;
       }
 

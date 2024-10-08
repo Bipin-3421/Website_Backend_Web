@@ -1,4 +1,3 @@
-import { Vacancy } from 'common/entities/vacancy.entity';
 import { PaginationResponseDTO } from 'common/dto/pagination.dto';
 import { JobStatus } from 'common/enum/jobStatus.enum';
 import { AssetDTO } from 'common/dto/asset.dto';
@@ -64,7 +63,7 @@ export class ListVacanciesReponseDto {
 
   data: ListVacancyDTO[];
 
-  Pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDTO;
 }
 
 export class DesignationDTO {

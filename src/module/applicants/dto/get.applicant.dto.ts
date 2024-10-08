@@ -1,6 +1,5 @@
 import { AssetDTO } from 'common/dto/asset.dto';
 import { PaginationResponseDTO } from 'common/dto/pagination.dto';
-import { Applicant } from 'common/entities/applicant.entity';
 import { ApplicationStatus } from 'common/enum/applicant.status.enum';
 
 export class SingleApplicantResponseDTO {

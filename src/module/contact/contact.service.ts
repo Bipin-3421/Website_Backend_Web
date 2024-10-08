@@ -23,11 +23,11 @@ export class ContactService {
       message: body.message,
     });
     const contactRepo = this.connection.getRepository(ctx, Contact);
-    
-return await contactRepo.save(contact);
+
+    return await contactRepo.save(contact);
   }
 
-  async findMany(
+  findMany(
     ctx: RequestContext,
     filters: ListContactQueryDTO,
   ): Promise<[Contact[], number]> {
@@ -46,8 +46,8 @@ return await contactRepo.save(contact);
         status: filters.status,
       },
     ];
-    
-return this.connection.getRepository(ctx, Contact).findAndCount({
+
+    return this.connection.getRepository(ctx, Contact).findAndCount({
       where: whereClause.length ? whereClause : undefined,
       skip,
       take,
@@ -65,8 +65,8 @@ return this.connection.getRepository(ctx, Contact).findAndCount({
     if (!data) {
       throw new NotFoundException('Contact  not found');
     }
-    
-return data;
+
+    return data;
   }
 
   async updateContact(
@@ -80,8 +80,8 @@ return data;
       throw new NotFoundException('Contact not found');
     }
     patchEntity(contact, detail);
-    
-return await contactRepo.save(contact);
+
+    return await contactRepo.save(contact);
   }
 
   async deleteSingleContact(ctx: RequestContext, contactId: string) {
@@ -94,7 +94,7 @@ return await contactRepo.save(contact);
     if (!contact) {
       throw new NotFoundException('Contact not found');
     }
-    
-return await contactRepo.remove(contact);
+
+    return await contactRepo.remove(contact);
   }
 }

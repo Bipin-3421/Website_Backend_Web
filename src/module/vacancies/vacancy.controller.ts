@@ -121,7 +121,7 @@ export class VacancyController {
           applicant: vacancy.applicants.length,
         };
       }),
-      Pagination: getPaginationResponse(vacancies, total, queryFilter),
+      pagination: getPaginationResponse(vacancies, total, queryFilter),
     };
   }
 

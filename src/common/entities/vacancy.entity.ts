@@ -64,7 +64,7 @@ export class Vacancy extends BaseEntity {
   })
   status: JobStatus;
 
-  @OneToMany(() => Applicant, (Applicant) => Applicant.vacancy)
+  @OneToMany(() => Applicant, (applicant) => applicant.vacancy)
   applicants: Applicant[];
 
   @OneToOne(() => Asset, (asset) => asset.vacancy)

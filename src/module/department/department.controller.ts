@@ -170,10 +170,7 @@ export class DepartmentController {
     @Ctx() ctx: RequestContext,
     @Param() param: DepartmentParamDTO,
   ): Promise<MessageResponseDTO> {
-    const department = await this.departmentService.deleteDepartment(
-      ctx,
-      param.departmentId,
-    );
+    await this.departmentService.deleteDepartment(ctx, param.departmentId);
 
     return {
       message: 'Department deleted successfully',

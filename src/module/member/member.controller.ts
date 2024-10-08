@@ -33,7 +33,7 @@ import {
   MemberVerifyDTO,
   VerifyResponseDTO,
   ListMemberResponseDTO,
-  singleMemberResponseDTO,
+  SingleMemberResponseDTO,
 } from './member.dto';
 import { getPaginationResponse } from 'common/utils/pagination.utils';
 import { PublicRoute } from 'common/decorator/public.decorator';
@@ -48,7 +48,7 @@ import { ValidationException } from 'common/errors/validation.error';
 @Controller('member')
 @ApiTags('Member')
 export class MemberController {
-  constructor(private readonly memberService: MemberService) { }
+  constructor(private readonly memberService: MemberService) {}
 
   /**
    * Create a new member
@@ -119,10 +119,10 @@ export class MemberController {
           role: res.role,
           image: res.image
             ? {
-              id: res.image.id,
-              name: res.image.name,
-              url: res.image.url,
-            }
+                id: res.image.id,
+                name: res.image.name,
+                url: res.image.url,
+              }
             : null,
         };
       }),
@@ -204,7 +204,7 @@ export class MemberController {
   @Throws(UnauthorizedException, InternalServerErrorException)
   async activeUser(
     @Ctx() ctx: RequestContext,
-  ): Promise<singleMemberResponseDTO> {
+  ): Promise<SingleMemberResponseDTO> {
     const member = await this.memberService.findSingleMember(
       ctx,
       String(ctx.data?.memberId),
@@ -226,10 +226,10 @@ export class MemberController {
         role: member.role,
         image: member.image
           ? {
-            id: member.image.id,
-            name: member.image.name,
-            url: member.image.url,
-          }
+              id: member.image.id,
+              name: member.image.name,
+              url: member.image.url,
+            }
           : null,
       },
     };
@@ -277,7 +277,7 @@ export class MemberController {
   async getSingleMember(
     @Ctx() ctx: RequestContext,
     @Param() param: MemberParamDTO,
-  ): Promise<singleMemberResponseDTO> {
+  ): Promise<SingleMemberResponseDTO> {
     const member = await this.memberService.findSingleMember(
       ctx,
       param.memberId,
@@ -298,10 +298,10 @@ export class MemberController {
         role: member.role,
         image: member.image
           ? {
-            id: member.image.id,
-            name: member.image.name,
-            url: member.image.url,
-          }
+              id: member.image.id,
+              name: member.image.name,
+              url: member.image.url,
+            }
           : null,
       },
     };

@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { allEntities } from 'common/entities';
+import { AllEntities } from 'common/entities';
 import { AppConfig } from 'config/configuration';
 import { TransactionalConnection } from './connection.service';
 
@@ -27,7 +27,7 @@ export class ConnectionModule {
             username: dbConfig.username,
             password: dbConfig.password,
             database: dbConfig.database,
-            entities: allEntities,
+            entities: AllEntities,
             synchronize: true,
           };
         },

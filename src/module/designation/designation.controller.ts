@@ -208,10 +208,7 @@ export class DesignationController {
     @Ctx() ctx: RequestContext,
     @Param() param: DesignationIdDTO,
   ): Promise<MessageResponseDTO> {
-    const deletedDesignation = await this.designationService.deleteDesignation(
-      ctx,
-      param.designationId,
-    );
+    await this.designationService.deleteDesignation(ctx, param.designationId);
 
     return {
       message: 'Designation deleted successfully',

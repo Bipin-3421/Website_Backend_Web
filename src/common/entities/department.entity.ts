@@ -1,4 +1,4 @@
-import { DeepPartial, Entity, Column, OneToOne, OneToMany } from 'typeorm';
+import { DeepPartial, Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { Designation } from './designation.entity';
 

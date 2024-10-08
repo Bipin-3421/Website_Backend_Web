@@ -47,8 +47,8 @@ export class ContactController {
     @Body() body: CreateContactDTO,
   ): Promise<MessageResponseWithIdDTO> {
     const contact = await this.contactService.create(ctx, body);
-    
-return {
+
+    return {
       message: 'Contact created successfully',
       data: {
         id: contact.id,
@@ -72,8 +72,8 @@ return {
     @Query() query: ListContactQueryDTO,
   ): Promise<ListContactResponseDTO> {
     const [response, total] = await this.contactService.findMany(ctx, query);
-    
-return {
+
+    return {
       message: 'Contacts fetched successfully',
       data: response.map((res) => {
         return {
@@ -110,8 +110,8 @@ return {
       ctx,
       param.contactId,
     );
-    
-return {
+
+    return {
       message: 'Contact fetched successfully',
       data: {
         id: contact.id,
@@ -147,8 +147,8 @@ return {
       param.contactId,
       body,
     );
-    
-return {
+
+    return {
       message: 'Contact updated successfully',
       data: {
         id: contact.id,
@@ -171,12 +171,9 @@ return {
     @Ctx() ctx: RequestContext,
     @Param() param: ContactIdDTO,
   ): Promise<MessageResponseDTO> {
-    const contact = await this.contactService.deleteSingleContact(
-      ctx,
-      param.contactId,
-    );
-    
-return {
+    await this.contactService.deleteSingleContact(ctx, param.contactId);
+
+    return {
       message: 'Contact deleted successfully',
     };
   }

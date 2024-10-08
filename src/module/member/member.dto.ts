@@ -66,7 +66,7 @@ export class ListMemberDTO {
   image: AssetDTO | null;
 }
 
-export class singleMemberResponseDTO {
+export class SingleMemberResponseDTO {
   message: string;
 
   data: {

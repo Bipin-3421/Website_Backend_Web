@@ -19,14 +19,11 @@ export class DepartmentService {
     const department = new Department({
       name: body.name,
     });
-    
-return await departmentRepo.save(department);
+
+    return await departmentRepo.save(department);
   }
 
-  async findManyDepartments(
-    ctx: RequestContext,
-    query: ListDepartmentQueryDTO,
-  ) {
+  findManyDepartments(ctx: RequestContext, query: ListDepartmentQueryDTO) {
     const { search, take = 10, page = 0 } = query;
     const skip = take * page;
 
@@ -45,8 +42,8 @@ return await departmentRepo.save(department);
         id: departmentId,
       },
     });
-    
-return department;
+
+    return department;
   }
 
   async updateDepartment(
@@ -64,8 +61,8 @@ return department;
       throw new NotFoundException('Department not found');
     }
     patchEntity(department, body);
-    
-return await departmentRepo.save(department);
+
+    return await departmentRepo.save(department);
   }
 
   async deleteDepartment(ctx: RequestContext, departmentId: string) {
@@ -78,7 +75,7 @@ return await departmentRepo.save(department);
     if (!department) {
       throw new NotFoundException('Department not found');
     }
-    
-return await departmentRepo.remove(department);
+
+    return await departmentRepo.remove(department);
   }
 }

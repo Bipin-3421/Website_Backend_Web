@@ -37,7 +37,7 @@ export class MemberService implements OnApplicationBootstrap {
     private readonly configService: ConfigService<AppConfig, true>,
     private readonly mailerService: MailerService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) { }
+  ) {}
 
   async onApplicationBootstrap(): Promise<void> {
     await seedSuperAdmin(this.connection, this.configService);
@@ -227,8 +227,8 @@ export class MemberService implements OnApplicationBootstrap {
       role: member.role,
     };
 
-    const access_token = signToken(payload, jwt, jwtTimeOut);
+    const accessToken = signToken(payload, jwt, jwtTimeOut);
 
-    return access_token;
+    return accessToken;
   }
 }

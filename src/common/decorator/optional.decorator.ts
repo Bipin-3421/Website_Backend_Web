@@ -4,10 +4,10 @@ import { IsOptional, ValidationOptions } from 'class-validator';
 
 export const Optional = (
   optionalValidateOptions?: ValidationOptions,
-  ApiPropertyOptionalOptions?: ApiPropertyOptions,
+  apiPropertyOptionalOptions?: ApiPropertyOptions,
 ) => {
   return applyDecorators(
-    ApiPropertyOptional(ApiPropertyOptionalOptions),
+    ApiPropertyOptional(apiPropertyOptionalOptions),
     IsOptional(optionalValidateOptions),
   );
 };
