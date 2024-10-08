@@ -45,13 +45,16 @@ export class Vacancy extends BaseEntity {
   @Column({ type: 'enum', enum: JobType })
   jobType: JobType
 
-  @Column({ type: 'timestamp with time zone' })
+  @Column({
+    type: 'timestamp with time zone',
+    default: () => 'CURRENT_TIMESTAMP'
+  })
   datePosted: Date
 
   @Column({ type: 'timestamp with time zone' })
   deadline: Date
 
-  @Column({ type: Number })
+  @Column({ type: Number, default: 0 })
   vacancyOpening: number
 
   @Column({ type: String, default: '' })

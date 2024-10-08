@@ -48,14 +48,13 @@ export class UpdateVacancyRequestDto {
 
   @Optional()
   @IsDateString()
-  datePosted?: Date
-
-  @Optional()
-  @IsDateString()
   deadline?: Date
 
   @Optional()
   @IsNumber()
+  @Transform(({ value }) => {
+    return Number(value)
+  })
   vacancyOpening?: number
 
   @Length(10, 200)

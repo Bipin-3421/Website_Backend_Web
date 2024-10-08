@@ -47,7 +47,6 @@ export class VacancyService {
       skills: body.skills,
       experience: body.experience,
       jobType: body.jobType,
-      datePosted: body.datePosted,
       deadline: body.deadLine,
       vacancyOpening: body.vacancyOpening,
       description: body.description,
