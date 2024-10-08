@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { ENTITIY_MANAGER_KEY } from 'common/constant';
-import { RequestContext } from 'common/request-context';
+import { Injectable } from '@nestjs/common'
+import { ENTITIY_MANAGER_KEY } from 'common/constant'
+import { RequestContext } from 'common/request-context'
 import {
   DataSource,
   ObjectLiteral,
   ObjectType,
   Repository,
-  EntityManager,
-} from 'typeorm';
+  EntityManager
+} from 'typeorm'
 
 @Injectable()
 export class TransactionalConnection {
@@ -22,29 +22,29 @@ export class TransactionalConnection {
    * @returns The TypeORM repository for the specified entity.
    */
   getRepository<Entity extends ObjectLiteral>(
-    target: ObjectType<Entity>,
-  ): Repository<Entity>;
+    target: ObjectType<Entity>
+  ): Repository<Entity>
 
   getRepository<Entity extends ObjectLiteral>(
     ctx: RequestContext,
-    target: ObjectType<Entity>,
-  ): Repository<Entity>;
+    target: ObjectType<Entity>
+  ): Repository<Entity>
 
   getRepository<Entity extends ObjectLiteral>(
     ctxOrTarget: RequestContext | ObjectType<Entity>,
-    maybeTarget?: ObjectType<Entity>,
+    maybeTarget?: ObjectType<Entity>
   ): Repository<Entity> {
     if (ctxOrTarget instanceof RequestContext) {
-      let entityManager: EntityManager;
-      entityManager = (ctxOrTarget.req as any)?.[ENTITIY_MANAGER_KEY];
+      let entityManager: EntityManager
+      entityManager = (ctxOrTarget.req as any)?.[ENTITIY_MANAGER_KEY]
 
       if (!entityManager || entityManager.queryRunner?.isReleased) {
-        entityManager = this.dataSource.manager;
+        entityManager = this.dataSource.manager
       }
 
-      return entityManager.getRepository(maybeTarget!);
+      return entityManager.getRepository(maybeTarget!)
     } else {
-      return this.dataSource.getRepository(ctxOrTarget);
+      return this.dataSource.getRepository(ctxOrTarget)
     }
   }
 }

@@ -1,73 +1,73 @@
-import { PaginationResponseDTO } from 'common/dto/pagination.dto';
-import { JobStatus } from 'common/enum/jobStatus.enum';
-import { AssetDTO } from 'common/dto/asset.dto';
-import { JobType } from 'common/enum/Job.type.enum';
+import { PaginationResponseDTO } from 'common/dto/pagination.dto'
+import { JobStatus } from 'common/enum/jobStatus.enum'
+import { AssetDTO } from 'common/dto/asset.dto'
+import { JobType } from 'common/enum/Job.type.enum'
 export class GetVacancyResponseDto {
-  message: string;
+  message: string
 
   data: {
-    id: string;
-    name: string;
-    createdAt: Date;
-    designationId: string;
-    jobLevel: string;
-    salary: string;
-    skills: string;
-    experience: number;
-    jobType: JobType;
-    datePosted: Date;
-    deadline: Date;
-    vacancy: number;
-    status: JobStatus;
-    description: string;
-    image: AssetDTO;
-  };
+    id: string
+    name: string
+    createdAt: Date
+    designationId: string
+    jobLevel: string
+    salary: string
+    skills: string
+    experience: number
+    jobType: JobType
+    datePosted: Date
+    deadline: Date
+    vacancy: number
+    status: JobStatus
+    description: string
+    image: AssetDTO
+  }
 }
 
 export class ListVacancyDTO {
-  id: string;
+  id: string
 
-  name: string;
+  name: string
 
-  createdAt: Date;
+  createdAt: Date
 
-  designation: DesignationDTO;
+  designation: DesignationDTO
 
-  jobLevel: string;
+  jobLevel: string
 
-  salary: string;
+  salary: string
 
-  skills: string;
+  skills: string
 
-  experience: number;
+  experience: number
 
-  jobType: JobType;
+  jobType: JobType
 
-  datePosted: Date;
+  datePosted: Date
 
-  deadline: Date;
+  deadline: Date
 
-  vacancy: number;
+  vacancy: number
 
-  status: JobStatus;
+  status: JobStatus
 
-  description: string;
+  description: string
 
-  image: AssetDTO;
+  image: AssetDTO
 
-  applicant: number;
+  applicant: number
 }
 
 export class ListVacanciesReponseDto {
-  message: string;
+  message: string
 
-  data: ListVacancyDTO[];
+  data: ListVacancyDTO[]
 
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDTO
 }
 
 export class DesignationDTO {
-  id: string;
+  id: string
 
-  name: string;
+  name: string
 }

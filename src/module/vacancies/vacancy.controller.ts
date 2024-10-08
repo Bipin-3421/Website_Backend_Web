@@ -10,28 +10,28 @@ import {
   Post,
   Query,
   UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { VacancyService } from './vacancy.service';
-import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { CreateVacancyRequestDto } from './dto/create.vacancy.dto';
-import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto';
-import { VacancyIdDTO } from './dto/param.dto';
+  UseInterceptors
+} from '@nestjs/common'
+import { VacancyService } from './vacancy.service'
+import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger'
+import { CreateVacancyRequestDto } from './dto/create.vacancy.dto'
+import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto'
+import { VacancyIdDTO } from './dto/param.dto'
 import {
   GetVacancyResponseDto,
-  ListVacanciesReponseDto,
-} from './dto/get.vacancy.dto';
+  ListVacanciesReponseDto
+} from './dto/get.vacancy.dto'
 import {
   MessageResponseDTO,
-  MessageResponseWithIdDTO,
-} from 'common/dto/response.dto';
-import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto';
-import { getPaginationResponse } from 'common/utils/pagination.utils';
-import { Ctx } from 'common/decorator/ctx.decorator';
-import { RequestContext } from 'common/request-context';
-import { Require } from 'common/decorator/require.decorator';
-import { PermissionAction, PermissionResource } from 'types/permission';
-import { FileUpload } from 'common/file-upload.interceptor';
+  MessageResponseWithIdDTO
+} from 'common/dto/response.dto'
+import { VacancyFilterDto } from 'module/vacancies/dto/vacancy.search.dto'
+import { getPaginationResponse } from 'common/utils/pagination.utils'
+import { Ctx } from 'common/decorator/ctx.decorator'
+import { RequestContext } from 'common/request-context'
+import { Require } from 'common/decorator/require.decorator'
+import { PermissionAction, PermissionResource } from 'types/permission'
+import { FileUpload } from 'common/file-upload.interceptor'
 
 @Controller('vacancy')
 @ApiTags('Vacancy')
@@ -44,32 +44,32 @@ export class VacancyController {
   @Post()
   @Require({
     permission: PermissionResource.VACANCY,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @UseInterceptors(FileUpload('image'))
   @ApiBadRequestResponse({
-    description: 'Job vacancy creation failed',
+    description: 'Job vacancy creation failed'
   })
   @ApiConsumes('multipart/form-data')
   async createJobVacancy(
     @Ctx() ctx: RequestContext,
     @Body() vacancyDetails: CreateVacancyRequestDto,
-    @UploadedFile() file: Express.Multer.File | null,
+    @UploadedFile() file: Express.Multer.File | null
   ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
-      throw new NotAcceptableException('Vacancy image is required');
+      throw new NotAcceptableException('Vacancy image is required')
     }
 
-    vacancyDetails.image = file;
+    vacancyDetails.image = file
 
-    const res = await this.vacancyService.create(ctx, vacancyDetails);
+    const res = await this.vacancyService.create(ctx, vacancyDetails)
 
     return {
       message: 'Vacancy created successfully',
       data: {
-        id: res.id,
-      },
-    };
+        id: res.id
+      }
+    }
   }
 
   /**
@@ -78,19 +78,19 @@ export class VacancyController {
   @Get()
   @Require({
     permission: PermissionResource.VACANCY,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   @ApiBadRequestResponse({
-    description: 'Job vacancy fetch failed',
+    description: 'Job vacancy fetch failed'
   })
   async getAllJobVacancy(
     @Ctx() ctx: RequestContext,
-    @Query() queryFilter: VacancyFilterDto,
+    @Query() queryFilter: VacancyFilterDto
   ): Promise<ListVacanciesReponseDto> {
     const [vacancies, total] = await this.vacancyService.findMany(
       ctx,
-      queryFilter,
-    );
+      queryFilter
+    )
 
     return {
       message: 'All job fetched successfully',
@@ -101,7 +101,7 @@ export class VacancyController {
           createdAt: vacancy.createdAt,
           designation: {
             id: vacancy.designation.id,
-            name: vacancy.designation.name,
+            name: vacancy.designation.name
           },
           jobLevel: vacancy.jobLevel,
           salary: vacancy.salary,
@@ -116,13 +116,13 @@ export class VacancyController {
           image: {
             id: vacancy.image.id,
             name: vacancy.image.name,
-            url: vacancy.image.url,
+            url: vacancy.image.url
           },
-          applicant: vacancy.applicants.length,
-        };
+          applicant: vacancy.applicants.length
+        }
       }),
-      pagination: getPaginationResponse(vacancies, total, queryFilter),
-    };
+      pagination: getPaginationResponse(vacancies, total, queryFilter)
+    }
   }
 
   /**
@@ -131,22 +131,22 @@ export class VacancyController {
   @Get(':vacancyId')
   @Require({
     permission: PermissionResource.VACANCY,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   @ApiBadRequestResponse({
-    description: 'Job vacancy fetch failed',
+    description: 'Job vacancy fetch failed'
   })
   async findSingleVacancy(
     @Ctx() ctx: RequestContext,
-    @Param() param: VacancyIdDTO,
+    @Param() param: VacancyIdDTO
   ): Promise<GetVacancyResponseDto> {
     const vacancy = await this.vacancyService.findSingleVacancy(
       ctx,
-      param.vacancyId,
-    );
+      param.vacancyId
+    )
 
     if (!vacancy) {
-      throw new NotFoundException(`Vacancy  not found`);
+      throw new NotFoundException(`Vacancy  not found`)
     }
 
     return {
@@ -169,10 +169,10 @@ export class VacancyController {
         image: {
           id: vacancy.image.id,
           name: vacancy.image.name,
-          url: vacancy.image.url,
-        },
-      },
-    };
+          url: vacancy.image.url
+        }
+      }
+    }
   }
 
   /**
@@ -181,42 +181,42 @@ export class VacancyController {
   @Patch(':vacancyId')
   @Require({
     permission: PermissionResource.VACANCY,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @UseInterceptors(FileUpload('image'))
   @ApiBadRequestResponse({
-    description: 'Job vacancy update failed',
+    description: 'Job vacancy update failed'
   })
   @ApiConsumes('multipart/form-data')
   async updateJobVacancy(
     @Ctx() ctx: RequestContext,
     @Param() param: VacancyIdDTO,
     @Body() body: UpdateVacancyRequestDto,
-    @UploadedFile() file: Express.Multer.File | null,
+    @UploadedFile() file: Express.Multer.File | null
   ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
-      throw new NotAcceptableException('CV is required');
+      throw new NotAcceptableException('CV is required')
     }
-    body.image = file;
+    body.image = file
 
     const updatedVacancy = await this.vacancyService.update(
       ctx,
       body,
-      param.vacancyId,
-    );
+      param.vacancyId
+    )
 
     if (!updatedVacancy) {
       throw new NotFoundException(
-        `Vacancy with ID ${param.vacancyId} not found`,
-      );
+        `Vacancy with ID ${param.vacancyId} not found`
+      )
     }
 
     return {
       message: 'Job updated successfully',
       data: {
-        id: updatedVacancy.id,
-      },
-    };
+        id: updatedVacancy.id
+      }
+    }
   }
 
   /**
@@ -225,19 +225,19 @@ export class VacancyController {
   @Delete(':vacancyId')
   @Require({
     permission: PermissionResource.VACANCY,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @ApiBadRequestResponse({
-    description: 'Job vacancy deletion failed',
+    description: 'Job vacancy deletion failed'
   })
   async deleteJobVacancy(
     @Ctx() ctx: RequestContext,
-    @Param() param: VacancyIdDTO,
+    @Param() param: VacancyIdDTO
   ): Promise<MessageResponseDTO> {
-    await this.vacancyService.delete(ctx, param.vacancyId);
+    await this.vacancyService.delete(ctx, param.vacancyId)
 
     return {
-      message: 'Vacancy deleted successfully',
-    };
+      message: 'Vacancy deleted successfully'
+    }
   }
 }

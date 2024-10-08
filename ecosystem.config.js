@@ -4,7 +4,7 @@ module.exports = {
     {
       name: 'website_backend',
       script: 'npm',
-      args: 'start',
-    },
-  ],
-};
+      args: 'start'
+    }
+  ]
+}

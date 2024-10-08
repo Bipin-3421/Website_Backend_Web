@@ -1,19 +1,19 @@
-import { Module } from '@nestjs/common';
-import configuration, { AppConfig } from 'config/configuration';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
-import { VacancyModule } from 'module/vacancies/vacancy.module';
-import { AssetModule } from 'asset/asset.module';
-import { ApplicantModule } from './module/applicants/applicant.module';
-import { ConnectionModule } from 'module/connection/connection.module';
-import { JwtAuthGuard } from 'common/guard/jwt.guard';
-import { ContactModule } from 'module/contact/contact.module';
-import { MemberModule } from 'module/member/member.module';
-import { DepartmentModule } from 'module/department/department.module';
-import { DesignationModule } from 'module/designation/designation.module';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
+import { Module } from '@nestjs/common'
+import configuration, { AppConfig } from 'config/configuration'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { APP_GUARD } from '@nestjs/core'
+import { VacancyModule } from 'module/vacancies/vacancy.module'
+import { AssetModule } from 'asset/asset.module'
+import { ApplicantModule } from './module/applicants/applicant.module'
+import { ConnectionModule } from 'module/connection/connection.module'
+import { JwtAuthGuard } from 'common/guard/jwt.guard'
+import { ContactModule } from 'module/contact/contact.module'
+import { MemberModule } from 'module/member/member.module'
+import { DepartmentModule } from 'module/department/department.module'
+import { DesignationModule } from 'module/designation/designation.module'
+import { MailerModule } from '@nestjs-modules/mailer'
+import { CacheModule } from '@nestjs/cache-manager'
+import * as redisStore from 'cache-manager-redis-store'
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import * as redisStore from 'cache-manager-redis-store';
     DesignationModule,
     ConfigModule.forRoot({
       load: [configuration],
-      isGlobal: true,
+      isGlobal: true
     }),
 
     CacheModule.registerAsync({
@@ -34,15 +34,15 @@ import * as redisStore from 'cache-manager-redis-store';
       inject: [ConfigService],
       isGlobal: true,
       useFactory: (configService: ConfigService<AppConfig, true>) => {
-        const redisConfig = configService.get('redis', { infer: true });
+        const redisConfig = configService.get('redis', { infer: true })
 
         return {
           store: redisStore,
           host: redisConfig.host,
           port: redisConfig.port,
-          password: redisConfig.password,
-        };
-      },
+          password: redisConfig.password
+        }
+      }
     }),
 
     ConnectionModule.forRoot(),
@@ -50,7 +50,7 @@ import * as redisStore from 'cache-manager-redis-store';
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService<AppConfig, true>) => {
-        const mailConfig = configService.get('email', { infer: true });
+        const mailConfig = configService.get('email', { infer: true })
 
         return {
           transport: {
@@ -58,19 +58,19 @@ import * as redisStore from 'cache-manager-redis-store';
             secure: true,
             auth: {
               user: mailConfig.user,
-              pass: mailConfig.password,
-            },
-          },
-        };
+              pass: mailConfig.password
+            }
+          }
+        }
       },
-      inject: [ConfigService],
-    }),
+      inject: [ConfigService]
+    })
   ],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-  ],
+      useClass: JwtAuthGuard
+    }
+  ]
 })
 export class AppModule {}

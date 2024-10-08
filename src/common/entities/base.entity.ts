@@ -2,9 +2,9 @@ import {
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { DeepPartial } from 'typeorm/common/DeepPartial';
+  PrimaryGeneratedColumn
+} from 'typeorm'
+import { DeepPartial } from 'typeorm/common/DeepPartial'
 
 @Entity()
 export abstract class BaseEntity {
@@ -12,22 +12,22 @@ export abstract class BaseEntity {
   protected constructor(input?: DeepPartial<BaseEntity>) {
     if (input) {
       for (const [key, descriptor] of Object.entries(
-        Object.getOwnPropertyDescriptors(input),
+        Object.getOwnPropertyDescriptors(input)
       )) {
         if (descriptor.get && !descriptor.set) {
-          continue;
+          continue
         }
-        (this as any)[key] = descriptor.value;
+        ;(this as any)[key] = descriptor.value
       }
     }
   }
 
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
-  createdAt: Date;
+  createdAt: Date
 
   @UpdateDateColumn({ type: 'timestamp with time zone' })
-  updatedAt: Date;
+  updatedAt: Date
 }

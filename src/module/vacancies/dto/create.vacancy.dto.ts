@@ -4,63 +4,63 @@ import {
   IsString,
   Length,
   IsUUID,
-  IsNumber,
-} from 'class-validator';
-import { JobType } from '../../../common/enum/Job.type.enum';
-import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { JobStatus } from 'common/enum/jobStatus.enum';
+  IsNumber
+} from 'class-validator'
+import { JobType } from '../../../common/enum/Job.type.enum'
+import { ApiProperty } from '@nestjs/swagger'
+import { Transform } from 'class-transformer'
+import { JobStatus } from 'common/enum/jobStatus.enum'
 
 export class CreateVacancyRequestDto {
   @IsString()
   @Length(1, 50)
-  name: string;
+  name: string
 
   @IsUUID()
-  designationId: string;
+  designationId: string
 
   @IsString()
-  jobLevel: string;
+  jobLevel: string
 
   @IsString()
-  salary: string;
+  salary: string
 
   @IsString()
   @Length(10, 200)
-  skills: string;
+  skills: string
 
   @IsNumber()
   @Transform(({ value }) => {
-    return Number(value);
+    return Number(value)
   })
-  experience: number;
+  experience: number
 
   @IsEnum(JobType)
-  jobType: JobType;
+  jobType: JobType
 
   @IsDateString()
-  datePosted: Date;
+  datePosted: Date
 
   @IsDateString()
-  deadLine: Date;
+  deadLine: Date
 
   @IsNumber()
   @Transform(({ value }) => {
-    return Number(value);
+    return Number(value)
   })
-  vacancyOpening: number;
+  vacancyOpening: number
 
   @Length(10, 200)
   @IsString()
-  description: string;
+  description: string
 
   @IsEnum(JobStatus)
-  status: JobStatus;
+  status: JobStatus
 
   @ApiProperty({
     description: 'image of the vacany',
     type: 'string',
-    format: 'binary',
+    format: 'binary'
   })
-  image: Express.Multer.File;
+  image: Express.Multer.File
 }

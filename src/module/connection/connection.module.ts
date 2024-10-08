@@ -1,15 +1,15 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AllEntities } from 'common/entities';
-import { AppConfig } from 'config/configuration';
-import { TransactionalConnection } from './connection.service';
+import { DynamicModule, Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { AllEntities } from 'common/entities'
+import { AppConfig } from 'config/configuration'
+import { TransactionalConnection } from './connection.service'
 
-let defaultTypeOrmModule: DynamicModule;
+let defaultTypeOrmModule: DynamicModule
 
 @Module({
   providers: [TransactionalConnection],
-  exports: [TransactionalConnection],
+  exports: [TransactionalConnection]
 })
 export class ConnectionModule {
   static forRoot(): DynamicModule {
@@ -18,7 +18,7 @@ export class ConnectionModule {
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (configService: ConfigService<AppConfig, true>) => {
-          const dbConfig = configService.get('database', { infer: true });
+          const dbConfig = configService.get('database', { infer: true })
 
           return {
             type: 'postgres',
@@ -28,17 +28,17 @@ export class ConnectionModule {
             password: dbConfig.password,
             database: dbConfig.database,
             entities: AllEntities,
-            synchronize: true,
-          };
-        },
-      });
+            synchronize: true
+          }
+        }
+      })
     }
 
     return {
       module: ConnectionModule,
       imports: [defaultTypeOrmModule],
       exports: [defaultTypeOrmModule],
-      global: true,
-    };
+      global: true
+    }
   }
 }

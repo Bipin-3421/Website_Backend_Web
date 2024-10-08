@@ -1,10 +1,10 @@
-import { Applicant } from './applicant.entity';
-import { Asset } from './asset.entity';
-import { Contact } from './contact.entity';
-import { Department } from './department.entity';
-import { Designation } from './designation.entity';
-import { Member } from './member.entity';
-import { Vacancy } from './vacancy.entity';
+import { Applicant } from './applicant.entity'
+import { Asset } from './asset.entity'
+import { Contact } from './contact.entity'
+import { Department } from './department.entity'
+import { Designation } from './designation.entity'
+import { Member } from './member.entity'
+import { Vacancy } from './vacancy.entity'
 
 const AllEntities = [
   Applicant,
@@ -13,7 +13,7 @@ const AllEntities = [
   Contact,
   Member,
   Department,
-  Designation,
-];
+  Designation
+]
 
-export { AllEntities };
+export { AllEntities }

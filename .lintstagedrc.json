@@ -1,0 +1,4 @@
+{
+  "*.ts": ["pnpm run lint", "pnpm run format"],
+  "!(*.ts)": ["pnpm run format"]
+}

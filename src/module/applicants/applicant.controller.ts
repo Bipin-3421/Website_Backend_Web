@@ -10,30 +10,30 @@ import {
   Post,
   Query,
   UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { ApplicantService } from './applicant.service';
-import { CreateApplicantDto } from './dto/create.applicant.dto';
-import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger';
+  UseInterceptors
+} from '@nestjs/common'
+import { ApplicantService } from './applicant.service'
+import { CreateApplicantDto } from './dto/create.applicant.dto'
+import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger'
 import {
   MessageResponseDTO,
-  MessageResponseWithIdDTO,
-} from 'common/dto/response.dto';
-import { ApplicantFilterDto } from './dto/applicant.search.dto';
+  MessageResponseWithIdDTO
+} from 'common/dto/response.dto'
+import { ApplicantFilterDto } from './dto/applicant.search.dto'
 import {
   ListApplicantsResponseDto,
-  SingleApplicantResponseDTO,
-} from './dto/get.applicant.dto';
-import { getPaginationResponse } from 'common/utils/pagination.utils';
-import { PublicRoute } from 'common/decorator/public.decorator';
-import { ApplicantParamDTO } from './dto/param.dto';
-import { PatchApplicantDto } from './dto/patch.applicant.dto';
-import { Ctx } from 'common/decorator/ctx.decorator';
-import { RequestContext } from 'common/request-context';
-import { Transaction } from 'common/decorator/transaction.decorator';
-import { Require } from 'common/decorator/require.decorator';
-import { PermissionAction, PermissionResource } from 'types/permission';
-import { FileUpload } from 'common/file-upload.interceptor';
+  SingleApplicantResponseDTO
+} from './dto/get.applicant.dto'
+import { getPaginationResponse } from 'common/utils/pagination.utils'
+import { PublicRoute } from 'common/decorator/public.decorator'
+import { ApplicantParamDTO } from './dto/param.dto'
+import { PatchApplicantDto } from './dto/patch.applicant.dto'
+import { Ctx } from 'common/decorator/ctx.decorator'
+import { RequestContext } from 'common/request-context'
+import { Transaction } from 'common/decorator/transaction.decorator'
+import { Require } from 'common/decorator/require.decorator'
+import { PermissionAction, PermissionResource } from 'types/permission'
+import { FileUpload } from 'common/file-upload.interceptor'
 
 @Controller('applicant')
 @ApiTags('Applicant ')
@@ -49,27 +49,27 @@ export class ApplicantController {
   @Transaction()
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse({
-    description: 'Job vacancy creation failed',
+    description: 'Job vacancy creation failed'
   })
   async createApplicant(
     @Ctx() ctx: RequestContext,
     @Body() applicantDetail: CreateApplicantDto,
-    @UploadedFile() file: Express.Multer.File | null,
+    @UploadedFile() file: Express.Multer.File | null
   ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
-      throw new NotAcceptableException('CV is required');
+      throw new NotAcceptableException('CV is required')
     }
 
-    applicantDetail.cv = file;
+    applicantDetail.cv = file
 
-    const applicant = await this.applicantService.create(ctx, applicantDetail);
+    const applicant = await this.applicantService.create(ctx, applicantDetail)
 
     return {
       message: 'Applicant created successfully',
       data: {
-        id: applicant.id,
-      },
-    };
+        id: applicant.id
+      }
+    }
   }
 
   /**
@@ -78,19 +78,19 @@ export class ApplicantController {
   @Get()
   @Require({
     permission: PermissionResource.APPLICANT,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   @ApiBadRequestResponse({
-    description: 'Applicant fetch failed',
+    description: 'Applicant fetch failed'
   })
   async getAllJobApplicants(
     @Ctx() ctx: RequestContext,
-    @Query() queryFilter: ApplicantFilterDto,
+    @Query() queryFilter: ApplicantFilterDto
   ): Promise<ListApplicantsResponseDto> {
     const [applicants, total] = await this.applicantService.findMany(
       ctx,
-      queryFilter,
-    );
+      queryFilter
+    )
 
     return {
       message: 'All Applicants fetched successfully',
@@ -105,18 +105,18 @@ export class ApplicantController {
           cv: {
             id: applicant.cv.id,
             name: applicant.cv.name,
-            url: applicant.cv.url,
+            url: applicant.cv.url
           },
           githubUrl: applicant.githubUrl,
           portfolioUrl: applicant.portfolioUrl,
           referralSource: applicant.referralSource,
           workExperience: applicant.workExperience,
           vacancyId: applicant.vacancyId,
-          status: applicant.status,
-        };
+          status: applicant.status
+        }
       }),
-      pagination: getPaginationResponse(applicants, total, queryFilter),
-    };
+      pagination: getPaginationResponse(applicants, total, queryFilter)
+    }
   }
 
   /**
@@ -125,19 +125,19 @@ export class ApplicantController {
   @Get(':applicantId')
   @Require({
     permission: PermissionResource.APPLICANT,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   async getSingleApplicant(
     @Ctx() ctx: RequestContext,
-    @Param() param: ApplicantParamDTO,
+    @Param() param: ApplicantParamDTO
   ): Promise<SingleApplicantResponseDTO> {
     const applicant = await this.applicantService.findSingleAplicant(
       ctx,
-      param.applicantId,
-    );
+      param.applicantId
+    )
 
     if (!applicant) {
-      throw new NotFoundException('Applicant not found');
+      throw new NotFoundException('Applicant not found')
     }
 
     return {
@@ -155,9 +155,9 @@ export class ApplicantController {
         referralSource: applicant.referralSource,
         workExperience: applicant.workExperience,
         vacancyId: applicant.vacancyId,
-        status: applicant.status,
-      },
-    };
+        status: applicant.status
+      }
+    }
   }
 
   /**
@@ -166,29 +166,29 @@ export class ApplicantController {
   @Patch(':applicantId')
   @Require({
     permission: PermissionResource.APPLICANT,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @ApiBadRequestResponse({
-    description: 'Applicant Status Patch failed',
+    description: 'Applicant Status Patch failed'
   })
   async patchApplicantStatus(
     @Ctx() ctx: RequestContext,
     @Param() applicantParamDto: ApplicantParamDTO,
-    @Body() status: PatchApplicantDto,
+    @Body() status: PatchApplicantDto
   ): Promise<MessageResponseDTO> {
     const res = await this.applicantService.update(
       ctx,
       applicantParamDto.applicantId,
-      status,
-    );
+      status
+    )
 
     if (!res) {
-      throw new NotFoundException('Applicant not found');
+      throw new NotFoundException('Applicant not found')
     }
 
     return {
-      message: 'Applicant status updated successfully',
-    };
+      message: 'Applicant status updated successfully'
+    }
   }
 
   /**
@@ -197,26 +197,26 @@ export class ApplicantController {
   @Delete(':applicantId')
   @Require({
     permission: PermissionResource.APPLICANT,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @ApiBadRequestResponse({
-    description: 'Job vacancy creation failed',
+    description: 'Job vacancy creation failed'
   })
   async deleteApplicant(
     @Ctx() ctx: RequestContext,
-    @Param() applicantParamDto: ApplicantParamDTO,
+    @Param() applicantParamDto: ApplicantParamDTO
   ): Promise<MessageResponseDTO> {
     const status = await this.applicantService.delete(
       ctx,
-      applicantParamDto.applicantId,
-    );
+      applicantParamDto.applicantId
+    )
 
     if (!status) {
-      throw new NotAcceptableException('Applicant not found');
+      throw new NotAcceptableException('Applicant not found')
     }
 
     return {
-      message: 'Applicant deleted successfully',
-    };
+      message: 'Applicant deleted successfully'
+    }
   }
 }

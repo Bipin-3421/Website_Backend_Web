@@ -1,59 +1,59 @@
-import { AssetDTO } from 'common/dto/asset.dto';
-import { PaginationResponseDTO } from 'common/dto/pagination.dto';
-import { ApplicationStatus } from 'common/enum/applicant.status.enum';
+import { AssetDTO } from 'common/dto/asset.dto'
+import { PaginationResponseDTO } from 'common/dto/pagination.dto'
+import { ApplicationStatus } from 'common/enum/applicant.status.enum'
 
 export class SingleApplicantResponseDTO {
-  message: string;
+  message: string
 
   data: {
-    id: string;
-    name: string;
-    email: string;
-    phoneNumber: string;
-    address: string;
-    createdAt: Date;
-    cvId: string;
-    githubUrl: string | null;
-    portfolioUrl: string | null;
-    referralSource: string | null;
-    workExperience: number;
-    vacancyId: string;
-    status: ApplicationStatus;
-  };
+    id: string
+    name: string
+    email: string
+    phoneNumber: string
+    address: string
+    createdAt: Date
+    cvId: string
+    githubUrl: string | null
+    portfolioUrl: string | null
+    referralSource: string | null
+    workExperience: number
+    vacancyId: string
+    status: ApplicationStatus
+  }
 }
 
 export class SingleApplicantDTO {
-  id: string;
+  id: string
 
-  name: string;
+  name: string
 
-  email: string;
+  email: string
 
-  phoneNumber: string;
+  phoneNumber: string
 
-  address: string;
+  address: string
 
-  createdAt: Date;
+  createdAt: Date
 
-  cv: AssetDTO;
+  cv: AssetDTO
 
-  githubUrl: string | null;
+  githubUrl: string | null
 
-  portfolioUrl: string | null;
+  portfolioUrl: string | null
 
-  referralSource: string | null;
+  referralSource: string | null
 
-  workExperience: number;
+  workExperience: number
 
-  vacancyId: string;
+  vacancyId: string
 
-  status: ApplicationStatus;
+  status: ApplicationStatus
 }
 
 export class ListApplicantsResponseDto {
-  message: string;
+  message: string
 
-  data: SingleApplicantDTO[];
+  data: SingleApplicantDTO[]
 
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDTO
 }

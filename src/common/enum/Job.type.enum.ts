@@ -3,5 +3,5 @@ export enum JobType {
   PART_TIME = 'Part Time',
   INTERNSHIP = 'Internship',
   FREELANCE = 'Freelance',
-  REMOTE = 'Remote',
+  REMOTE = 'Remote'
 }

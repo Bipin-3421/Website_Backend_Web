@@ -1,41 +1,41 @@
-import { IntersectionType } from '@nestjs/swagger';
-import { IsEnum, IsString, IsEmail, IsNumber } from 'class-validator';
+import { IntersectionType } from '@nestjs/swagger'
+import { IsEnum, IsString, IsEmail, IsNumber } from 'class-validator'
 
-import { Optional } from 'common/decorator/optional.decorator';
-import { PaginationParamDTO } from 'common/dto/pagination.dto';
-import { ApplicationStatus } from 'common/enum/applicant.status.enum';
+import { Optional } from 'common/decorator/optional.decorator'
+import { PaginationParamDTO } from 'common/dto/pagination.dto'
+import { ApplicationStatus } from 'common/enum/applicant.status.enum'
 
 export class ApplicantSearchParamDto {
   @Optional()
   @IsEnum(ApplicationStatus)
-  applicantStatus?: ApplicationStatus;
+  applicantStatus?: ApplicationStatus
 
   @Optional()
   @IsString()
-  designation: string;
+  designation: string
 
   @Optional()
   @IsString()
-  name: string;
+  name: string
 
   @Optional()
   @IsNumber()
-  phone: string;
+  phone: string
 
   @Optional()
   @IsString()
-  address: string;
+  address: string
 
   @Optional()
   @IsEmail()
-  email: string;
+  email: string
 
   @Optional()
   @IsString()
-  referalSource: string;
+  referalSource: string
 }
 
 export class ApplicantFilterDto extends IntersectionType(
   ApplicantSearchParamDto,
-  PaginationParamDTO,
+  PaginationParamDTO
 ) {}

@@ -1,52 +1,52 @@
-import { IntersectionType, PartialType } from '@nestjs/swagger';
-import { IsString, Length, IsNotEmpty, IsUUID } from 'class-validator';
+import { IntersectionType, PartialType } from '@nestjs/swagger'
+import { IsString, Length, IsNotEmpty, IsUUID } from 'class-validator'
 import {
   PaginationParamDTO,
-  PaginationResponseDTO,
-} from 'common/dto/pagination.dto';
-import { SearchParamDTO } from 'common/dto/search.dto';
+  PaginationResponseDTO
+} from 'common/dto/pagination.dto'
+import { SearchParamDTO } from 'common/dto/search.dto'
 
 export class CreateDepartmentDTO {
   @IsString()
   @Length(1, 30)
   @IsNotEmpty()
-  name: string;
+  name: string
 }
 
 export class ListDepartmentQueryDTO extends IntersectionType(
   SearchParamDTO,
-  PaginationParamDTO,
+  PaginationParamDTO
 ) {}
 
 export class ListDepartmentDTO {
-  id: string;
+  id: string
 
-  name: string;
+  name: string
 
-  createdAt: Date;
+  createdAt: Date
 }
 
 export class ListDepartmentResponseDTO {
-  message: string;
+  message: string
 
-  data: ListDepartmentDTO[];
+  data: ListDepartmentDTO[]
 
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDTO
 }
 
 export class SingleDepartmentResponseDTO {
-  message: string;
+  message: string
 
   data: {
-    id: string;
-    name: string;
-    createdAt: Date;
-  };
+    id: string
+    name: string
+    createdAt: Date
+  }
 }
 
 export class DepartmentParamDTO {
   @IsUUID()
-  departmentId: string;
+  departmentId: string
 }
 
 export class UpdateDepartmentDTO extends PartialType(CreateDepartmentDTO) {}
