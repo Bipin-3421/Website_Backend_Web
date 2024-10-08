@@ -39,9 +39,6 @@ export class CreateVacancyRequestDto {
   jobType: JobType
 
   @IsDateString()
-  datePosted: Date
-
-  @IsDateString()
   deadLine: Date
 
   @IsNumber()

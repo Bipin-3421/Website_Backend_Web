@@ -1,19 +1,22 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   NotAcceptableException,
   NotFoundException,
   Param,
   Patch,
   Post,
   Query,
+  UnauthorizedException,
   UploadedFile,
   UseInterceptors
 } from '@nestjs/common'
 import { VacancyService } from './vacancy.service'
-import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger'
+import { ApiConsumes, ApiTags } from '@nestjs/swagger'
 import { CreateVacancyRequestDto } from './dto/create.vacancy.dto'
 import { UpdateVacancyRequestDto } from './dto/update.vacancy.dto'
 import { VacancyIdDTO } from './dto/param.dto'
@@ -32,6 +35,8 @@ import { RequestContext } from 'common/request-context'
 import { Require } from 'common/decorator/require.decorator'
 import { PermissionAction, PermissionResource } from 'types/permission'
 import { FileUpload } from 'common/file-upload.interceptor'
+import { Throws } from 'common/decorator/throws.decorator'
+import { ValidationException } from 'common/errors/validation.error'
 
 @Controller('vacancy')
 @ApiTags('Vacancy')
@@ -47,9 +52,12 @@ export class VacancyController {
     action: PermissionAction.EDIT
   })
   @UseInterceptors(FileUpload('image'))
-  @ApiBadRequestResponse({
-    description: 'Job vacancy creation failed'
-  })
+  @Throws(
+    InternalServerErrorException,
+    ValidationException,
+    BadRequestException,
+    UnauthorizedException
+  )
   @ApiConsumes('multipart/form-data')
   async createJobVacancy(
     @Ctx() ctx: RequestContext,
@@ -80,9 +88,11 @@ export class VacancyController {
     permission: PermissionResource.VACANCY,
     action: PermissionAction.VIEW
   })
-  @ApiBadRequestResponse({
-    description: 'Job vacancy fetch failed'
-  })
+  @Throws(
+    InternalServerErrorException,
+    UnauthorizedException,
+    BadRequestException
+  )
   async getAllJobVacancy(
     @Ctx() ctx: RequestContext,
     @Query() queryFilter: VacancyFilterDto
@@ -133,9 +143,12 @@ export class VacancyController {
     permission: PermissionResource.VACANCY,
     action: PermissionAction.VIEW
   })
-  @ApiBadRequestResponse({
-    description: 'Job vacancy fetch failed'
-  })
+  @Throws(
+    InternalServerErrorException,
+    UnauthorizedException,
+    BadRequestException,
+    NotFoundException
+  )
   async findSingleVacancy(
     @Ctx() ctx: RequestContext,
     @Param() param: VacancyIdDTO
@@ -184,9 +197,13 @@ export class VacancyController {
     action: PermissionAction.EDIT
   })
   @UseInterceptors(FileUpload('image'))
-  @ApiBadRequestResponse({
-    description: 'Job vacancy update failed'
-  })
+  @Throws(
+    InternalServerErrorException,
+    ValidationException,
+    UnauthorizedException,
+    BadRequestException,
+    NotFoundException
+  )
   @ApiConsumes('multipart/form-data')
   async updateJobVacancy(
     @Ctx() ctx: RequestContext,
@@ -224,9 +241,12 @@ export class VacancyController {
     permission: PermissionResource.VACANCY,
     action: PermissionAction.EDIT
   })
-  @ApiBadRequestResponse({
-    description: 'Job vacancy deletion failed'
-  })
+  @Throws(
+    UnauthorizedException,
+    BadRequestException,
+    InternalServerErrorException,
+    NotFoundException
+  )
   async deleteJobVacancy(
     @Ctx() ctx: RequestContext,
     @Param() param: VacancyIdDTO
