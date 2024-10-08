@@ -22,7 +22,7 @@ import { patchEntity } from 'common/utils/patchEntity';
 import { seedSuperAdmin } from 'common/seeds/backofficeSuperAdmin.seed';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from 'config/configuration';
-import { generateOTP } from 'common/utils/generateOTP';
+import { GenerateOTP } from 'common/utils/generateOTP';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
@@ -172,7 +172,7 @@ export class MemberService implements OnApplicationBootstrap {
       },
     });
 
-    const otp = generateOTP();
+    const otp = GenerateOTP();
 
     const cacheKey = `login-otp:${details.email}`;
 
