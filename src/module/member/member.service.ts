@@ -37,7 +37,7 @@ export class MemberService implements OnApplicationBootstrap {
     private readonly configService: ConfigService<AppConfig, true>,
     private readonly mailerService: MailerService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
+  ) { }
 
   async onApplicationBootstrap(): Promise<void> {
     await seedSuperAdmin(this.connection, this.configService);
@@ -58,7 +58,7 @@ export class MemberService implements OnApplicationBootstrap {
       phoneNumber: body.phoneNumber,
       designation: body.designation,
       role: body.role,
-      image: asset,
+      imageId: asset.id,
     });
 
     return await memberRepo.save(member);
@@ -138,7 +138,6 @@ export class MemberService implements OnApplicationBootstrap {
     if (oldAssetId) {
       await this.assetService.delete(ctx, oldAssetId);
     }
-    console.log(member);
 
     return member;
   }

@@ -140,6 +140,7 @@ export class DesignationService {
 
     await designationRepo.remove(designation);
     await this.assetService.delete(ctx, designation.imageId);
-    return designation;
+    
+return designation;
   }
 }

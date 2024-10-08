@@ -123,7 +123,8 @@ export class VacancyService {
     if (oldAssetId) {
       await this.assetService.delete(ctx, oldAssetId);
     }
-    return vacancy;
+    
+return vacancy;
   }
 
   async delete(ctx: RequestContext, vacancyId: string) {

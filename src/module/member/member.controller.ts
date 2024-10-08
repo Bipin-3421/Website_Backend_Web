@@ -48,7 +48,7 @@ import { ValidationException } from 'common/errors/validation.error';
 @Controller('member')
 @ApiTags('Member')
 export class MemberController {
-  constructor(private readonly memberService: MemberService) {}
+  constructor(private readonly memberService: MemberService) { }
 
   /**
    * Create a new member
@@ -119,10 +119,10 @@ export class MemberController {
           role: res.role,
           image: res.image
             ? {
-                id: res.image.id,
-                name: res.image.name,
-                url: res.image.url,
-              }
+              id: res.image.id,
+              name: res.image.name,
+              url: res.image.url,
+            }
             : null,
         };
       }),
@@ -226,10 +226,10 @@ export class MemberController {
         role: member.role,
         image: member.image
           ? {
-              id: member.image.id,
-              name: member.image.name,
-              url: member.image.url,
-            }
+            id: member.image.id,
+            name: member.image.name,
+            url: member.image.url,
+          }
           : null,
       },
     };
@@ -298,10 +298,10 @@ export class MemberController {
         role: member.role,
         image: member.image
           ? {
-              id: member.image.id,
-              name: member.image.name,
-              url: member.image.url,
-            }
+            id: member.image.id,
+            name: member.image.name,
+            url: member.image.url,
+          }
           : null,
       },
     };
@@ -324,10 +324,7 @@ export class MemberController {
     @Ctx() ctx: RequestContext,
     @Param() param: MemberParamDTO,
   ): Promise<MessageResponseDTO> {
-    const deletedMember = await this.memberService.deleteMember(
-      ctx,
-      param.memberId,
-    );
+    await this.memberService.deleteMember(ctx, param.memberId);
 
     return {
       message: 'Member deleted successfully',

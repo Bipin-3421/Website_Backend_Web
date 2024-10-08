@@ -23,7 +23,8 @@ export class ContactService {
       message: body.message,
     });
     const contactRepo = this.connection.getRepository(ctx, Contact);
-    return await contactRepo.save(contact);
+    
+return await contactRepo.save(contact);
   }
 
   async findMany(
@@ -45,7 +46,8 @@ export class ContactService {
         status: filters.status,
       },
     ];
-    return this.connection.getRepository(ctx, Contact).findAndCount({
+    
+return this.connection.getRepository(ctx, Contact).findAndCount({
       where: whereClause.length ? whereClause : undefined,
       skip,
       take,
@@ -63,7 +65,8 @@ export class ContactService {
     if (!data) {
       throw new NotFoundException('Contact  not found');
     }
-    return data;
+    
+return data;
   }
 
   async updateContact(
@@ -77,7 +80,8 @@ export class ContactService {
       throw new NotFoundException('Contact not found');
     }
     patchEntity(contact, detail);
-    return await contactRepo.save(contact);
+    
+return await contactRepo.save(contact);
   }
 
   async deleteSingleContact(ctx: RequestContext, contactId: string) {
@@ -90,6 +94,7 @@ export class ContactService {
     if (!contact) {
       throw new NotFoundException('Contact not found');
     }
-    return await contactRepo.remove(contact);
+    
+return await contactRepo.remove(contact);
   }
 }

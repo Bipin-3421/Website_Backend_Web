@@ -83,7 +83,8 @@ export class ApplicantService {
         id: applicantId,
       },
     });
-    return applicant;
+    
+return applicant;
   }
 
   async update(

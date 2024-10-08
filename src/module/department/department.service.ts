@@ -19,7 +19,8 @@ export class DepartmentService {
     const department = new Department({
       name: body.name,
     });
-    return await departmentRepo.save(department);
+    
+return await departmentRepo.save(department);
   }
 
   async findManyDepartments(
@@ -44,7 +45,8 @@ export class DepartmentService {
         id: departmentId,
       },
     });
-    return department;
+    
+return department;
   }
 
   async updateDepartment(
@@ -62,7 +64,8 @@ export class DepartmentService {
       throw new NotFoundException('Department not found');
     }
     patchEntity(department, body);
-    return await departmentRepo.save(department);
+    
+return await departmentRepo.save(department);
   }
 
   async deleteDepartment(ctx: RequestContext, departmentId: string) {
@@ -75,6 +78,7 @@ export class DepartmentService {
     if (!department) {
       throw new NotFoundException('Department not found');
     }
-    return await departmentRepo.remove(department);
+    
+return await departmentRepo.remove(department);
   }
 }
