@@ -36,10 +36,6 @@ export class UpdateDesignationDTO {
   @Length(1, 100)
   name?: string;
 
-  @IsUUID()
-  @Optional()
-  departmentId?: string;
-
   @ApiProperty({
     description: 'image of the designation',
     type: 'string',

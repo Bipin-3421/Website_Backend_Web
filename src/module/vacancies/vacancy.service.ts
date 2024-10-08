@@ -96,9 +96,6 @@ export class VacancyService {
 
     const vacancy = await vacancyRepo.findOne({
       where: { id: vacancyId },
-      relations: {
-        image: true,
-      },
     });
     if (!vacancy) {
       throw new NotFoundException('Vacancy not found');

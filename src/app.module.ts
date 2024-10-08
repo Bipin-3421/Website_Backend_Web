@@ -35,11 +35,12 @@ import * as redisStore from 'cache-manager-redis-store';
       isGlobal: true,
       useFactory: (configService: ConfigService<AppConfig, true>) => {
         const redisConfig = configService.get('redis', { infer: true });
-        
-return {
+
+        return {
           store: redisStore,
           host: redisConfig.host,
           port: redisConfig.port,
+          password: redisConfig.password,
         };
       },
     }),
@@ -50,8 +51,8 @@ return {
       imports: [ConfigModule],
       useFactory: (configService: ConfigService<AppConfig, true>) => {
         const mailConfig = configService.get('email', { infer: true });
-        
-return {
+
+        return {
           transport: {
             host: mailConfig.host,
             secure: true,
@@ -72,4 +73,4 @@ return {
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

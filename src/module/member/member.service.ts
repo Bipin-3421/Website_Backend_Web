@@ -58,7 +58,7 @@ export class MemberService implements OnApplicationBootstrap {
       phoneNumber: body.phoneNumber,
       designation: body.designation,
       role: body.role,
-      imageId: asset.id
+      imageId: asset.id,
     });
 
     return await memberRepo.save(member);
@@ -93,6 +93,7 @@ export class MemberService implements OnApplicationBootstrap {
       where: {
         id: memberId,
       },
+      relations: { image: true },
     });
 
     return member;
@@ -108,7 +109,7 @@ export class MemberService implements OnApplicationBootstrap {
     const member = await memberRepo.findOne({
       where: {
         id: memberId,
-      }
+      },
     });
 
     if (!member) {
@@ -181,7 +182,7 @@ export class MemberService implements OnApplicationBootstrap {
 
     const message = `Your login otp is ${otp}`;
     if (!otpDev) {
-      void this.mailerService.sendMail({
+      await this.mailerService.sendMail({
         to: details.email,
         subject: `OTP for backoffice blacktech login`,
         html: message,

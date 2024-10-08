@@ -224,7 +224,13 @@ export class MemberController {
         createdAt: member.createdAt,
         designation: member.designation,
         role: member.role,
-        imageId: member.imageId,
+        image: member.image
+          ? {
+            id: member.image.id,
+            name: member.image.name,
+            url: member.image.url,
+          }
+          : null,
       },
     };
   }
@@ -290,7 +296,13 @@ export class MemberController {
         phoneNumber: member.phoneNumber,
         designation: member.designation,
         role: member.role,
-        imageId: member.imageId,
+        image: member.image
+          ? {
+            id: member.image.id,
+            name: member.image.name,
+            url: member.image.url,
+          }
+          : null,
       },
     };
   }

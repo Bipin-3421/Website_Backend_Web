@@ -77,7 +77,7 @@ export class singleMemberResponseDTO {
     phoneNumber: string;
     designation: string;
     role: MemberRole;
-    imageId: string;
+    image: AssetDTO | null;
   };
 }
 
