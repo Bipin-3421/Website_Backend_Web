@@ -44,6 +44,7 @@ import { attachToken } from 'common/utils/attachToken'
 import { Response } from 'express'
 import { Throws } from 'common/decorator/throws.decorator'
 import { ValidationException } from 'common/errors/validation.error'
+import { MemberRole } from 'common/enum/memberRole.enum'
 
 @Controller('member')
 @ApiTags('Member')
@@ -71,6 +72,9 @@ export class MemberController {
     @Body() body: CreateMemberRequestDTO,
     @UploadedFile() file: Express.Multer.File | null
   ): Promise<MessageResponseWithIdDTO> {
+    if (body.role === MemberRole.SUPERADMIN) {
+      throw new BadRequestException('SuperAdmin cannot be created')
+    }
     if (!file || file.size == 0) {
       throw new NotAcceptableException('Member image is required')
     }
