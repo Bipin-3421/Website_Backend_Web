@@ -4,74 +4,74 @@ import {
   IsNumber,
   IsString,
   IsUUID,
-  Length,
-} from 'class-validator';
-import { JobType } from '../../../common/enum/Job.type.enum';
-import { Optional } from 'common/decorator/optional.decorator';
-import { Transform } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { JobStatus } from 'common/enum/jobStatus.enum';
+  Length
+} from 'class-validator'
+import { JobType } from '../../../common/enum/Job.type.enum'
+import { Optional } from 'common/decorator/optional.decorator'
+import { Transform } from 'class-transformer'
+import { ApiProperty } from '@nestjs/swagger'
+import { JobStatus } from 'common/enum/jobStatus.enum'
 
 export class UpdateVacancyRequestDto {
   @IsString()
   @Optional()
   @Length(1, 50)
-  name?: string;
+  name?: string
 
   @IsUUID()
   @Optional()
-  designationid?: string;
+  designationid?: string
 
   @IsString()
   @Optional()
-  jobLevel?: string;
+  jobLevel?: string
 
   @IsString()
   @Optional()
-  salary?: string;
+  salary?: string
 
   @IsString()
   @Optional()
   @Length(10, 200)
-  skills: string;
+  skills: string
 
   @Optional()
   @Transform(({ value }) => {
-    return Number(value);
+    return Number(value)
   })
   @IsNumber()
-  experience?: number;
+  experience?: number
 
   @Optional()
   @IsEnum(JobType)
-  jobType?: JobType;
+  jobType?: JobType
 
   @Optional()
   @IsDateString()
-  datePosted?: Date;
+  datePosted?: Date
 
   @Optional()
   @IsDateString()
-  deadline?: Date;
+  deadline?: Date
 
   @Optional()
   @IsNumber()
-  vacancyOpening?: number;
+  vacancyOpening?: number
 
   @Length(10, 200)
   @Optional()
   @IsString()
-  description?: string;
+  description?: string
 
   @Optional()
   @IsEnum(JobStatus)
-  status?: JobStatus;
+  status?: JobStatus
 
   @Optional()
   @ApiProperty({
     description: 'image of the vacany',
     type: 'string',
-    format: 'binary',
+    format: 'binary'
   })
-  image?: Express.Multer.File;
+  image?: Express.Multer.File
 }

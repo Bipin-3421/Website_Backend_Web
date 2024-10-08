@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const tsEslint = require('typescript-eslint');
-const eslint = require('@eslint/js');
-const eslintConfigPrettier = require('eslint-config-prettier');
+const tsEslint = require('typescript-eslint')
+const eslint = require('@eslint/js')
+const eslintConfigPrettier = require('eslint-config-prettier')
 
 module.exports = [
   { ignores: ['**/node_modules/**', '**/dist/**'] },
@@ -14,8 +14,8 @@ module.exports = [
       'no-console': [
         'error',
         {
-          allow: ['warn', 'error'],
-        },
+          allow: ['warn', 'error']
+        }
       ],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [
@@ -23,8 +23,8 @@ module.exports = [
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_',
-        },
+          caughtErrorsIgnorePattern: '^_'
+        }
       ],
       'require-await': 'error',
       'newline-before-return': 'error',
@@ -34,12 +34,12 @@ module.exports = [
         {
           selector: ['objectLiteralMethod', 'objectLiteralProperty'],
           format: null,
-          modifiers: ['requiresQuotes'],
+          modifiers: ['requiresQuotes']
         },
         {
           selector: ['variable'],
           modifiers: ['global', 'exported'],
-          format: ['PascalCase', 'UPPER_CASE'],
+          format: ['PascalCase', 'UPPER_CASE']
         },
         {
           selector: [
@@ -54,10 +54,10 @@ module.exports = [
             'typeProperty',
             'objectLiteralProperty',
             'objectLiteralMethod',
-            'variable',
+            'variable'
           ],
           leadingUnderscore: 'allow',
-          format: ['camelCase'],
+          format: ['camelCase']
         },
         {
           selector: [
@@ -65,16 +65,16 @@ module.exports = [
             'enum',
             'interface',
             'typeAlias',
-            'typeParameter',
+            'typeParameter'
           ],
-          format: ['PascalCase'],
+          format: ['PascalCase']
         },
         {
           selector: ['enumMember'],
-          format: ['UPPER_CASE'],
-        },
-      ],
-    },
+          format: ['UPPER_CASE']
+        }
+      ]
+    }
   },
-  eslintConfigPrettier,
-];
+  eslintConfigPrettier
+]

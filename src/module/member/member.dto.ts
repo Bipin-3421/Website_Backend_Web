@@ -1,105 +1,105 @@
-import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger'
 import {
   IsString,
   IsEmail,
   Length,
   IsNotEmpty,
   IsEnum,
-  IsUUID,
-} from 'class-validator';
-import { Optional } from 'common/decorator/optional.decorator';
-import { AssetDTO } from 'common/dto/asset.dto';
-import { MemberRole } from 'common/enum/memberRole.enum';
+  IsUUID
+} from 'class-validator'
+import { Optional } from 'common/decorator/optional.decorator'
+import { AssetDTO } from 'common/dto/asset.dto'
+import { MemberRole } from 'common/enum/memberRole.enum'
 import {
   PaginationParamDTO,
-  PaginationResponseDTO,
-} from 'common/dto/pagination.dto';
-import { SearchParamDTO } from 'common/dto/search.dto';
+  PaginationResponseDTO
+} from 'common/dto/pagination.dto'
+import { SearchParamDTO } from 'common/dto/search.dto'
 
 export class CreateMemberRequestDTO {
   @Length(1, 50)
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name: string
 
   @IsString()
   @IsEmail()
-  email: string;
+  email: string
 
   @IsString()
   @IsNotEmpty()
-  phoneNumber: string;
+  phoneNumber: string
 
   @Length(1, 50)
   @IsString()
   @IsNotEmpty()
-  designation: string;
+  designation: string
 
   @IsEnum(MemberRole)
-  role: MemberRole;
+  role: MemberRole
 
   @ApiProperty({
     description: 'image of the member',
     type: 'string',
-    format: 'binary',
+    format: 'binary'
   })
-  image: Express.Multer.File;
+  image: Express.Multer.File
 }
 
 export class ListMemberDTO {
-  id: string;
+  id: string
 
-  name: string;
+  name: string
 
-  email: string;
+  email: string
 
-  createdAt: Date;
+  createdAt: Date
 
-  updatedAt: Date;
+  updatedAt: Date
 
-  phoneNumber: string;
+  phoneNumber: string
 
-  designation: string;
+  designation: string
 
-  role: MemberRole;
+  role: MemberRole
 
-  image: AssetDTO | null;
+  image: AssetDTO | null
 }
 
-export class singleMemberResponseDTO {
-  message: string;
+export class SingleMemberResponseDTO {
+  message: string
 
   data: {
-    id: string;
-    name: string;
-    email: string;
-    createdAt: Date;
-    phoneNumber: string;
-    designation: string;
-    role: MemberRole;
-    image: AssetDTO | null;
-  };
+    id: string
+    name: string
+    email: string
+    createdAt: Date
+    phoneNumber: string
+    designation: string
+    role: MemberRole
+    image: AssetDTO | null
+  }
 }
 
 export class ListMemberResponseDTO {
-  message: string;
+  message: string
 
-  data: ListMemberDTO[];
+  data: ListMemberDTO[]
 
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDTO
 }
 
 export class ListMemberQueryDTO extends IntersectionType(
   SearchParamDTO,
-  PaginationParamDTO,
+  PaginationParamDTO
 ) {
   @Optional()
-  role?: MemberRole;
+  role?: MemberRole
 }
 
 export class MemberParamDTO {
   @IsUUID()
-  memberId: string;
+  memberId: string
 }
 
 export class UpdateMemberRequestDTO {
@@ -107,57 +107,57 @@ export class UpdateMemberRequestDTO {
   @IsNotEmpty()
   @IsString()
   @Optional()
-  name?: string;
+  name?: string
 
   @IsString()
   @Optional()
   @IsEmail()
-  email?: string;
+  email?: string
 
   @IsString()
   @Optional()
-  phoneNumber?: string;
+  phoneNumber?: string
 
   @Length(1, 50)
   @IsString()
   @Optional()
-  designation?: string;
+  designation?: string
 
   @IsEnum(MemberRole)
   @IsString()
   @Optional()
-  role?: MemberRole;
+  role?: MemberRole
 
   @ApiProperty({
     description: 'image of the member',
     type: 'string',
     format: 'binary',
-    required: false,
+    required: false
   })
   @Optional()
-  image?: Express.Multer.File;
+  image?: Express.Multer.File
 }
 
 export class MemberLoginDTO {
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email: string
 }
 
 export class MemberVerifyDTO {
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email: string
 
   @IsString()
   @IsNotEmpty()
-  otp: string;
+  otp: string
 }
 
 export class VerifyResponseDTO {
-  message: string;
+  message: string
 
   data: {
-    accessToken: string;
-  };
+    accessToken: string
+  }
 }

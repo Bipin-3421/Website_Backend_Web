@@ -1,26 +1,26 @@
-import { ConfigService } from '@nestjs/config';
-import { Member } from 'common/entities/member.entity';
-import { TransactionalConnection } from 'module/connection/connection.service';
-import { AppConfig } from 'config/configuration';
-import { MemberRole } from 'common/enum/memberRole.enum';
+import { ConfigService } from '@nestjs/config'
+import { Member } from 'common/entities/member.entity'
+import { TransactionalConnection } from 'module/connection/connection.service'
+import { AppConfig } from 'config/configuration'
+import { MemberRole } from 'common/enum/memberRole.enum'
 
 export async function seedSuperAdmin(
   connection: TransactionalConnection,
-  configService: ConfigService<AppConfig, true>,
+  configService: ConfigService<AppConfig, true>
 ): Promise<void> {
-  const memberRepository = connection.getRepository(Member);
+  const memberRepository = connection.getRepository(Member)
 
   const { email, phoneNumber } = configService.get('member', {
-    infer: true,
-  });
+    infer: true
+  })
 
   const superAdmin = await memberRepository.findOne({
     where: {
       role: MemberRole.SUPERADMIN,
       email: email,
-      phoneNumber: phoneNumber,
-    },
-  });
+      phoneNumber: phoneNumber
+    }
+  })
 
   if (!superAdmin) {
     const member = memberRepository.create({
@@ -28,12 +28,9 @@ export async function seedSuperAdmin(
       email: email,
       phoneNumber: phoneNumber,
       designation: 'SUPERADMIN',
-      role: MemberRole.SUPERADMIN,
-    });
+      role: MemberRole.SUPERADMIN
+    })
 
-    await memberRepository.save(member);
-    console.log('Super Admin seeded successfully!');
-  } else {
-    console.log('Super Admin already exists, skipping seeding.');
+    await memberRepository.save(member)
   }
 }

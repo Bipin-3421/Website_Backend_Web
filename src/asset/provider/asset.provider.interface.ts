@@ -1,14 +1,14 @@
-import { AssetProvider } from 'common/enum/provider.enum';
+import { AssetProvider } from 'common/enum/provider.enum'
 
 export interface AssetProviderInterface {
-  readonly type: AssetProvider;
+  readonly type: AssetProvider
 
   upload(
     buffer: Buffer,
-    fileName: string,
+    fileName: string
   ):
     | Promise<{ identifier: string; url: string }>
-    | { identifier: string; url: string };
+    | { identifier: string; url: string }
 
-  delete(id: string): Promise<boolean> | boolean;
+  delete(id: string): Promise<boolean> | boolean
 }

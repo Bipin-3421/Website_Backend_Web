@@ -1,32 +1,32 @@
 import {
   HttpException,
   ValidationError as ClassValidatorError,
-  HttpStatus,
-} from '@nestjs/common';
+  HttpStatus
+} from '@nestjs/common'
 
 export class ValidationException extends HttpException {
   static schema = {
     type: 'object',
-    additionalProperties: { type: 'array', items: { type: 'string' } },
-  };
+    additionalProperties: { type: 'array', items: { type: 'string' } }
+  }
 
   constructor(errors?: ClassValidatorError[]) {
-    const formattedError: { [key: string]: string[] } = {};
+    const formattedError: { [key: string]: string[] } = {}
 
     function flatten(err: ClassValidatorError, key = '') {
-      const path = key + err.property;
+      const path = key + err.property
       if (err.constraints) {
-        if (!formattedError[path]) formattedError[path] = [];
-        formattedError[path].push(...Object.values(err.constraints));
+        if (!formattedError[path]) formattedError[path] = []
+        formattedError[path].push(...Object.values(err.constraints))
       } else if (err.children) {
         for (let j = 0; j < err.children.length; j++)
-          flatten(err.children[j], path + '.');
+          flatten(err.children[j], path + '.')
       }
     }
 
     if (errors) {
       for (let i = 0; i < errors.length || 0; i++) {
-        flatten(errors[i]);
+        flatten(errors[i])
       }
     }
 
@@ -34,9 +34,9 @@ export class ValidationException extends HttpException {
       {
         statusCode: HttpStatus.NOT_ACCEPTABLE,
         message: formattedError,
-        error: 'Validation Error',
+        error: 'Validation Error'
       },
-      HttpStatus.NOT_ACCEPTABLE,
-    );
+      HttpStatus.NOT_ACCEPTABLE
+    )
   }
 }

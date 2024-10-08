@@ -6,28 +6,28 @@ import {
   Param,
   Delete,
   Query,
-  Patch,
-} from '@nestjs/common';
-import { ContactService } from './contact.service';
-import { Ctx } from 'common/decorator/ctx.decorator';
-import { RequestContext } from 'common/request-context';
+  Patch
+} from '@nestjs/common'
+import { ContactService } from './contact.service'
+import { Ctx } from 'common/decorator/ctx.decorator'
+import { RequestContext } from 'common/request-context'
 import {
   ListContactResponseDTO,
   CreateContactDTO,
   ListContactQueryDTO,
   UpdateContactRequestDTO,
   ContactIdDTO,
-  GetContactResponseDTO,
-} from './contact.dto';
-import { ApiTags, ApiBadRequestResponse } from '@nestjs/swagger';
-import { PublicRoute } from 'common/decorator/public.decorator';
+  GetContactResponseDTO
+} from './contact.dto'
+import { ApiTags, ApiBadRequestResponse } from '@nestjs/swagger'
+import { PublicRoute } from 'common/decorator/public.decorator'
 import {
   MessageResponseDTO,
-  MessageResponseWithIdDTO,
-} from 'common/dto/response.dto';
-import { getPaginationResponse } from 'common/utils/pagination.utils';
-import { Require } from 'common/decorator/require.decorator';
-import { PermissionAction, PermissionResource } from 'types/permission';
+  MessageResponseWithIdDTO
+} from 'common/dto/response.dto'
+import { getPaginationResponse } from 'common/utils/pagination.utils'
+import { Require } from 'common/decorator/require.decorator'
+import { PermissionAction, PermissionResource } from 'types/permission'
 
 @Controller('contact')
 @ApiTags('Contact')
@@ -40,20 +40,20 @@ export class ContactController {
   @Post()
   @PublicRoute()
   @ApiBadRequestResponse({
-    description: 'Contact creation failed',
+    description: 'Contact creation failed'
   })
   async createContact(
     @Ctx() ctx: RequestContext,
-    @Body() body: CreateContactDTO,
+    @Body() body: CreateContactDTO
   ): Promise<MessageResponseWithIdDTO> {
-    const contact = await this.contactService.create(ctx, body);
-    
-return {
+    const contact = await this.contactService.create(ctx, body)
+
+    return {
       message: 'Contact created successfully',
       data: {
-        id: contact.id,
-      },
-    };
+        id: contact.id
+      }
+    }
   }
 
   /**
@@ -62,18 +62,18 @@ return {
   @Get()
   @Require({
     permission: PermissionResource.CONTACT,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   @ApiBadRequestResponse({
-    description: 'Contacts fetch failed',
+    description: 'Contacts fetch failed'
   })
   async getAllContacts(
     @Ctx() ctx: RequestContext,
-    @Query() query: ListContactQueryDTO,
+    @Query() query: ListContactQueryDTO
   ): Promise<ListContactResponseDTO> {
-    const [response, total] = await this.contactService.findMany(ctx, query);
-    
-return {
+    const [response, total] = await this.contactService.findMany(ctx, query)
+
+    return {
       message: 'Contacts fetched successfully',
       data: response.map((res) => {
         return {
@@ -84,11 +84,11 @@ return {
           email: res.email,
           phoneNumber: res.phoneNumber,
           message: res.message,
-          status: res.status,
-        };
+          status: res.status
+        }
       }),
-      pagination: getPaginationResponse(response, total, query),
-    };
+      pagination: getPaginationResponse(response, total, query)
+    }
   }
 
   /**
@@ -97,21 +97,21 @@ return {
   @Get('/:contactId')
   @Require({
     permission: PermissionResource.CONTACT,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   @ApiBadRequestResponse({
-    description: 'Single contact fetch failed',
+    description: 'Single contact fetch failed'
   })
   async getSingleContact(
     @Ctx() ctx: RequestContext,
-    @Param() param: ContactIdDTO,
+    @Param() param: ContactIdDTO
   ): Promise<GetContactResponseDTO> {
     const contact = await this.contactService.findSingleContact(
       ctx,
-      param.contactId,
-    );
-    
-return {
+      param.contactId
+    )
+
+    return {
       message: 'Contact fetched successfully',
       data: {
         id: contact.id,
@@ -121,9 +121,9 @@ return {
         email: contact.email,
         phoneNumber: contact.phoneNumber,
         message: contact.message,
-        status: contact.status,
-      },
-    };
+        status: contact.status
+      }
+    }
   }
 
   /**
@@ -132,28 +132,28 @@ return {
   @Patch('/:contactId')
   @Require({
     permission: PermissionResource.CONTACT,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @ApiBadRequestResponse({
-    description: 'Contact updation failed',
+    description: 'Contact updation failed'
   })
   async updateContact(
     @Ctx() ctx: RequestContext,
     @Param() param: ContactIdDTO,
-    @Body() body: UpdateContactRequestDTO,
+    @Body() body: UpdateContactRequestDTO
   ): Promise<MessageResponseWithIdDTO> {
     const contact = await this.contactService.updateContact(
       ctx,
       param.contactId,
-      body,
-    );
-    
-return {
+      body
+    )
+
+    return {
       message: 'Contact updated successfully',
       data: {
-        id: contact.id,
-      },
-    };
+        id: contact.id
+      }
+    }
   }
 
   /**
@@ -162,22 +162,19 @@ return {
   @Delete('/:contactId')
   @Require({
     permission: PermissionResource.CONTACT,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @ApiBadRequestResponse({
-    description: 'Contact deletion failed',
+    description: 'Contact deletion failed'
   })
   async deleteContact(
     @Ctx() ctx: RequestContext,
-    @Param() param: ContactIdDTO,
+    @Param() param: ContactIdDTO
   ): Promise<MessageResponseDTO> {
-    const contact = await this.contactService.deleteSingleContact(
-      ctx,
-      param.contactId,
-    );
-    
-return {
-      message: 'Contact deleted successfully',
-    };
+    await this.contactService.deleteSingleContact(ctx, param.contactId)
+
+    return {
+      message: 'Contact deleted successfully'
+    }
   }
 }

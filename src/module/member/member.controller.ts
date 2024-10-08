@@ -14,16 +14,16 @@ import {
   NotFoundException,
   UnauthorizedException,
   BadRequestException,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { MemberService } from './member.service';
-import { RequestContext } from 'common/request-context';
-import { Ctx } from 'common/decorator/ctx.decorator';
+  InternalServerErrorException
+} from '@nestjs/common'
+import { MemberService } from './member.service'
+import { RequestContext } from 'common/request-context'
+import { Ctx } from 'common/decorator/ctx.decorator'
 import {
   MessageResponseDTO,
-  MessageResponseWithIdDTO,
-} from 'common/dto/response.dto';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+  MessageResponseWithIdDTO
+} from 'common/dto/response.dto'
+import { ApiConsumes, ApiTags } from '@nestjs/swagger'
 import {
   CreateMemberRequestDTO,
   ListMemberQueryDTO,
@@ -33,22 +33,22 @@ import {
   MemberVerifyDTO,
   VerifyResponseDTO,
   ListMemberResponseDTO,
-  singleMemberResponseDTO,
-} from './member.dto';
-import { getPaginationResponse } from 'common/utils/pagination.utils';
-import { PublicRoute } from 'common/decorator/public.decorator';
-import { Require } from 'common/decorator/require.decorator';
-import { PermissionAction, PermissionResource } from 'types/permission';
-import { fileUpload } from 'common/file-upload.interceptor';
-import { attachToken } from 'common/utils/attachToken';
-import { Response } from 'express';
-import { Throws } from 'common/decorator/throws.decorator';
-import { ValidationException } from 'common/errors/validation.error';
+  SingleMemberResponseDTO
+} from './member.dto'
+import { getPaginationResponse } from 'common/utils/pagination.utils'
+import { PublicRoute } from 'common/decorator/public.decorator'
+import { Require } from 'common/decorator/require.decorator'
+import { PermissionAction, PermissionResource } from 'types/permission'
+import { FileUpload } from 'common/file-upload.interceptor'
+import { attachToken } from 'common/utils/attachToken'
+import { Response } from 'express'
+import { Throws } from 'common/decorator/throws.decorator'
+import { ValidationException } from 'common/errors/validation.error'
 
 @Controller('member')
 @ApiTags('Member')
 export class MemberController {
-  constructor(private readonly memberService: MemberService) { }
+  constructor(private readonly memberService: MemberService) {}
 
   /**
    * Create a new member
@@ -56,35 +56,35 @@ export class MemberController {
   @Post()
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @Throws(
     UnauthorizedException,
     ValidationException,
     BadRequestException,
-    InternalServerErrorException,
+    InternalServerErrorException
   )
-  @UseInterceptors(fileUpload('image'))
+  @UseInterceptors(FileUpload('image'))
   @ApiConsumes('multipart/form-data')
   async createMember(
     @Ctx() ctx: RequestContext,
     @Body() body: CreateMemberRequestDTO,
-    @UploadedFile() file: Express.Multer.File | null,
+    @UploadedFile() file: Express.Multer.File | null
   ): Promise<MessageResponseWithIdDTO> {
     if (!file || file.size == 0) {
-      throw new NotAcceptableException('Member image is required');
+      throw new NotAcceptableException('Member image is required')
     }
 
-    body.image = file;
+    body.image = file
 
-    const member = await this.memberService.create(ctx, body);
+    const member = await this.memberService.create(ctx, body)
 
     return {
       message: 'Member created successfully',
       data: {
-        id: member.id,
-      },
-    };
+        id: member.id
+      }
+    }
   }
 
   /**
@@ -93,17 +93,17 @@ export class MemberController {
   @Get()
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   @Throws(UnauthorizedException, InternalServerErrorException)
   async getAllMembers(
     @Ctx() ctx: RequestContext,
-    @Query() query: ListMemberQueryDTO,
+    @Query() query: ListMemberQueryDTO
   ): Promise<ListMemberResponseDTO> {
     const [members, total] = await this.memberService.findManyMembers(
       ctx,
-      query,
-    );
+      query
+    )
 
     return {
       message: 'Members fetched successfully',
@@ -119,15 +119,15 @@ export class MemberController {
           role: res.role,
           image: res.image
             ? {
-              id: res.image.id,
-              name: res.image.name,
-              url: res.image.url,
-            }
-            : null,
-        };
+                id: res.image.id,
+                name: res.image.name,
+                url: res.image.url
+              }
+            : null
+        }
       }),
-      pagination: getPaginationResponse(members, total, query),
-    };
+      pagination: getPaginationResponse(members, total, query)
+    }
   }
 
   /**
@@ -136,35 +136,35 @@ export class MemberController {
   @Patch(':memberId')
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @Throws(
     UnauthorizedException,
     ValidationException,
     BadRequestException,
-    InternalServerErrorException,
+    InternalServerErrorException
   )
-  @UseInterceptors(fileUpload('image'))
+  @UseInterceptors(FileUpload('image'))
   @ApiConsumes('multipart/form-data')
   async updateMember(
     @Ctx() ctx: RequestContext,
     @Param() param: MemberParamDTO,
     @Body() body: UpdateMemberRequestDTO,
-    @UploadedFile() file: Express.Multer.File | null,
+    @UploadedFile() file: Express.Multer.File | null
   ): Promise<MessageResponseWithIdDTO> {
-    body.image = file || undefined;
+    body.image = file || undefined
     const updatedMember = await this.memberService.updateMember(
       ctx,
       body,
-      param.memberId,
-    );
+      param.memberId
+    )
 
     return {
       message: 'Member updated successfully',
       data: {
-        id: updatedMember.id,
-      },
-    };
+        id: updatedMember.id
+      }
+    }
   }
 
   /**
@@ -175,22 +175,22 @@ export class MemberController {
   @Throws(
     ValidationException,
     BadRequestException,
-    InternalServerErrorException,
+    InternalServerErrorException
   )
   async loginMember(
     @Ctx() ctx: RequestContext,
-    @Body() body: MemberLoginDTO,
+    @Body() body: MemberLoginDTO
   ): Promise<MessageResponseWithIdDTO> {
-    const member = await this.memberService.loginMember(ctx, body);
+    const member = await this.memberService.loginMember(ctx, body)
 
-    if (!member) throw new NotFoundException('Member not found');
+    if (!member) throw new NotFoundException('Member not found')
 
     return {
       message: 'Member logged in successfully',
       data: {
-        id: member.id,
-      },
-    };
+        id: member.id
+      }
+    }
   }
 
   /**
@@ -199,19 +199,19 @@ export class MemberController {
   @Get('active')
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   @Throws(UnauthorizedException, InternalServerErrorException)
   async activeUser(
-    @Ctx() ctx: RequestContext,
-  ): Promise<singleMemberResponseDTO> {
+    @Ctx() ctx: RequestContext
+  ): Promise<SingleMemberResponseDTO> {
     const member = await this.memberService.findSingleMember(
       ctx,
-      String(ctx.data?.memberId),
-    );
+      String(ctx.data?.memberId)
+    )
 
     if (!member) {
-      throw new NotFoundException('Member not found');
+      throw new NotFoundException('Member not found')
     }
 
     return {
@@ -226,13 +226,13 @@ export class MemberController {
         role: member.role,
         image: member.image
           ? {
-            id: member.image.id,
-            name: member.image.name,
-            url: member.image.url,
-          }
-          : null,
-      },
-    };
+              id: member.image.id,
+              name: member.image.name,
+              url: member.image.url
+            }
+          : null
+      }
+    }
   }
 
   /**
@@ -243,22 +243,22 @@ export class MemberController {
   @Throws(
     BadRequestException,
     ValidationException,
-    InternalServerErrorException,
+    InternalServerErrorException
   )
   async verifyMember(
     @Ctx() ctx: RequestContext,
     @Body() body: MemberVerifyDTO,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: Response
   ): Promise<VerifyResponseDTO> {
-    const accessToken = await this.memberService.verifyMember(ctx, body);
-    attachToken(res, accessToken);
+    const accessToken = await this.memberService.verifyMember(ctx, body)
+    attachToken(res, accessToken)
 
     return {
       message: 'Member verified successfully',
       data: {
-        accessToken,
-      },
-    };
+        accessToken
+      }
+    }
   }
 
   /**
@@ -267,23 +267,23 @@ export class MemberController {
   @Get(':memberId')
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.VIEW,
+    action: PermissionAction.VIEW
   })
   @Throws(
     UnauthorizedException,
     BadRequestException,
-    InternalServerErrorException,
+    InternalServerErrorException
   )
   async getSingleMember(
     @Ctx() ctx: RequestContext,
-    @Param() param: MemberParamDTO,
-  ): Promise<singleMemberResponseDTO> {
+    @Param() param: MemberParamDTO
+  ): Promise<SingleMemberResponseDTO> {
     const member = await this.memberService.findSingleMember(
       ctx,
-      param.memberId,
-    );
+      param.memberId
+    )
     if (!member) {
-      throw new NotFoundException('Member not found');
+      throw new NotFoundException('Member not found')
     }
 
     return {
@@ -298,13 +298,13 @@ export class MemberController {
         role: member.role,
         image: member.image
           ? {
-            id: member.image.id,
-            name: member.image.name,
-            url: member.image.url,
-          }
-          : null,
-      },
-    };
+              id: member.image.id,
+              name: member.image.name,
+              url: member.image.url
+            }
+          : null
+      }
+    }
   }
 
   /**
@@ -313,21 +313,21 @@ export class MemberController {
   @Delete(':memberId')
   @Require({
     permission: PermissionResource.MEMBER,
-    action: PermissionAction.EDIT,
+    action: PermissionAction.EDIT
   })
   @Throws(
     UnauthorizedException,
     BadRequestException,
-    InternalServerErrorException,
+    InternalServerErrorException
   )
   async deleteMember(
     @Ctx() ctx: RequestContext,
-    @Param() param: MemberParamDTO,
+    @Param() param: MemberParamDTO
   ): Promise<MessageResponseDTO> {
-    await this.memberService.deleteMember(ctx, param.memberId);
+    await this.memberService.deleteMember(ctx, param.memberId)
 
     return {
-      message: 'Member deleted successfully',
-    };
+      message: 'Member deleted successfully'
+    }
   }
 }

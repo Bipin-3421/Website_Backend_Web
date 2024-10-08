@@ -1,11 +1,11 @@
 export class MessageResponseDTO {
-  message: string;
+  message: string
 }
 
 export class MessageResponseWithIdDTO {
-  message: string;
+  message: string
 
   data: {
-    id: string;
-  };
+    id: string
+  }
 }

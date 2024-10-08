@@ -1,55 +1,55 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsEmail, IsString, IsNumber } from 'class-validator';
-import { Optional } from 'common/decorator/optional.decorator';
+import { ApiProperty } from '@nestjs/swagger'
+import { Transform } from 'class-transformer'
+import { IsEmail, IsString, IsNumber } from 'class-validator'
+import { Optional } from 'common/decorator/optional.decorator'
 
 export class CreateApplicantDto {
   @ApiProperty({ description: 'The name of the applicant' })
   @IsString()
-  name: string;
+  name: string
 
   @ApiProperty({ description: 'The email of the applicant' })
   @IsEmail()
-  email: string;
+  email: string
 
   @ApiProperty({ description: 'The phone number of the applicant' })
   @Optional()
-  phone: string;
+  phone: string
 
   @ApiProperty({ description: 'The address of the applicant' })
   @IsString()
-  address: string;
+  address: string
 
   @ApiProperty({
     description: 'The cv of the applicant',
     type: 'string',
-    format: 'binary',
+    format: 'binary'
   })
-  cv: Express.Multer.File;
+  cv: Express.Multer.File
 
   @ApiProperty({ description: 'The github url of the applicant' })
   @IsString()
   @Optional()
-  githubUrl?: string;
+  githubUrl?: string
 
   @ApiProperty({ description: 'The portfolio url of the applicant' })
   @IsString()
   @Optional()
-  portfolioUrl?: string;
+  portfolioUrl?: string
 
   @ApiProperty({ description: 'The work experience of the applicant' })
   @IsNumber()
   @Transform(({ value }) => {
-    return Number(value);
+    return Number(value)
   })
-  workExperience: number;
+  workExperience: number
 
   @ApiProperty({ description: 'The referal source of the applicant' })
   @IsString()
   @Optional()
-  referralSource?: string;
+  referralSource?: string
 
   @ApiProperty({ description: 'The vacancy id of the applicant' })
   @IsString()
-  vacancyId: string;
+  vacancyId: string
 }

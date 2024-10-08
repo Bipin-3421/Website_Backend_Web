@@ -1,103 +1,103 @@
-import { ApiProperty, IntersectionType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, Length, IsUUID } from 'class-validator';
-import { Optional } from 'common/decorator/optional.decorator';
-import { AssetDTO } from 'common/dto/asset.dto';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger'
+import { IsNotEmpty, IsString, Length, IsUUID } from 'class-validator'
+import { Optional } from 'common/decorator/optional.decorator'
+import { AssetDTO } from 'common/dto/asset.dto'
 
 import {
   PaginationParamDTO,
-  PaginationResponseDTO,
-} from 'common/dto/pagination.dto';
-import { SearchParamDTO } from 'common/dto/search.dto';
+  PaginationResponseDTO
+} from 'common/dto/pagination.dto'
+import { SearchParamDTO } from 'common/dto/search.dto'
 
 export class CreateDesignationDTO {
   @IsString()
   @IsNotEmpty()
   @Length(1, 100)
-  name: string;
+  name: string
 
   @IsUUID()
-  departmentId: string;
+  departmentId: string
 
   @ApiProperty({
     description: 'image of the designation',
     type: 'string',
-    format: 'binary',
+    format: 'binary'
   })
-  image: Express.Multer.File;
+  image: Express.Multer.File
 
   @IsString()
   @Length(1, 200)
-  description: string;
+  description: string
 }
 
 export class UpdateDesignationDTO {
   @IsString()
   @Optional()
   @Length(1, 100)
-  name?: string;
+  name?: string
 
   @ApiProperty({
     description: 'image of the designation',
     type: 'string',
-    format: 'binary',
+    format: 'binary'
   })
-  image?: Express.Multer.File;
+  image?: Express.Multer.File
 
   @IsString()
   @Optional()
   @Length(1, 200)
-  description?: string;
+  description?: string
 }
 
 export class ListDesignationDTO {
-  id: string;
+  id: string
 
-  name: string;
+  name: string
 
-  createdAt: Date;
+  createdAt: Date
 
-  department: DepartmentDTO;
+  department: DepartmentDTO
 
-  image: AssetDTO;
+  image: AssetDTO
 
-  description: string;
+  description: string
 }
 
 export class GetDesignationResponseDTO {
-  message: string;
+  message: string
 
   data: {
-    id: string;
-    name: string;
-    createdAt: Date;
-    department: DepartmentDTO;
-    image: AssetDTO;
-    description: string;
-  };
+    id: string
+    name: string
+    createdAt: Date
+    department: DepartmentDTO
+    image: AssetDTO
+    description: string
+  }
 }
 
 export class ListDesignationResponseDTO {
-  message: string;
+  message: string
 
-  data: ListDesignationDTO[];
+  data: ListDesignationDTO[]
 
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDTO
 }
 
 export class DesignationIdDTO {
   @IsUUID()
-  designationId: string;
+  designationId: string
 }
 
 export class ListDesignationQueryDTO extends IntersectionType(
   SearchParamDTO,
-  PaginationParamDTO,
+  PaginationParamDTO
 ) {}
 
 class DepartmentDTO {
   @IsUUID()
-  id: string;
+  id: string
 
   @IsString()
-  name: string;
+  name: string
 }

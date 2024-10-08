@@ -1,4 +1,4 @@
-import { Between, LessThan, MoreThan } from 'typeorm';
+import { Between, LessThan, MoreThan } from 'typeorm'
 
 export function dateFilter(from: Date | undefined, to: Date | undefined) {
   return from && to
@@ -7,5 +7,5 @@ export function dateFilter(from: Date | undefined, to: Date | undefined) {
       ? MoreThan(from)
       : to
         ? LessThan(to)
-        : undefined;
+        : undefined
 }

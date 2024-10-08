@@ -1,12 +1,12 @@
-import { IsString, IsUUID } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator'
 
 export class AssetDTO {
   @IsUUID()
-  id: string;
+  id: string
 
   @IsString()
-  name: string;
+  name: string
 
   @IsString()
-  url: string;
+  url: string
 }

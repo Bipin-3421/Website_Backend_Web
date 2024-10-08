@@ -5,42 +5,42 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
-} from 'typeorm';
-import { BaseEntity } from './base.entity';
-import { Department } from './department.entity';
-import { Asset } from './asset.entity';
-import { Vacancy } from './vacancy.entity';
+  OneToOne
+} from 'typeorm'
+import { BaseEntity } from './base.entity'
+import { Department } from './department.entity'
+import { Asset } from './asset.entity'
+import { Vacancy } from './vacancy.entity'
 
 @Entity()
 export class Designation extends BaseEntity {
   constructor(data?: DeepPartial<Designation>) {
-    super(data);
+    super(data)
   }
 
   @Column({ type: String })
-  name: string;
+  name: string
 
   @ManyToOne(() => Department, (department) => department.designation)
   @JoinColumn({ name: 'departmentId' })
-  department: Department;
+  department: Department
 
   @Column()
-  departmentId: string;
+  departmentId: string
 
   @OneToOne(() => Asset, (asset) => asset.designation)
   @JoinColumn({ name: 'imageId' })
-  image: Asset;
+  image: Asset
 
   @Column()
-  imageId: string;
+  imageId: string
 
   @Column({ type: String, default: '' })
-  description: string;
+  description: string
 
   @OneToMany(() => Vacancy, (vacancy) => vacancy.designation, {
     cascade: true,
-    onDelete: 'CASCADE',
+    onDelete: 'CASCADE'
   })
-  vacacy: Vacancy[];
+  vacacy: Vacancy[]
 }
