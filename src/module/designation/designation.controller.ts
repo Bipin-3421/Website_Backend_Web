@@ -10,7 +10,10 @@ import {
   UploadedFile,
   Param,
   Delete,
-  NotFoundException
+  NotFoundException,
+  UnauthorizedException,
+  InternalServerErrorException,
+  BadRequestException
 } from '@nestjs/common'
 import { Ctx } from 'common/decorator/ctx.decorator'
 import { RequestContext } from 'common/request-context'
@@ -23,7 +26,7 @@ import {
   UpdateDesignationDTO
 } from './designation.dto'
 import { DesignationService } from './designation.service'
-import { ApiBadRequestResponse, ApiConsumes, ApiTags } from '@nestjs/swagger'
+import { ApiConsumes, ApiTags } from '@nestjs/swagger'
 import { getPaginationResponse } from 'common/utils/pagination.utils'
 import {
   MessageResponseDTO,
@@ -32,6 +35,8 @@ import {
 import { Require } from 'common/decorator/require.decorator'
 import { PermissionAction, PermissionResource } from 'types/permission'
 import { FileUpload } from 'common/file-upload.interceptor'
+import { Throws } from 'common/decorator/throws.decorator'
+import { ValidationException } from 'common/errors/validation.error'
 
 @Controller('designation')
 @ApiTags('Designation')
@@ -47,9 +52,12 @@ export class DesignationController {
     action: PermissionAction.EDIT
   })
   @UseInterceptors(FileUpload('image'))
-  @ApiBadRequestResponse({
-    description: 'Designation creation failed'
-  })
+  @Throws(
+    UnauthorizedException,
+    ValidationException,
+    InternalServerErrorException,
+    BadRequestException
+  )
   @ApiConsumes('multipart/form-data')
   async createDesignation(
     @Ctx() ctx: RequestContext,
@@ -83,9 +91,11 @@ export class DesignationController {
     permission: PermissionResource.DESIGNATION,
     action: PermissionAction.VIEW
   })
-  @ApiBadRequestResponse({
-    description: 'Designation list fetch failed'
-  })
+  @Throws(
+    InternalServerErrorException,
+    BadRequestException,
+    UnauthorizedException
+  )
   async getAllDesignations(
     @Ctx() ctx: RequestContext,
     @Query() query: ListDesignationQueryDTO
@@ -124,9 +134,12 @@ export class DesignationController {
     permission: PermissionResource.DESIGNATION,
     action: PermissionAction.VIEW
   })
-  @ApiBadRequestResponse({
-    description: 'Single Designation fetch failed'
-  })
+  @Throws(
+    InternalServerErrorException,
+    BadRequestException,
+    NotFoundException,
+    UnauthorizedException
+  )
   async getSingleDesignation(
     @Ctx() ctx: RequestContext,
     @Param() param: DesignationIdDTO
@@ -168,9 +181,13 @@ export class DesignationController {
     action: PermissionAction.EDIT
   })
   @UseInterceptors(FileUpload('image'))
-  @ApiBadRequestResponse({
-    description: 'Designation updation failed'
-  })
+  @Throws(
+    NotFoundException,
+    InternalServerErrorException,
+    BadRequestException,
+    ValidationException,
+    UnauthorizedException
+  )
   @ApiConsumes('multipart/form-data')
   async updateDesignation(
     @Ctx() ctx: RequestContext,
@@ -201,9 +218,12 @@ export class DesignationController {
     permission: PermissionResource.DESIGNATION,
     action: PermissionAction.EDIT
   })
-  @ApiBadRequestResponse({
-    description: 'Designation deletion failed'
-  })
+  @Throws(
+    NotFoundException,
+    InternalServerErrorException,
+    BadRequestException,
+    UnauthorizedException
+  )
   async deleteDesignation(
     @Ctx() ctx: RequestContext,
     @Param() param: DesignationIdDTO

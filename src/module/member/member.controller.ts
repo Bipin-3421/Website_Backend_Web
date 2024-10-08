@@ -95,7 +95,11 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.VIEW
   })
-  @Throws(UnauthorizedException, InternalServerErrorException)
+  @Throws(
+    UnauthorizedException,
+    InternalServerErrorException,
+    BadRequestException
+  )
   async getAllMembers(
     @Ctx() ctx: RequestContext,
     @Query() query: ListMemberQueryDTO
@@ -142,7 +146,8 @@ export class MemberController {
     UnauthorizedException,
     ValidationException,
     BadRequestException,
-    InternalServerErrorException
+    InternalServerErrorException,
+    NotFoundException
   )
   @UseInterceptors(FileUpload('image'))
   @ApiConsumes('multipart/form-data')
@@ -186,7 +191,7 @@ export class MemberController {
     if (!member) throw new NotFoundException('Member not found')
 
     return {
-      message: 'Member logged in successfully',
+      message: 'Otp sent successfully',
       data: {
         id: member.id
       }
@@ -201,7 +206,11 @@ export class MemberController {
     permission: PermissionResource.MEMBER,
     action: PermissionAction.VIEW
   })
-  @Throws(UnauthorizedException, InternalServerErrorException)
+  @Throws(
+    UnauthorizedException,
+    InternalServerErrorException,
+    NotFoundException
+  )
   async activeUser(
     @Ctx() ctx: RequestContext
   ): Promise<SingleMemberResponseDTO> {
@@ -243,7 +252,8 @@ export class MemberController {
   @Throws(
     BadRequestException,
     ValidationException,
-    InternalServerErrorException
+    InternalServerErrorException,
+    NotFoundException
   )
   async verifyMember(
     @Ctx() ctx: RequestContext,
@@ -272,7 +282,8 @@ export class MemberController {
   @Throws(
     UnauthorizedException,
     BadRequestException,
-    InternalServerErrorException
+    InternalServerErrorException,
+    NotFoundException
   )
   async getSingleMember(
     @Ctx() ctx: RequestContext,
@@ -318,7 +329,8 @@ export class MemberController {
   @Throws(
     UnauthorizedException,
     BadRequestException,
-    InternalServerErrorException
+    InternalServerErrorException,
+    NotFoundException
   )
   async deleteMember(
     @Ctx() ctx: RequestContext,
