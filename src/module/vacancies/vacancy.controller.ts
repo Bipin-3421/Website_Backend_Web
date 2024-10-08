@@ -194,10 +194,7 @@ export class VacancyController {
     @Body() body: UpdateVacancyRequestDto,
     @UploadedFile() file: Express.Multer.File | null
   ): Promise<MessageResponseWithIdDTO> {
-    if (!file || file.size == 0) {
-      throw new NotAcceptableException('CV is required')
-    }
-    body.image = file
+    body.image = file || undefined
 
     const updatedVacancy = await this.vacancyService.update(
       ctx,
