@@ -48,18 +48,27 @@ export class CreateMemberRequestDTO {
 
 export class ListMemberDTO {
   id: string;
+
   name: string;
+
   email: string;
+
   createdAt: Date;
+
   updatedAt: Date;
+
   phoneNumber: string;
+
   designation: string;
+
   role: MemberRole;
+
   image: AssetDTO | null;
 }
 
 export class singleMemberResponseDTO {
   message: string;
+
   data: {
     id: string;
     name: string;
@@ -74,7 +83,9 @@ export class singleMemberResponseDTO {
 
 export class ListMemberResponseDTO {
   message: string;
+
   data: ListMemberDTO[];
+
   pagination: PaginationResponseDTO;
 }
 
@@ -145,6 +156,7 @@ export class MemberVerifyDTO {
 
 export class VerifyResponseDTO {
   message: string;
+
   data: {
     accessToken: string;
   };

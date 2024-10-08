@@ -29,7 +29,6 @@ export class Member extends BaseEntity {
   role: MemberRole;
 
   @OneToOne(() => Asset, (asset) => asset.member, {
-    cascade: true,
     nullable: true,
   })
   @JoinColumn({ name: 'imageId' })

@@ -48,7 +48,7 @@ import { ValidationException } from 'common/errors/validation.error';
 @Controller('member')
 @ApiTags('Member')
 export class MemberController {
-  constructor(private readonly memberService: MemberService) {}
+  constructor(private readonly memberService: MemberService) { }
 
   /**
    * Create a new member
@@ -119,10 +119,10 @@ export class MemberController {
           role: res.role,
           image: res.image
             ? {
-                id: res.image.id,
-                name: res.image.name,
-                url: res.image.url,
-              }
+              id: res.image.id,
+              name: res.image.name,
+              url: res.image.url,
+            }
             : null,
         };
       }),
@@ -246,6 +246,7 @@ export class MemberController {
   ): Promise<VerifyResponseDTO> {
     const accessToken = await this.memberService.verifyMember(ctx, body);
     attachToken(res, accessToken);
+
     return {
       message: 'Member verified successfully',
       data: {
@@ -278,6 +279,7 @@ export class MemberController {
     if (!member) {
       throw new NotFoundException('Member not found');
     }
+
     return {
       message: 'Member fetched  successfully',
       data: {
@@ -310,10 +312,8 @@ export class MemberController {
     @Ctx() ctx: RequestContext,
     @Param() param: MemberParamDTO,
   ): Promise<MessageResponseDTO> {
-    const deletedMember = await this.memberService.deleteMember(
-      ctx,
-      param.memberId,
-    );
+    await this.memberService.deleteMember(ctx, param.memberId);
+
     return {
       message: 'Member deleted successfully',
     };
