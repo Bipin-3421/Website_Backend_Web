@@ -10,6 +10,7 @@ import { BaseEntity } from './base.entity'
 import { Vacancy } from './vacancy.entity'
 import { Asset } from './asset.entity'
 import { ApplicationStatus } from 'common/enum/applicant.status.enum'
+import { Designation } from './designation.entity'
 
 @Entity()
 export class Applicant extends BaseEntity {
@@ -35,6 +36,13 @@ export class Applicant extends BaseEntity {
   @Column({ type: String, nullable: true })
   portfolioUrl: string | null
 
+  @ManyToOne(() => Designation, (designation) => designation.applicant)
+  @JoinColumn({ name: 'designationId' })
+  designation: Designation
+
+  @Column({ type: String })
+  designationId: string
+
   @OneToOne(() => Asset, (asset) => asset.applicant, {
     cascade: true
   })
@@ -49,6 +57,9 @@ export class Applicant extends BaseEntity {
 
   @Column({ type: Number })
   workExperience: number
+
+  @Column({ type: String })
+  level: string
 
   @ManyToOne(() => Vacancy, (vacancy) => vacancy.applicants)
   @JoinColumn({ name: 'vacancyId' })

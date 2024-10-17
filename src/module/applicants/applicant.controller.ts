@@ -21,7 +21,7 @@ import {
 } from 'common/dto/response.dto'
 import { ApplicantFilterDto } from './dto/applicant.search.dto'
 import {
-  ListApplicantsResponseDto,
+  ListApplicantsResponseDTO,
   SingleApplicantResponseDTO
 } from './dto/get.applicant.dto'
 import { getPaginationResponse } from 'common/utils/pagination.utils'
@@ -80,13 +80,10 @@ export class ApplicantController {
     permission: PermissionResource.APPLICANT,
     action: PermissionAction.VIEW
   })
-  @ApiBadRequestResponse({
-    description: 'Applicant fetch failed'
-  })
   async getAllJobApplicants(
     @Ctx() ctx: RequestContext,
     @Query() queryFilter: ApplicantFilterDto
-  ): Promise<ListApplicantsResponseDto> {
+  ): Promise<ListApplicantsResponseDTO> {
     const [applicants, total] = await this.applicantService.findMany(
       ctx,
       queryFilter
@@ -107,6 +104,11 @@ export class ApplicantController {
             name: applicant.cv.name,
             url: applicant.cv.url
           },
+          designation: {
+            id: applicant.designation.id,
+            name: applicant.designation.name
+          },
+          level: applicant.level,
           githubUrl: applicant.githubUrl,
           portfolioUrl: applicant.portfolioUrl,
           referralSource: applicant.referralSource,
@@ -149,6 +151,8 @@ export class ApplicantController {
         phoneNumber: applicant.phoneNumber,
         address: applicant.address,
         createdAt: applicant.createdAt,
+        level: applicant.level,
+        designationId: applicant.designationId,
         cvId: applicant.cvId,
         githubUrl: applicant.githubUrl,
         portfolioUrl: applicant.portfolioUrl,

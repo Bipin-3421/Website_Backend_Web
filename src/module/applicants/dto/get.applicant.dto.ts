@@ -13,6 +13,8 @@ export class SingleApplicantResponseDTO {
     address: string
     createdAt: Date
     cvId: string
+    level: string
+    designationId: string
     githubUrl: string | null
     portfolioUrl: string | null
     referralSource: string | null
@@ -47,13 +49,23 @@ export class SingleApplicantDTO {
 
   vacancyId: string
 
+  level: string
+
+  designation: DesignationDTO
+
   status: ApplicationStatus
 }
 
-export class ListApplicantsResponseDto {
+export class ListApplicantsResponseDTO {
   message: string
 
   data: SingleApplicantDTO[]
 
   pagination: PaginationResponseDTO
+}
+
+export class DesignationDTO {
+  id: string
+
+  name: string
 }

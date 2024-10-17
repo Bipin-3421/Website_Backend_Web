@@ -30,12 +30,14 @@ export class ApplicantService {
       phoneNumber: applicantDetail.phone,
       address: applicantDetail.address,
       githubUrl: applicantDetail.githubUrl,
+      designationId: applicantDetail.designationId,
       portfolioUrl: applicantDetail.portfolioUrl,
       cv: asset,
       referralSource: applicantDetail.referralSource,
       workExperience: applicantDetail.workExperience,
       vacancyId: applicantDetail.vacancyId,
-      status: ApplicationStatus.INITIAL
+      level: applicantDetail.level,
+      status: ApplicationStatus.PROCESSING
     })
 
     const applicantRepo = this.connection.getRepository(ctx, Applicant)
@@ -67,7 +69,8 @@ export class ApplicantService {
       },
       relations: {
         vacancy: true,
-        cv: true
+        cv: true,
+        designation: true
       },
       take: queryParams.take,
       skip: queryParams.page

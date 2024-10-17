@@ -37,12 +37,20 @@ export class CreateApplicantDto {
   @Optional()
   portfolioUrl?: string
 
+  @ApiProperty({ description: 'The desingation of the applicant' })
+  @IsString()
+  designationId: string
+
   @ApiProperty({ description: 'The work experience of the applicant' })
   @IsNumber()
   @Transform(({ value }) => {
     return Number(value)
   })
   workExperience: number
+
+  @ApiProperty({ description: 'The level of the applicant' })
+  @IsString()
+  level: string
 
   @ApiProperty({ description: 'The referal source of the applicant' })
   @IsString()

@@ -11,6 +11,7 @@ import { BaseEntity } from './base.entity'
 import { Department } from './department.entity'
 import { Asset } from './asset.entity'
 import { Vacancy } from './vacancy.entity'
+import { Applicant } from './applicant.entity'
 
 @Entity()
 export class Designation extends BaseEntity {
@@ -25,7 +26,7 @@ export class Designation extends BaseEntity {
   @JoinColumn({ name: 'departmentId' })
   department: Department
 
-  @Column()
+  @Column({ type: String })
   departmentId: string
 
   @OneToOne(() => Asset, (asset) => asset.designation)
@@ -43,4 +44,7 @@ export class Designation extends BaseEntity {
     onDelete: 'CASCADE'
   })
   vacacy: Vacancy[]
+
+  @OneToMany(() => Applicant, (applicant) => applicant.designation)
+  applicant: Applicant[]
 }
