@@ -3,7 +3,8 @@ import {
   NotFoundException,
   OnApplicationBootstrap,
   Inject,
-  BadRequestException
+  BadRequestException,
+  ConflictException
 } from '@nestjs/common'
 import { AssetService } from 'asset/asset.service'
 import { RequestContext } from 'common/request-context'
@@ -45,6 +46,16 @@ export class MemberService implements OnApplicationBootstrap {
 
   async create(ctx: RequestContext, body: CreateMemberRequestDTO) {
     const memberRepo = this.connection.getRepository(ctx, Member)
+
+    const existingMember = await memberRepo.findOne({
+      where: {
+        email: body.email
+      }
+    })
+
+    if (existingMember) {
+      throw new ConflictException('Member already exists')
+    }
 
     const asset = await this.assetService.upload(
       ctx,
