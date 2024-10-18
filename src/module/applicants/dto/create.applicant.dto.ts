@@ -60,4 +60,17 @@ export class CreateApplicantDto {
   @ApiProperty({ description: 'The vacancy id of the applicant' })
   @IsString()
   vacancyId: string
+
+  @ApiProperty({ description: 'The expected salary of the applicant' })
+  @IsNumber()
+  @Optional()
+  @Transform(({ value }) => {
+    return Number(value)
+  })
+  expectedSalary: number
+
+  @ApiProperty({ description: 'The  activity section of the applicant' })
+  @IsString()
+  @Optional()
+  comment: string
 }

@@ -74,4 +74,16 @@ export class Applicant extends BaseEntity {
     enumName: 'ApplicationStatus'
   })
   status: ApplicationStatus
+
+  @Column({
+    type: Number,
+    nullable: true
+  })
+  expetedSalary: number
+
+  @Column({
+    type: String,
+    default: ''
+  })
+  comment: string
 }
