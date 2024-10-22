@@ -7,7 +7,8 @@ export enum PermissionResource {
   MEMBER = 'Member',
   CONTACT = 'Contact',
   DESIGNATION = 'Designation',
-  DEPARTMENT = 'Department'
+  DEPARTMENT = 'Department',
+  ACTIVITY = 'Activity'
 }
 
 export enum PermissionAction {

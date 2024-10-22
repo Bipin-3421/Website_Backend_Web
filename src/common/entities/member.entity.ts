@@ -1,7 +1,15 @@
 import { MemberRole } from 'common/enum/memberRole.enum'
-import { Entity, Column, DeepPartial, OneToOne, JoinColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  DeepPartial,
+  OneToOne,
+  JoinColumn,
+  OneToMany
+} from 'typeorm'
 import { BaseEntity } from './base.entity'
 import { Asset } from './asset.entity'
+import { Activity } from './activity.entity'
 
 @Entity()
 export class Member extends BaseEntity {
@@ -36,4 +44,7 @@ export class Member extends BaseEntity {
 
   @Column({ nullable: true })
   imageId: string
+
+  @OneToMany(() => Activity, (activity) => activity.member)
+  activities: Activity[]
 }

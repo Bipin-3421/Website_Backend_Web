@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateApplicantDto } from './dto/create.applicant.dto'
 import { AssetService } from 'asset/asset.service'
 import { Applicant } from 'common/entities/applicant.entity'
@@ -9,6 +9,9 @@ import { RequestContext } from 'common/request-context'
 import { TransactionalConnection } from 'module/connection/connection.service'
 import { AssetFor } from 'common/enum/asset.for.enum'
 import { ILike } from 'typeorm'
+import { EntityDiff, patchEntity } from 'common/utils/patchEntity'
+import { Member } from 'common/entities/member.entity'
+import { Activity } from 'common/entities/activity.entity'
 
 @Injectable()
 export class ApplicantService {
@@ -36,7 +39,7 @@ export class ApplicantService {
       referralSource: applicantDetail.referralSource,
       workExperience: applicantDetail.workExperience,
       vacancyId: applicantDetail.vacancyId,
-      level: applicantDetail.level,
+      position: applicantDetail.position,
       status: ApplicationStatus.PROCESSING
     })
 
@@ -84,27 +87,87 @@ export class ApplicantService {
     const applicant = await applicantRepo.findOne({
       where: {
         id: applicantId
+      },
+      relations: { activity: { member: { image: true } } }
+    })
+
+    if (!applicant) {
+      throw new NotFoundException('Applicant not found')
+    }
+    // Format the activity into history and comments
+    const allActivities = applicant.activity.map((activity) => {
+      if (activity.comment) {
+        return {
+          type: 'comment',
+          message: activity.comment,
+          createdAt: activity.createdAt,
+          memberName: activity.member?.name || 'Unknown'
+        }
+      }
+
+      return {
+        type: 'history',
+        message: activity.history,
+        createdAt: activity.createdAt,
+        memberName: activity.member?.name || 'Unknown'
       }
     })
 
-    return applicant
+    return {
+      ...applicant,
+      all: allActivities
+    }
   }
 
   async update(
     ctx: RequestContext,
-    id: string,
+    applicantId: string,
     applicantStatus: PatchApplicantDto
   ) {
     const applicantRepo = this.connection.getRepository(ctx, Applicant)
     const applicant = await applicantRepo.findOne({
-      where: { id: id }
+      where: { id: applicantId },
+      relations: ['activity']
     })
     if (!applicant) {
-      return false
+      throw new NotFoundException('Applicant not found')
     }
-    applicant.status = applicantStatus.status
 
-    return await applicantRepo.save(applicant)
+    // Capture the current state before patching
+    const changes: EntityDiff[] = patchEntity(applicant, applicantStatus)
+
+    // Save the updated applicant
+    await applicantRepo.save(applicant)
+
+    const memberRepo = this.connection.getRepository(ctx, Member)
+    const activityRepo = this.connection.getRepository(ctx, Activity)
+    // Log changes and comments in the Activity entity
+    const member = await memberRepo.findOne({
+      where: { id: ctx.data?.memberId }
+    })
+    if (member) {
+      // Log field changes as history
+      for (const change of changes) {
+        const activity = activityRepo.create({
+          applicantId: applicant.id,
+          history: `Changed ${change.key} from ${change.from} to ${change.to}`, // Log history here
+          member: member
+        })
+        await activityRepo.save(activity)
+      }
+
+      // If a comment is provided, log it
+      if (applicantStatus.comment) {
+        const commentActivity = activityRepo.create({
+          applicantId: applicant.id,
+          comment: applicantStatus.comment, // Log the comment provided by the member
+          member: member
+        })
+        await activityRepo.save(commentActivity)
+      }
+    }
+
+    return applicant
   }
 
   async delete(ctx: RequestContext, id: string): Promise<boolean> {

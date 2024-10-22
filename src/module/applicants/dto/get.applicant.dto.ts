@@ -13,7 +13,7 @@ export class SingleApplicantResponseDTO {
     address: string
     createdAt: Date
     cvId: string
-    level: string
+    position: string
     designationId: string
     githubUrl: string | null
     portfolioUrl: string | null
@@ -21,6 +21,7 @@ export class SingleApplicantResponseDTO {
     workExperience: number
     vacancyId: string
     status: ApplicationStatus
+    activity: ActivityDTO[]
   }
 }
 
@@ -49,7 +50,7 @@ export class SingleApplicantDTO {
 
   vacancyId: string
 
-  level: string
+  position: string
 
   designation: DesignationDTO
 
@@ -68,4 +69,12 @@ export class DesignationDTO {
   id: string
 
   name: string
+}
+
+export class ActivityDTO {
+  id: string
+
+  createdAt: Date
+
+  comment: string
 }

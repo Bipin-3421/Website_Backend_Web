@@ -1,3 +1,4 @@
+import { Activity } from './activity.entity'
 import { Applicant } from './applicant.entity'
 import { Asset } from './asset.entity'
 import { Contact } from './contact.entity'
@@ -13,7 +14,8 @@ const AllEntities = [
   Contact,
   Member,
   Department,
-  Designation
+  Designation,
+  Activity
 ]
 
 export { AllEntities }

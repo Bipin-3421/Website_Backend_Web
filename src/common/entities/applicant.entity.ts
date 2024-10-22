@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne
 } from 'typeorm'
 import { BaseEntity } from './base.entity'
@@ -11,6 +12,7 @@ import { Vacancy } from './vacancy.entity'
 import { Asset } from './asset.entity'
 import { ApplicationStatus } from 'common/enum/applicant.status.enum'
 import { Designation } from './designation.entity'
+import { Activity } from './activity.entity'
 
 @Entity()
 export class Applicant extends BaseEntity {
@@ -59,7 +61,7 @@ export class Applicant extends BaseEntity {
   workExperience: number
 
   @Column({ type: String })
-  level: string
+  position: string
 
   @ManyToOne(() => Vacancy, (vacancy) => vacancy.applicants)
   @JoinColumn({ name: 'vacancyId' })
@@ -79,11 +81,8 @@ export class Applicant extends BaseEntity {
     type: Number,
     nullable: true
   })
-  expetedSalary: number
+  expectedSalary: number
 
-  @Column({
-    type: String,
-    default: ''
-  })
-  comment: string
+  @OneToMany(() => Activity, (activity) => activity.applicant)
+  activity: Activity[]
 }

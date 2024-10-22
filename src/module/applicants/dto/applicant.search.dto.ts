@@ -32,7 +32,7 @@ export class ApplicantSearchParamDto {
 
   @Optional()
   @IsString()
-  referalSource: string
+  referralSource: string
 }
 
 export class ApplicantFilterDto extends IntersectionType(

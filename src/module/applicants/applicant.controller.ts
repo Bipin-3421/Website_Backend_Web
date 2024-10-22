@@ -20,10 +20,7 @@ import {
   MessageResponseWithIdDTO
 } from 'common/dto/response.dto'
 import { ApplicantFilterDto } from './dto/applicant.search.dto'
-import {
-  ListApplicantsResponseDTO,
-  SingleApplicantResponseDTO
-} from './dto/get.applicant.dto'
+import { ListApplicantsResponseDTO } from './dto/get.applicant.dto'
 import { getPaginationResponse } from 'common/utils/pagination.utils'
 import { PublicRoute } from 'common/decorator/public.decorator'
 import { ApplicantParamDTO } from './dto/param.dto'
@@ -108,7 +105,7 @@ export class ApplicantController {
             id: applicant.designation.id,
             name: applicant.designation.name
           },
-          level: applicant.level,
+          position: applicant.position,
           githubUrl: applicant.githubUrl,
           portfolioUrl: applicant.portfolioUrl,
           referralSource: applicant.referralSource,
@@ -132,15 +129,11 @@ export class ApplicantController {
   async getSingleApplicant(
     @Ctx() ctx: RequestContext,
     @Param() param: ApplicantParamDTO
-  ): Promise<SingleApplicantResponseDTO> {
+  ) {
     const applicant = await this.applicantService.findSingleAplicant(
       ctx,
       param.applicantId
     )
-
-    if (!applicant) {
-      throw new NotFoundException('Applicant not found')
-    }
 
     return {
       message: 'Applicant fetched successfully',
@@ -151,7 +144,7 @@ export class ApplicantController {
         phoneNumber: applicant.phoneNumber,
         address: applicant.address,
         createdAt: applicant.createdAt,
-        level: applicant.level,
+        position: applicant.position,
         designationId: applicant.designationId,
         cvId: applicant.cvId,
         githubUrl: applicant.githubUrl,
@@ -159,7 +152,24 @@ export class ApplicantController {
         referralSource: applicant.referralSource,
         workExperience: applicant.workExperience,
         vacancyId: applicant.vacancyId,
-        status: applicant.status
+        status: applicant.status,
+        activity: applicant.activity.map((activity) => {
+          return {
+            id: activity.applicantId,
+            createdAt: activity.createdAt,
+            history: activity.history,
+            comment: activity.comment,
+            member: {
+              name: activity.member.name,
+              image: {
+                id: activity.member.image?.id,
+                name: activity.member.image?.name,
+                url: activity.member.image?.url
+              }
+            }
+          }
+        }),
+        all: applicant.all
       }
     }
   }

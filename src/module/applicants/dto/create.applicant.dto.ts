@@ -13,7 +13,6 @@ export class CreateApplicantDto {
   email: string
 
   @ApiProperty({ description: 'The phone number of the applicant' })
-  @Optional()
   phone: string
 
   @ApiProperty({ description: 'The address of the applicant' })
@@ -50,7 +49,7 @@ export class CreateApplicantDto {
 
   @ApiProperty({ description: 'The level of the applicant' })
   @IsString()
-  level: string
+  position: string
 
   @ApiProperty({ description: 'The referal source of the applicant' })
   @IsString()
@@ -68,9 +67,4 @@ export class CreateApplicantDto {
     return Number(value)
   })
   expectedSalary: number
-
-  @ApiProperty({ description: 'The  activity section of the applicant' })
-  @IsString()
-  @Optional()
-  comment: string
 }
