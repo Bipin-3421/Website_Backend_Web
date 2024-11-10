@@ -26,7 +26,7 @@ export class CreateVacancyRequestDto {
   salary: string
 
   @IsString()
-  @Length(10, 200)
+  @Length(1, 200)
   skills: string
 
   @IsNumber()
@@ -47,7 +47,6 @@ export class CreateVacancyRequestDto {
   })
   vacancyOpening: number
 
-  @Length(10, 200)
   @IsString()
   description: string
 

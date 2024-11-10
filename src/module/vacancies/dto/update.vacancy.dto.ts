@@ -32,7 +32,7 @@ export class UpdateVacancyRequestDto {
 
   @IsString()
   @Optional()
-  @Length(10, 200)
+  @Length(1, 200)
   skills: string
 
   @Optional()
@@ -57,7 +57,6 @@ export class UpdateVacancyRequestDto {
   })
   vacancyOpening?: number
 
-  @Length(10, 200)
   @Optional()
   @IsString()
   description?: string

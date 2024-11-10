@@ -26,7 +26,6 @@ export class CreateDesignationDTO {
   image: Express.Multer.File
 
   @IsString()
-  @Length(1, 200)
   description: string
 }
 
@@ -45,7 +44,6 @@ export class UpdateDesignationDTO {
 
   @IsString()
   @Optional()
-  @Length(1, 200)
   description?: string
 }
 

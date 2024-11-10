@@ -48,7 +48,7 @@ export interface AppConfig {
 
 export default () => {
   const config: AppConfig = {
-    port: parseInt(process.env.PORT ?? '3000'),
+    port: parseInt(process.env.PORT ?? '4000'),
     database: {
       host: process.env.DATABASE_HOST ?? 'localhost',
       port: parseInt(process.env.DATABASE_PORT ?? '5432'),

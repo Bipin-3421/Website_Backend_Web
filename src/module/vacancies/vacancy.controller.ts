@@ -37,6 +37,7 @@ import { PermissionAction, PermissionResource } from 'types/permission'
 import { FileUpload } from 'common/file-upload.interceptor'
 import { Throws } from 'common/decorator/throws.decorator'
 import { ValidationException } from 'common/errors/validation.error'
+import { PublicRoute } from 'common/decorator/public.decorator'
 
 @Controller('vacancy')
 @ApiTags('Vacancy')
@@ -84,10 +85,7 @@ export class VacancyController {
    * List all vacancies
    */
   @Get()
-  @Require({
-    permission: PermissionResource.VACANCY,
-    action: PermissionAction.VIEW
-  })
+  @PublicRoute()
   @Throws(
     InternalServerErrorException,
     UnauthorizedException,
